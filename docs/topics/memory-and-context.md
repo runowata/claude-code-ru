@@ -1,26 +1,26 @@
-# Memory and context <a id="memory-and-context"></a>
+# Память и контекст <a id="memory-and-context"></a>
 
-<sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>Тема · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-What Claude Code knows at the start of a session and what fills its context as you work.
+Что Claude Code знает в начале сессии и что заполняет его контекст по ходу работы.
 
 <a id="lessons"></a>
-## Lessons
+## Уроки
 
-- Beginner: [Keep a session on track](../beginner/04-keep-a-session-on-track.md)
-- Beginner: [Project memory with CLAUDE.md](../beginner/05-project-memory.md)
-- Beginner Electives: [IDE extensions](../beginner/electives/ide-extensions.md), [Screenshots and images](../beginner/electives/screenshots-and-images.md), [The built-in teachers](../beginner/electives/built-in-teachers.md)
-- Intermediate: [Organize project memory and see what loaded](../intermediate/02-organize-memory.md)
+- Начальный уровень: [Как удержать сессию в рабочем русле](../beginner/04-keep-a-session-on-track.md)
+- Начальный уровень: [Память проекта в CLAUDE.md](../beginner/05-project-memory.md)
+- Начальный уровень, дополнительные уроки: [Расширения для IDE](../beginner/electives/ide-extensions.md), [Скриншоты и изображения](../beginner/electives/screenshots-and-images.md), [Встроенные «учителя»](../beginner/electives/built-in-teachers.md)
+- Средний уровень: [Организуем память проекта и смотрим, что загрузилось](../intermediate/02-organize-memory.md)
 
 <a id="official-docs"></a>
-## Official docs
+## Официальная документация
 
-- [How Claude remembers your project](https://code.claude.com/docs/en/memory)
-- [Explore the context window](https://code.claude.com/docs/en/context-window)
-- [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory)
+- [Как Claude помнит ваш проект](https://code.claude.com/docs/en/memory)
+- [Знакомство с окном контекста](https://code.claude.com/docs/en/context-window)
+- [Знакомство с каталогом .claude](https://code.claude.com/docs/en/claude-directory)
 
 ---
 
-<sub>Sources: [How Claude remembers your project](https://code.claude.com/docs/en/memory) · [Explore the context window](https://code.claude.com/docs/en/context-window) · [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory)</sub>
+<sub>Источники: [How Claude remembers your project](https://code.claude.com/docs/en/memory) · [Explore the context window](https://code.claude.com/docs/en/context-window) · [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory)</sub>
 
-<sub>Up: [Topics](README.md)</sub>
+<sub>Наверх: [Темы](README.md)</sub>

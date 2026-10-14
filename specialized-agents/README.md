@@ -1,3 +1,3 @@
-# Specialized agents <a id="specialized-agents"></a>
+# Специализированные агенты <a id="specialized-agents"></a>
 
-Removed in edition v2026.10: the ten role prompts and nine role descriptions this folder held, which no lesson uses. To write a subagent of your own, see the Intermediate lesson [Delegate to a custom subagent](../docs/intermediate/06-subagents.md). See the [CHANGELOG](../CHANGELOG.md#removed-listings).
+Удалено в выпуске v2026.10: десять ролевых промптов и девять описаний ролей, которые лежали в этой папке и не используются ни в одном уроке. Как написать собственного субагента, смотрите в уроке Среднего уровня [Поручаем задачу своему субагенту](../docs/intermediate/06-subagents.md). См. [CHANGELOG](../CHANGELOG.md#removed-listings).

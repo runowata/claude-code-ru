@@ -22,7 +22,7 @@
 
 Нужен платный тариф Claude (Pro, Max, Team или Enterprise), аккаунт Claude Console или поддерживаемый облачный провайдер ([Quickstart](https://code.claude.com/docs/en/quickstart)), а также Node.js LTS и git.
 
-1. Сделайте учебную копию: откройте [claude-code-practice](https://github.com/wesammustafa/claude-code-practice), выберите **Use this template** > **Create a new repository** и склонируйте свою копию. Или откройте копию в Codespace — там Node.js и Claude Code уже установлены.
+1. Сделайте учебную копию: откройте [claude-code-practice](https://github.com/runowata/claude-code-practice-ru), выберите **Use this template** > **Create a new repository** и склонируйте свою копию. Или откройте копию в Codespace — там Node.js и Claude Code уже установлены.
 2. В копии запустите приложение:
 
    ```bash
@@ -84,21 +84,21 @@
 <details>
 <summary>Все страницы по уровням</summary>
 
-**Начальный:** [Оглавление уровня](docs/beginner/README.md) · [Установка, вход и первый осмотр](docs/beginner/01-install-and-look-around.md) · [Режимы разрешений и plan mode](docs/beginner/02-permission-modes-and-plan-mode.md) · [Первое изменение: от запроса до коммита](docs/beginner/03-first-change.md) · [Как удержать сессию в русле](docs/beginner/04-keep-a-session-on-track.md) · [Память проекта и CLAUDE.md](docs/beginner/05-project-memory.md) · [Итоговый проект](docs/beginner/capstone.md)
+**Начальный:** [Оглавление уровня](docs/beginner/README.md) · [Установка, вход и первый осмотр](docs/beginner/01-install-and-look-around.md) · [Режимы разрешений и plan mode](docs/beginner/02-permission-modes-and-plan-mode.md) · [Первое изменение: от запроса до коммита](docs/beginner/03-first-change.md) · [Как удержать сессию в рабочем русле](docs/beginner/04-keep-a-session-on-track.md) · [Память проекта в CLAUDE.md](docs/beginner/05-project-memory.md) · [Итоговый проект](docs/beginner/capstone.md)
 
-**Начальный, дополнительно:** [Расширения для IDE](docs/beginner/electives/ide-extensions.md) · [Скриншоты и изображения](docs/beginner/electives/screenshots-and-images.md) · [Встроенные учителя](docs/beginner/electives/built-in-teachers.md)
+**Начальный, дополнительно:** [Расширения для IDE](docs/beginner/electives/ide-extensions.md) · [Покажите Claude скриншот](docs/beginner/electives/screenshots-and-images.md) · [Встроенные учителя](docs/beginner/electives/built-in-teachers.md)
 
-**Средний:** [Оглавление уровня](docs/intermediate/README.md) · [Повторяющийся процесс — в skill](docs/intermediate/01-first-skill.md) · [Как устроить память проекта и увидеть, что загрузилось](docs/intermediate/02-organize-memory.md) · [Выбор модели и effort](docs/intermediate/03-model-and-effort.md) · [Разрешения, уровни настроек и песочница](docs/intermediate/04-permissions-and-sandbox.md) · [Правило через hook](docs/intermediate/05-hooks.md) · [Поручение своему субагенту](docs/intermediate/06-subagents.md) · [Подключение инструмента через MCP](docs/intermediate/07-mcp.md) · [Установка плагинов и управление ими](docs/intermediate/08-plugins.md) · [Итоговый проект](docs/intermediate/capstone.md)
+**Средний:** [Оглавление уровня](docs/intermediate/README.md) · [Превращаем повторяющийся процесс в skill](docs/intermediate/01-first-skill.md) · [Организуем память проекта и смотрим, что загрузилось](docs/intermediate/02-organize-memory.md) · [Выбираем модель и effort](docs/intermediate/03-model-and-effort.md) · [Разрешения, уровни настроек и песочница](docs/intermediate/04-permissions-and-sandbox.md) · [Закрепляем правило с помощью hook](docs/intermediate/05-hooks.md) · [Поручаем задачу своему субагенту](docs/intermediate/06-subagents.md) · [Подключаем инструмент через MCP](docs/intermediate/07-mcp.md) · [Устанавливаем плагины и управляем ими](docs/intermediate/08-plugins.md) · [Итоговый проект](docs/intermediate/capstone.md)
 
 **Средний, дополнительно:** [Приёмы для skills](docs/intermediate/electives/skill-patterns.md) · [Claude in Chrome](docs/intermediate/electives/claude-in-chrome.md) · [Status line](docs/intermediate/electives/status-line.md) · [Fast mode](docs/intermediate/electives/fast-mode.md)
 
-**Продвинутый:** [Оглавление уровня](docs/advanced/README.md) · [Параллельные сессии в worktree](docs/advanced/01-parallel-sessions.md) · [Выбор схемы оркестрации](docs/advanced/02-orchestration-patterns.md) · [Запуск и сохранение динамического workflow](docs/advanced/03-dynamic-workflows.md) · [Скрипты с `claude -p`](docs/advanced/04-headless.md) · [GitHub Actions](docs/advanced/05-github-actions.md) · [Как поделиться настройкой с командой](docs/advanced/06-share-your-setup.md) · [Рамки для автономных запусков](docs/advanced/07-bounded-runs.md) · [Итоговый проект](docs/advanced/capstone.md) · [За пределами руководства](docs/advanced/beyond-this-guide.md)
+**Продвинутый:** [Оглавление уровня](docs/advanced/README.md) · [Параллельные сессии с worktrees](docs/advanced/01-parallel-sessions.md) · [Выбор схемы оркестрации](docs/advanced/02-orchestration-patterns.md) · [Запуск и сохранение динамического workflow](docs/advanced/03-dynamic-workflows.md) · [Скрипты с Claude Code: `claude -p`](docs/advanced/04-headless.md) · [GitHub Actions](docs/advanced/05-github-actions.md) · [Делимся настройкой с командой](docs/advanced/06-share-your-setup.md) · [Границы для автономных запусков](docs/advanced/07-bounded-runs.md) · [Итоговый проект](docs/advanced/capstone.md) · [За пределами руководства](docs/advanced/beyond-this-guide.md)
 
-**Продвинутый, дополнительно:** [Agent teams](docs/advanced/electives/agent-teams.md) · [Agent view](docs/advanced/electives/agent-view.md) · [`/goal`, `/loop` и routines](docs/advanced/electives/goal-loop-routines.md) · [Тестирование и публикация плагина](docs/advanced/electives/publish-a-plugin.md) · [Dev containers](docs/advanced/electives/dev-containers.md)
+**Продвинутый, дополнительно:** [Agent teams (команды агентов)](docs/advanced/electives/agent-teams.md) · [Agent view (экран агентов)](docs/advanced/electives/agent-view.md) · [`/goal`, `/loop` и routines](docs/advanced/electives/goal-loop-routines.md) · [Тестирование и публикация плагина](docs/advanced/electives/publish-a-plugin.md) · [Dev-контейнеры](docs/advanced/electives/dev-containers.md)
 
 **Темы:** [Все темы](docs/topics/README.md) · [Разрешения и безопасность](docs/topics/permissions-and-safety.md) · [Память и контекст](docs/topics/memory-and-context.md) · [Модели, effort и стоимость](docs/topics/models-effort-and-cost.md) · [Skills](docs/topics/skills.md) · [Hooks](docs/topics/hooks.md) · [Субагенты и параллельная работа](docs/topics/subagents-and-parallel-work.md) · [MCP](docs/topics/mcp.md) · [Плагины](docs/topics/plugins.md) · [Автоматизация](docs/topics/automation.md)
 
-**Справочник:** [Оглавление справочника](docs/reference/README.md) · [Модели и effort](docs/reference/models.md) · [Команды по уровням](docs/reference/commands.md) · [Карта возможностей](docs/reference/feature-map.md) · [Что почитать дальше](docs/reference/further-reading.md) · [Глоссарий](docs/reference/glossary.md) · [Журнал изменений](docs/reference/changelog.md)
+**Справочник:** [Оглавление справочника](docs/reference/README.md) · [Модели и effort](docs/reference/models.md) · [Команды по уровням](docs/reference/commands.md) · [Карта возможностей](docs/reference/feature-map.md) · [Что читать дальше](docs/reference/further-reading.md) · [Глоссарий](docs/reference/glossary.md) · [Список изменений](docs/reference/changelog.md)
 
 **Примеры:** [Как пользоваться примерами](examples/README.md)
 
@@ -109,7 +109,7 @@
 <summary>Как руководство остаётся актуальным</summary>
 
 - На каждой странице урока есть штамп: версия Claude Code из канала `stable`, на которой проверены утверждения урока, и дата ([The stamp](CONTRIBUTING.md#the-stamp)).
-- Проверяются и сами проверки: в шаблоне для практики CI показывает, что на ветке `main`, где ни одно упражнение не сделано, все проверки падают, а на эталонных решениях проходят ([Assert checks](https://github.com/wesammustafa/claude-code-practice/blob/main/.github/workflows/assert-checks.yml)).
+- Проверяются и сами проверки: в шаблоне для практики CI показывает, что на ветке `main`, где ни одно упражнение не сделано, все проверки падают, а на эталонных решениях проходят ([Assert checks](https://github.com/runowata/claude-code-practice-ru/blob/main/.github/workflows/assert-checks.yml)).
 - Между выпусками следят проверки по расписанию: внешние ссылки и новые релизы `stable` — раз в неделю, пометки об истечении срока — ежедневно, цитаты уроков в приложении — раз в неделю. Каждая открывает задачу для отслеживания ([Maintainer routine](CONTRIBUTING.md#maintainer-routine)).
 - Примеры ничего не делают, пока вы не скопируете их в проект, и соблюдают [договор безопасности](CONTRIBUTING.md#adding-a-skill): только локальная работа (кроме закреплённого сервера из урока про MCP), минимум прав и smoke-тест, который запускается без Claude.
 
@@ -134,30 +134,30 @@
 
 - **SDLC, что такое LLM и Claude Code, настройка, установка, вход и первый запрос:** в [Установка, вход и первый осмотр](docs/beginner/01-install-and-look-around.md).
 - **Промпт-инжиниринг, цикл «изучить — спланировать — написать — закоммитить» и работа через тесты:** в [Первое изменение: от запроса до коммита](docs/beginner/03-first-change.md).
-- **Создание CLAUDE.md:** в [Память проекта и CLAUDE.md](docs/beginner/05-project-memory.md).
-- **Визуальная доработка по скриншотам:** в [Скриншоты и изображения](docs/beginner/electives/screenshots-and-images.md).
+- **Создание CLAUDE.md:** в [Память проекта в CLAUDE.md](docs/beginner/05-project-memory.md).
+- **Визуальная доработка по скриншотам:** в [Покажите Claude скриншот](docs/beginner/electives/screenshots-and-images.md).
 - **Линейка моделей:** в [Модели и effort](docs/reference/models.md).
-- **Уровни effort:** в [Выбор модели и effort](docs/intermediate/03-model-and-effort.md).
+- **Уровни effort:** в [Выбираем модель и effort](docs/intermediate/03-model-and-effort.md).
 - **Команды и самое нужное в первый день:** в [Команды по уровням](docs/reference/commands.md).
-- **Свои slash-команды и skills:** в [Повторяющийся процесс — в skill](docs/intermediate/01-first-skill.md).
-- **Справочник по skills и skills в рабочем процессе:** в [Повторяющийся процесс — в skill](docs/intermediate/01-first-skill.md), где показано, как запустить skill. Каталог skills этого репозитория и рецепты процессов удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-live-config).
+- **Свои slash-команды и skills:** в [Превращаем повторяющийся процесс в skill](docs/intermediate/01-first-skill.md).
+- **Справочник по skills и skills в рабочем процессе:** в [Превращаем повторяющийся процесс в skill](docs/intermediate/01-first-skill.md), где показано, как запустить skill. Каталог skills этого репозитория и рецепты процессов удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-live-config).
 - **Решение проблем со skills и лучшие практики:** в [Приёмы для skills](docs/intermediate/electives/skill-patterns.md).
-- **Hooks:** в [Правило через hook](docs/intermediate/05-hooks.md).
-- **Субагенты общего назначения и специализированные:** в [Поручение своему субагенту](docs/intermediate/06-subagents.md). Готовые ролевые промпты удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
+- **Hooks:** в [Закрепляем правило с помощью hook](docs/intermediate/05-hooks.md).
+- **Субагенты общего назначения и специализированные:** в [Поручаем задачу своему субагенту](docs/intermediate/06-subagents.md). Готовые ролевые промпты удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
 - **ИИ-агенты и параллельный запуск агентов:** в [Выбор схемы оркестрации](docs/advanced/02-orchestration-patterns.md).
-- **Git worktrees:** в [Параллельные сессии в worktree](docs/advanced/01-parallel-sessions.md).
-- **Agent teams:** в [Agent teams](docs/advanced/electives/agent-teams.md).
+- **Git worktrees:** в [Параллельные сессии с worktrees](docs/advanced/01-parallel-sessions.md).
+- **Agent teams:** в [Agent teams (команды агентов)](docs/advanced/electives/agent-teams.md).
 - **Динамические workflows:** в [Запуск и сохранение динамического workflow](docs/advanced/03-dynamic-workflows.md).
 - **Средства автоматизации:** в [Карта возможностей](docs/reference/feature-map.md).
-- **Model Context Protocol (MCP):** в [Подключение инструмента через MCP](docs/intermediate/07-mcp.md).
+- **Model Context Protocol (MCP):** в [Подключаем инструмент через MCP](docs/intermediate/07-mcp.md).
 - **Fast mode:** в [Fast mode](docs/intermediate/electives/fast-mode.md).
-- **Экосистема skills:** в [Установка плагинов и управление ими](docs/intermediate/08-plugins.md). Каталог экосистемы skills удалён в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
-- **Списки MCP-серверов:** в [Подключение инструмента через MCP](docs/intermediate/07-mcp.md). Таблицы MCP-серверов удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
+- **Экосистема skills:** в [Устанавливаем плагины и управляем ими](docs/intermediate/08-plugins.md). Каталог экосистемы skills удалён в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
+- **Списки MCP-серверов:** в [Подключаем инструмент через MCP](docs/intermediate/07-mcp.md). Таблицы MCP-серверов удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
 - **Super Claude и метод BMAD:** удалены в выпуске v2026.10 — это подборки, которые не использует ни один урок. См. [CHANGELOG](CHANGELOG.md#removed-listings).
 - **Обновления и устаревшие функции:** удалены в выпуске v2026.10 — это были пересказы релизов Claude Code. См. [CHANGELOG](CHANGELOG.md#removed-changelog-mirror).
-- **FAQ:** в [FAQ](docs/reference/faq.md), где сказано, куда переехал каждый ответ.
-- **Ссылки:** в [Что почитать дальше](docs/reference/further-reading.md).
-- **«Возьмите эту настройку себе»:** в [Как поделиться настройкой с командой](docs/advanced/06-share-your-setup.md).
+- **FAQ:** в [Частые вопросы](docs/reference/faq.md), где сказано, куда переехал каждый ответ.
+- **Ссылки:** в [Что читать дальше](docs/reference/further-reading.md).
+- **«Возьмите эту настройку себе»:** в [Делимся настройкой с командой](docs/advanced/06-share-your-setup.md).
 - **Когда что использовать:** в [Когда что использовать](docs/intermediate/README.md#when-to-use-what).
 
 </details>

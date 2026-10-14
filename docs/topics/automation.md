@@ -1,26 +1,26 @@
-# Automation <a id="automation"></a>
+# Автоматизация <a id="automation"></a>
 
-<sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>Тема · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-Running Claude Code without a person at the keyboard: scripts, CI and schedules.
+Работа Claude Code без человека за клавиатурой: скрипты, CI и расписания.
 
 <a id="lessons"></a>
-## Lessons
+## Уроки
 
-- Advanced: [Script Claude Code with `claude -p`](../advanced/04-headless.md)
-- Advanced: [GitHub Actions](../advanced/05-github-actions.md)
-- Advanced Elective: [`/goal`, `/loop` and routines](../advanced/electives/goal-loop-routines.md)
+- Продвинутый уровень: [Скрипты с Claude Code: `claude -p`](../advanced/04-headless.md)
+- Продвинутый уровень: [GitHub Actions](../advanced/05-github-actions.md)
+- Продвинутый уровень, дополнительный урок: [`/goal`, `/loop` и routines](../advanced/electives/goal-loop-routines.md)
 
 <a id="official-docs"></a>
-## Official docs
+## Официальная документация
 
-- [Run Claude Code programmatically](https://code.claude.com/docs/en/headless)
+- [Запуск Claude Code программно](https://code.claude.com/docs/en/headless)
 - [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions)
-- [Run prompts on a schedule](https://code.claude.com/docs/en/scheduled-tasks)
-- [Automate work with routines](https://code.claude.com/docs/en/routines)
+- [Запуск промптов по расписанию](https://code.claude.com/docs/en/scheduled-tasks)
+- [Автоматизация работы с помощью routines](https://code.claude.com/docs/en/routines)
 
 ---
 
-<sub>Sources: [Run Claude Code programmatically](https://code.claude.com/docs/en/headless) · [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions) · [Run prompts on a schedule](https://code.claude.com/docs/en/scheduled-tasks) · [Automate work with routines](https://code.claude.com/docs/en/routines)</sub>
+<sub>Источники: [Run Claude Code programmatically](https://code.claude.com/docs/en/headless) · [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions) · [Run prompts on a schedule](https://code.claude.com/docs/en/scheduled-tasks) · [Automate work with routines](https://code.claude.com/docs/en/routines)</sub>
 
-<sub>Up: [Topics](README.md)</sub>
+<sub>Наверх: [Темы](README.md)</sub>

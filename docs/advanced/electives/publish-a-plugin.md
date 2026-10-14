@@ -1,37 +1,37 @@
-# Testing and publishing a plugin <a id="testing-and-publishing-a-plugin"></a>
+# Тестирование и публикация плагина <a id="testing-and-publishing-a-plugin"></a>
 
-<sub>**Advanced** · Elective · about 20 minutes, plus run time · Needs: [Share your setup with a team](../06-share-your-setup.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
+<sub>**Продвинутый уровень** · Дополнительный урок · около 20 минут плюс время запуска · Нужно: [Делимся настройкой с командой](../06-share-your-setup.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-09</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this Elective you can check a plugin's files with `claude plugin validate`, measure what it changes with `claude plugin eval`, and publish it in a marketplace that other people install and update from.
+После этого дополнительного урока вы умеете проверять файлы плагина командой `claude plugin validate`, измерять, что он меняет, командой `claude plugin eval`, и публиковать его в marketplace (каталоге плагинов), из которого другие люди устанавливают и обновляют его.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- The marketplace layout from [lesson 6](../06-share-your-setup.md): a marketplace that lists a plugin by a relative path.
-- Where to practice: a new folder outside your other repositories, which becomes its own private GitHub repository. Electives have no template check.
-- bash, `jq` and git 2.31 or later, on macOS, Linux or WSL 2. With an older git, `claude plugin eval` stops before running any case ([Requirements](https://code.claude.com/docs/en/plugin-evals#requirements)).
-- The GitHub CLI, signed in with `gh auth login`. Claude Code clones a private marketplace with the git credentials your machine already holds, SSH or HTTPS, and never prompts for one; for HTTPS, `gh auth setup-git` after that sign-in stores one it can use ([Grant access to a private marketplace](https://code.claude.com/docs/en/plugins/host-marketplace#grant-access-to-a-private-marketplace)).
-- Usage: moderate. Every eval run is a real model call on your account ([Test plugins with evals](https://code.claude.com/docs/en/plugin-evals)). The Worked example makes one run. Your turn's full run runs each case three times with the plugin and three times without it; its cheap variant runs each case once.
+- Структура marketplace из [урока 6](../06-share-your-setup.md): marketplace, который перечисляет плагин по относительному пути.
+- Где практиковаться: новая папка вне ваших других репозиториев, которая станет отдельным закрытым репозиторием на GitHub. Шаблонной проверки у дополнительных уроков нет.
+- bash, `jq` и git версии 2.31 или новее на macOS, Linux или WSL 2. С более старым git `claude plugin eval` останавливается до запуска любого случая ([требования](https://code.claude.com/docs/en/plugin-evals#requirements)).
+- GitHub CLI с выполненным входом через `gh auth login`. Claude Code клонирует закрытый marketplace с теми учётными данными git, которые уже есть на вашей машине, по SSH или HTTPS, и никогда не запрашивает их; для HTTPS команда `gh auth setup-git` после входа сохраняет учётные данные, которые он сможет использовать ([доступ к закрытому marketplace](https://code.claude.com/docs/en/plugins/host-marketplace#grant-access-to-a-private-marketplace)).
+- Расход: умеренный. Каждый запуск eval — это настоящий вызов модели на вашем аккаунте ([тестирование плагинов с помощью evals](https://code.claude.com/docs/en/plugin-evals)). Разбор на примере делает один запуск. Полный запуск в разделе «Ваша очередь» прогоняет каждый случай три раза с плагином и три раза без него; его дешёвый вариант прогоняет каждый случай один раз.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-Check a plugin two ways before you share it. `claude plugin validate` reads files: manifests and frontmatter; with `--strict`, a warning fails the run too ([Test and debug](https://code.claude.com/docs/en/plugins/create#test-and-debug)). `claude plugin eval` measures behavior: each case, a prompt plus graders (checks that score each run), runs in a fresh, isolated session with only your plugin loaded, three times by default (the with-arm), and as many times with no plugin (the without-arm). The difference between their scores, `WITH` and `W/OUT`, is `Δ`: what the plugin contributed ([How an eval run works](https://code.claude.com/docs/en/plugin-evals#how-an-eval-run-works)).
+Прежде чем делиться плагином, проверьте его двумя способами. `claude plugin validate` читает файлы: манифесты и frontmatter; с `--strict` предупреждение тоже проваливает запуск ([тестирование и отладка](https://code.claude.com/docs/en/plugins/create#test-and-debug)). `claude plugin eval` измеряет поведение: каждый случай (case) — это промпт плюс graders (проверки, оценивающие каждый запуск) — выполняется в новой изолированной сессии, где загружен только ваш плагин, по умолчанию три раза (ветка с плагином), и столько же раз без плагина (ветка без него). Разница их оценок, `WITH` и `W/OUT`, — это `Δ`: вклад плагина ([как проходит запуск eval](https://code.claude.com/docs/en/plugin-evals#how-an-eval-run-works)).
 
-The `regex`, `tool_used`, `tool_order` and `file_exists` graders cost nothing; `llm` and `baseline` call a judge model. Give each case one grader on the result and one on the steps, such as "the skill ran" ([Choose and weight graders](https://code.claude.com/docs/en/plugin-evals#grade-the-result)).
+Graders `regex`, `tool_used`, `tool_order` и `file_exists` ничего не стоят; `llm` и `baseline` вызывают модель-судью. Дайте каждому случаю один grader на результат и один на шаги, например «skill сработал» ([выбор и вес graders](https://code.claude.com/docs/en/plugin-evals#grade-the-result)).
 
-Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's pushed, the plugin is published, with no submission form ([Publish and distribute a plugin](https://code.claude.com/docs/en/plugins/publish#publish-through-your-own-marketplace)). When a plugin sets a `version`, a user gets your next release only when you change it ([Release a new version](https://code.claude.com/docs/en/plugins/host-marketplace#release-a-new-version)).
+Публикация — это файл `.claude-plugin/marketplace.json` в git-репозитории: как только он отправлен (push), плагин опубликован, формы заявки нет ([публикация и распространение плагина](https://code.claude.com/docs/en/plugins/publish#publish-through-your-own-marketplace)). Если у плагина задан `version`, пользователь получит ваш следующий релиз только после того, как вы его измените ([выпуск новой версии](https://code.claude.com/docs/en/plugins/host-marketplace#release-a-new-version)).
 
 > [!WARNING]
-> Before you make a marketplace repository public, read every file in it: everyone can read a public repository ([About repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories#about-repository-visibility)), and anyone who can clone it can install from it ([Control who can install](https://code.claude.com/docs/en/plugins/publish#control-who-can-install)). A hook or a stdio MCP server you add in a later version runs on the machine of everyone who updates to it, with their rights ([Plugin security and trust](https://code.claude.com/docs/en/plugins/security#understand-what-a-plugin-can-do)).
+> Прежде чем сделать репозиторий marketplace публичным, прочитайте каждый файл в нём: публичный репозиторий может прочитать любой ([о репозиториях](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories#about-repository-visibility)), а установить из него может каждый, кто может его клонировать ([кто может устанавливать](https://code.claude.com/docs/en/plugins/publish#control-who-can-install)). Hook или stdio MCP-сервер, добавленный в более поздней версии, запускается на машине каждого, кто обновится до неё, с его правами ([безопасность плагинов и доверие](https://code.claude.com/docs/en/plugins/security#understand-what-a-plugin-can-do)).
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. Create a repository with one plugin, `commit-helper`, under `plugins/`, the layout [Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace#create-a-marketplace) uses. Its one skill drafts commit messages. In every file and command, replace `<you>` with your GitHub user name and `Your Name` with your name:
+1. Создайте репозиторий с одним плагином, `commit-helper`, в папке `plugins/` — такую структуру использует [создание marketplace](https://code.claude.com/docs/en/plugins/create-marketplace#create-a-marketplace). Его единственный skill составляет сообщения коммитов. Во всех файлах и командах замените `<you>` на ваше имя пользователя GitHub, а `Your Name` — на ваше имя:
 
    ```bash
    mkdir -p claude-plugins/.claude-plugin claude-plugins/plugins/commit-helper/{.claude-plugin,skills/commit-message}
@@ -41,7 +41,7 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
    echo '# commit-helper: drafts commit messages in a short, consistent format.' > plugins/commit-helper/README.md
    ```
 
-   `.practice/` holds the file the Check reads, ignored without a commit as in [Beginner lesson 1](../../beginner/01-install-and-look-around.md#you-need). The `.gitignore` line keeps out the results each eval run writes under `evals/results/` ([Write and refine cases](https://code.claude.com/docs/en/plugin-evals#write-and-refine-cases)), and the release checklist asks for the README ([Prepare your plugin for release](https://code.claude.com/docs/en/plugins/publish#prepare-your-plugin-for-release)). Then save the plugin's manifest, with the fields that checklist asks for, as `plugins/commit-helper/.claude-plugin/plugin.json`:
+   В `.practice/` лежит файл, который читает проверка; он игнорируется без коммита, как в [уроке 1 начального уровня](../../beginner/01-install-and-look-around.md#you-need). Строка в `.gitignore` не пускает в репозиторий результаты, которые каждый запуск eval пишет в `evals/results/` ([написание и доработка случаев](https://code.claude.com/docs/en/plugin-evals#write-and-refine-cases)), а контрольный список релиза требует README ([подготовка плагина к релизу](https://code.claude.com/docs/en/plugins/publish#prepare-your-plugin-for-release)). Затем сохраните манифест плагина с полями, которых требует этот список, как `plugins/commit-helper/.claude-plugin/plugin.json`:
 
    ```json
    {
@@ -51,7 +51,7 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
    }
    ```
 
-   The skill, as `plugins/commit-helper/skills/commit-message/SKILL.md`:
+   Skill сохраните как `plugins/commit-helper/skills/commit-message/SKILL.md`:
 
    ```markdown
    ---
@@ -62,7 +62,7 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
    Write a commit message for the change the user describes: a subject line in the imperative mood, at most 50 characters, with no trailing period; a blank line; then one sentence on why.
    ```
 
-   And the marketplace, as `.claude-plugin/marketplace.json`. Keep the entry's `name` the same as the manifest's ([Keep the entry name and the manifest name the same](https://code.claude.com/docs/en/plugins/create-marketplace#keep-the-entry-name-and-the-manifest-name-the-same)):
+   И marketplace — как `.claude-plugin/marketplace.json`. Пусть `name` записи совпадает с `name` в манифесте ([имя записи и имя манифеста должны совпадать](https://code.claude.com/docs/en/plugins/create-marketplace#keep-the-entry-name-and-the-manifest-name-the-same)):
 
    ```json
    {
@@ -71,8 +71,8 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
    }
    ```
 
-2. Validate the plugin, then the marketplace: `claude plugin validate --strict ./plugins/commit-helper`, then `claude plugin validate --strict .`. Each run ends with `✔ Validation passed`. A marketplace run checks the marketplace file and the `plugin.json` of each plugin it lists by a relative path ([Problems that validation reports](https://code.claude.com/docs/en/plugins/create-marketplace#problems-that-validation-reports)), but doesn't open their skill files, so validate the plugin directory itself too ([Validate a directory](https://code.claude.com/docs/en/plugins/cli-reference#validate-a-directory)).
-3. Write one eval case. `claude plugin eval init --bare` writes a blank case: a `prompt.md` and one placeholder grader, `graders/criteria.md`, which expects a rubric for a judge model. It runs nothing ([Write a case manually](https://code.claude.com/docs/en/plugin-evals#write-a-case-manually)). Replace the rubric with two graders that cost nothing:
+2. Проверьте плагин, затем marketplace: `claude plugin validate --strict ./plugins/commit-helper`, затем `claude plugin validate --strict .`. Каждый запуск заканчивается строкой `✔ Validation passed`. Запуск для marketplace проверяет файл marketplace и `plugin.json` каждого плагина, который тот перечисляет по относительному пути ([проблемы, о которых сообщает проверка](https://code.claude.com/docs/en/plugins/create-marketplace#problems-that-validation-reports)), но не открывает их файлы skills, поэтому проверьте и саму папку плагина ([проверка папки](https://code.claude.com/docs/en/plugins/cli-reference#validate-a-directory)).
+3. Напишите один случай eval. `claude plugin eval init --bare` создаёт пустой случай: `prompt.md` и один grader-заглушку, `graders/criteria.md`, который ждёт критерии для модели-судьи. Ничего не запускается ([ручное создание случая](https://code.claude.com/docs/en/plugin-evals#write-a-case-manually)). Замените критерии двумя graders, которые ничего не стоят:
 
    ```bash
    cd plugins/commit-helper
@@ -84,17 +84,17 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
    cd ../..
    ```
 
-   A run gets only the read-only tools its case lists, so `allowed_tools: [Skill]` is what lets Claude run your skill ([prompt.md frontmatter](https://code.claude.com/docs/en/plugin-evals#prompt-md-fields)). `skill-fired` passes when Claude called the `Skill` tool with `commit-message` in its input, that is, ran the skill; `mentions-rename` checks the reply ([Grader types](https://code.claude.com/docs/en/plugin-evals#grader-types)). Have a regex look for a fact the prompt gives, such as `fetchUser`: Claude writes the reply, so its wording varies. `evals/names-the-rename/graders/` now holds `mentions-rename.md` and `skill-fired.md`.
-4. Run the case once, with the plugin only, and keep the report on your machine: `claude plugin eval . --runs 1 --ablation none --no-publish` ([Command options](https://code.claude.com/docs/en/plugin-evals#command-options)). If it asks `Trust this plugin directory?`, answer `y`; inside a git repository, that trusts the whole repository, for interactive sessions too ([Trust the plugin directory](https://code.claude.com/docs/en/plugin-evals#trust-the-plugin-directory)). The summary table has `SCORE` and `PASS%` columns, and a `Report:` line gives the path of `report.html` under `evals/results/` ([Create your first eval suite](https://code.claude.com/docs/en/plugin-evals#create-your-first-eval-suite)). Your scores will differ.
-5. Publish. Back at the repository's root (`cd ../..`), run `git add -A && git status --short`, read each file it lists, then:
+   Запуск получает только инструменты для чтения, которые перечислены в его случае, поэтому именно `allowed_tools: [Skill]` позволяет Claude запустить ваш skill ([поля frontmatter в prompt.md](https://code.claude.com/docs/en/plugin-evals#prompt-md-fields)). `skill-fired` проходит, когда Claude вызвал инструмент `Skill` с `commit-message` во входных данных, то есть запустил skill; `mentions-rename` проверяет ответ ([типы graders](https://code.claude.com/docs/en/plugin-evals#grader-types)). Пусть regex ищет факт, который задан в промпте, например `fetchUser`: ответ пишет Claude, поэтому его формулировки меняются. Теперь в `evals/names-the-rename/graders/` лежат `mentions-rename.md` и `skill-fired.md`.
+4. Запустите случай один раз, только с плагином, и оставьте отчёт на своей машине: `claude plugin eval . --runs 1 --ablation none --no-publish` ([параметры команды](https://code.claude.com/docs/en/plugin-evals#command-options)). Если появится вопрос `Trust this plugin directory?`, ответьте `y`; внутри git-репозитория это доверяет всему репозиторию, в том числе для интерактивных сессий ([доверие к папке плагина](https://code.claude.com/docs/en/plugin-evals#trust-the-plugin-directory)). В итоговой таблице есть столбцы `SCORE` и `PASS%`, а строка `Report:` даёт путь к `report.html` в `evals/results/` ([создайте первый набор eval](https://code.claude.com/docs/en/plugin-evals#create-your-first-eval-suite)). Ваши оценки будут другими.
+5. Опубликуйте. Вернувшись в корень репозитория (`cd ../..`), выполните `git add -A && git status --short`, прочитайте каждый файл из списка, затем:
 
    ```bash
    git commit -m "Publish commit-helper 1.0.0"
    gh repo create claude-plugins --private --source . --push
    ```
 
-   `--source .` creates the GitHub repository from this one, and `--push` pushes your commit ([gh repo create](https://cli.github.com/manual/gh_repo_create)). The marketplace is now published to everyone who can clone the repository: you, for now. Making the repository public is what lets everyone install it.
-6. Install it as a user would, from GitHub:
+   `--source .` создаёт репозиторий GitHub из этого, а `--push` отправляет ваш коммит ([gh repo create](https://cli.github.com/manual/gh_repo_create)). Теперь marketplace опубликован для всех, кто может клонировать репозиторий, то есть пока только для вас. Установить его сможет каждый, когда вы сделаете репозиторий публичным.
+6. Установите плагин так, как это сделал бы пользователь, с GitHub:
 
    ```bash
    claude plugin marketplace add <you>/claude-plugins
@@ -102,52 +102,52 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
    claude plugin details commit-helper
    ```
 
-   The add prints `✔ Successfully added marketplace: <you>-plugins (declared in user settings)`, the install prints `✔ Successfully installed plugin: commit-helper@<you>-plugins (scope: user)`, and the details' `Component inventory` reads `Skills (1)  commit-message` ([Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace#create-a-marketplace)). The marketplace's name comes from your `marketplace.json`, not from the repository ([Host your marketplace](https://code.claude.com/docs/en/plugins/host-marketplace#host-your-marketplace)). The plugin stays installed for you until the end of Your turn.
+   Добавление выводит `✔ Successfully added marketplace: <you>-plugins (declared in user settings)`, установка выводит `✔ Successfully installed plugin: commit-helper@<you>-plugins (scope: user)`, а в `Component inventory` команды details написано `Skills (1)  commit-message` ([создание marketplace](https://code.claude.com/docs/en/plugins/create-marketplace#create-a-marketplace)). Имя marketplace берётся из вашего `marketplace.json`, а не из репозитория ([размещение marketplace](https://code.claude.com/docs/en/plugins/host-marketplace#host-your-marketplace)). Плагин остаётся у вас установленным до конца раздела «Ваша очередь».
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-**Brief:** release `commit-helper` 1.0.1, gated by its evals, and update your installed copy.
+**Задача:** выпустите `commit-helper` 1.0.1, пропустив его через evals, и обновите установленную копию.
 
-**Acceptance criteria:**
+**Критерии приёмки:**
 
-- A second case, `ignores-unrelated`, has the same frontmatter as `names-the-rename`, so the skill could run, and sends a request the skill must leave alone, such as `Explain what a git rebase does.` A `tool_used` grader on `Skill` with `min: 0`, `max: 0` and `arm: both` checks that Claude didn't run the skill. `arm: both` is needed because a two-arm run otherwise leaves every `tool_used` grader on `Skill` out of the score ([Score against the no-plugin baseline](https://code.claude.com/docs/en/plugin-evals#compare-against-a-no-plugin-baseline)). A `regex` grader checks the reply, such as `pattern: 'rebase'` with `flags: i`.
-- The skill makes one change a grader can see, such as starting each subject with a type like `refactor:`, checked by a new `regex` grader in `names-the-rename`. `version` in `plugin.json` is `1.0.1`, and the marketplace entry sets no `version` of its own ([Release a new version](https://code.claude.com/docs/en/plugins/host-marketplace#release-a-new-version)).
-- Both strict validations pass, and one full run, `claude plugin eval . --threshold <score> --no-publish` from the plugin's folder, ends with every case at or above the threshold you chose, a score from 0 to 1 such as `0.8` ([Command options](https://code.claude.com/docs/en/plugin-evals#command-options)). Cheap variant: add `--runs 1 --ablation none`.
-- `evals/` is committed, `evals/results/` isn't, and the release is pushed.
-- `claude plugin update commit-helper@<you>-plugins` installs 1.0.1 and ends with `Restart to apply changes.` ([Plugin loading reference](https://code.claude.com/docs/en/plugins/loading#check-which-stage-a-plugin-reached)). If it says the plugin is already at the latest version, the new `version` isn't pushed yet.
+- Второй случай, `ignores-unrelated`, имеет тот же frontmatter, что и `names-the-rename`, так что skill мог бы сработать, и посылает запрос, к которому skill не должен прикасаться, например `Explain what a git rebase does.` Grader `tool_used` на `Skill` с `min: 0`, `max: 0` и `arm: both` проверяет, что Claude не запускал skill. `arm: both` нужен потому, что при запуске в две ветки каждый grader `tool_used` на `Skill` иначе не попадает в оценку ([оценка относительно базы без плагина](https://code.claude.com/docs/en/plugin-evals#compare-against-a-no-plugin-baseline)). Grader `regex` проверяет ответ, например `pattern: 'rebase'` с `flags: i`.
+- Skill вносит одно изменение, которое видит grader, например начинает каждую тему с типа вроде `refactor:`, и это проверяет новый grader `regex` в `names-the-rename`. `version` в `plugin.json` равен `1.0.1`, а запись в marketplace не задаёт собственный `version` ([выпуск новой версии](https://code.claude.com/docs/en/plugins/host-marketplace#release-a-new-version)).
+- Обе строгие проверки проходят, а один полный запуск, `claude plugin eval . --threshold <score> --no-publish` из папки плагина, заканчивается так, что каждый случай не ниже выбранного вами порога — оценки от 0 до 1, например `0.8` ([параметры команды](https://code.claude.com/docs/en/plugin-evals#command-options)). Дешёвый вариант: добавьте `--runs 1 --ablation none`.
+- `evals/` закоммичена, `evals/results/` — нет, а релиз отправлен.
+- `claude plugin update commit-helper@<you>-plugins` устанавливает 1.0.1 и заканчивается строкой `Restart to apply changes.` ([справочник по загрузке плагинов](https://code.claude.com/docs/en/plugins/loading#check-which-stage-a-plugin-reached)). Если команда сообщает, что у плагина уже последняя версия, новый `version` ещё не отправлен.
 
-Then, from the repository's root, save the plugin list with `claude plugin list --json > .practice/a-publish-list.json` ([JSON output](https://code.claude.com/docs/en/plugins/cli-reference#json-output)), and only then run `claude plugin marketplace remove <you>-plugins --scope user`. Removing a marketplace from its last scope also uninstalls its plugins ([plugin marketplace remove](https://code.claude.com/docs/en/plugins/cli-reference#plugin-marketplace-remove)), so the saved list is what the Check below reads. Deleting the repository is optional: `gh repo delete <you>/claude-plugins --yes` needs the `delete_repo` scope, which `gh auth refresh -s delete_repo` adds ([gh repo delete](https://cli.github.com/manual/gh_repo_delete)).
+Затем из корня репозитория сохраните список плагинов командой `claude plugin list --json > .practice/a-publish-list.json` ([вывод в JSON](https://code.claude.com/docs/en/plugins/cli-reference#json-output)) и только после этого выполните `claude plugin marketplace remove <you>-plugins --scope user`. Удаление marketplace из последнего уровня настроек удаляет и его плагины ([plugin marketplace remove](https://code.claude.com/docs/en/plugins/cli-reference#plugin-marketplace-remove)), поэтому проверка ниже читает именно сохранённый список. Удалять репозиторий необязательно: `gh repo delete <you>/claude-plugins --yes` требует права `delete_repo`, которое добавляет `gh auth refresh -s delete_repo` ([gh repo delete](https://cli.github.com/manual/gh_repo_delete)).
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true, from the repository's root:
+Вы закончили, когда выполнено всё из этого списка, из корня репозитория:
 
-- [ ] `claude plugin validate --strict ./plugins/commit-helper` and `claude plugin validate --strict .` each end with `✔ Validation passed`.
-- [ ] `git ls-files plugins/commit-helper/evals` lists the files of two cases and nothing under `results/`.
-- [ ] The newest eval result covers both cases, and every case passed ([JSON result](https://code.claude.com/docs/en/plugin-evals#json-result)): `jq '.partial != true and .aggregates.casesTotal == 2 and .aggregates.casesPassed == .aggregates.casesTotal' "$(ls -d plugins/commit-helper/evals/results/*/ | tail -1)aggregate-result.json"` prints `true`.
-- [ ] `jq -r '.[] | select(.id == "commit-helper@<you>-plugins") | .version' .practice/a-publish-list.json` prints `1.0.1`.
-- [ ] Self-check (not tested): you can say what `Δ` measures, and why a two-arm run doesn't score "the skill ran".
+- [ ] `claude plugin validate --strict ./plugins/commit-helper` и `claude plugin validate --strict .` оба заканчиваются строкой `✔ Validation passed`.
+- [ ] `git ls-files plugins/commit-helper/evals` перечисляет файлы двух случаев и ничего из `results/`.
+- [ ] Новейший результат eval охватывает оба случая, и каждый случай пройден ([результат в JSON](https://code.claude.com/docs/en/plugin-evals#json-result)): `jq '.partial != true and .aggregates.casesTotal == 2 and .aggregates.casesPassed == .aggregates.casesTotal' "$(ls -d plugins/commit-helper/evals/results/*/ | tail -1)aggregate-result.json"` выводит `true`.
+- [ ] `jq -r '.[] | select(.id == "commit-helper@<you>-plugins") | .version' .practice/a-publish-list.json` выводит `1.0.1`.
+- [ ] Самопроверка (не проверяется автоматически): вы можете сказать, что измеряет `Δ`, и почему запуск в две ветки не оценивает «skill сработал».
 
-If a validation fails only with `--strict`, the lines above the verdict name a warning to fix, such as a missing `description` or `version` ([Output and exit codes](https://code.claude.com/docs/en/plugins/cli-reference#output-and-exit-codes)). If `results/` is listed, run `git rm -r --cached plugins/commit-helper/evals/results`, check the `.gitignore` line and commit. If the result prints `false`, run both cases again when the newest run had only one, or open its `report.html` to see which grader failed: without `--threshold`, any case below a perfect score fails ([The run exits 1 but the results look fine](https://code.claude.com/docs/en/plugin-evals#the-run-exits-1-but-the-results-look-fine)). If the version check prints nothing or `1.0.0`, check that `<you>` is replaced, push the new `version` if needed, add the marketplace, install the plugin again, and save the list before you remove the marketplace.
+Если проверка проваливается только с `--strict`, строки над вердиктом называют предупреждение, которое нужно исправить, например отсутствующие `description` или `version` ([вывод и коды завершения](https://code.claude.com/docs/en/plugins/cli-reference#output-and-exit-codes)). Если `results/` попало в список, выполните `git rm -r --cached plugins/commit-helper/evals/results`, проверьте строку в `.gitignore` и закоммитьте. Если результат выводит `false`, запустите оба случая снова, когда в новейшем запуске был только один, или откройте его `report.html`, чтобы увидеть, какой grader не прошёл: без `--threshold` любой случай ниже идеальной оценки считается проваленным ([запуск завершается с кодом 1, но результаты выглядят нормально](https://code.claude.com/docs/en/plugin-evals#the-run-exits-1-but-the-results-look-fine)). Если проверка версии ничего не выводит или выводит `1.0.0`, убедитесь, что `<you>` заменён, при необходимости отправьте новый `version`, добавьте marketplace, установите плагин снова и сохраните список до удаления marketplace.
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- `claude plugin eval` runs the plugin's skills, hooks and agents on your machine, as you, and a suite that passes says nothing about whether the plugin is safe. Pass `--allow-tools`, `--scaffold` or `--allow-real-servers` only for a plugin and suite you've read ([What a run can access](https://code.claude.com/docs/en/plugin-evals#security)).
-- Judge graders add model calls to every run, so keep them for what a free grader can't check. `--max-cost-usd` caps the run's list-price estimate, not your plan usage, and once you reach a usage limit mid-suite, later runs usually score 0 while the suite isn't marked `partial` ([Command options](https://code.claude.com/docs/en/plugin-evals#command-options), [Troubleshooting](https://code.claude.com/docs/en/plugin-evals#runs-fail-with-a-usage-limit-or-rate-limit-error-partway-through)).
-- Treat a plugin's `name` as permanent: users install, enable and configure it by `name@marketplace`, so a renamed plugin is a different plugin to every existing install. Change `displayName` for a new label ([Prepare your plugin for release](https://code.claude.com/docs/en/plugins/publish#prepare-your-plugin-for-release)). Some marketplace names are reserved, such as any starting with `claudeai-`; if the add refuses yours, pick another ([Reserved names](https://code.claude.com/docs/en/plugins/marketplace-reference#reserved-names)).
+- `claude plugin eval` запускает skills, hooks и агентов плагина на вашей машине, от вашего имени, и прошедший набор ничего не говорит о том, безопасен ли плагин. Передавайте `--allow-tools`, `--scaffold` или `--allow-real-servers` только для плагина и набора, которые вы прочитали ([к чему имеет доступ запуск](https://code.claude.com/docs/en/plugin-evals#security)).
+- Graders-судьи добавляют вызовы модели в каждый запуск, поэтому оставляйте их для того, что бесплатный grader проверить не может. `--max-cost-usd` ограничивает оценку по прайс-листу, а не расход по вашему тарифу, и если вы достигли лимита расхода посреди набора, последующие запуски обычно получают 0, а набор не помечается как `partial` ([параметры команды](https://code.claude.com/docs/en/plugin-evals#command-options), [устранение неполадок](https://code.claude.com/docs/en/plugin-evals#runs-fail-with-a-usage-limit-or-rate-limit-error-partway-through)).
+- Считайте `name` плагина постоянным: пользователи устанавливают, включают и настраивают его по `name@marketplace`, поэтому переименованный плагин для каждой существующей установки — другой плагин. Для новой подписи меняйте `displayName` ([подготовка плагина к релизу](https://code.claude.com/docs/en/plugins/publish#prepare-your-plugin-for-release)). Некоторые имена marketplace зарезервированы, например любые, начинающиеся с `claudeai-`; если добавление отклоняет ваше имя, выберите другое ([зарезервированные имена](https://code.claude.com/docs/en/plugins/marketplace-reference#reserved-names)).
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Run evals in CI](https://code.claude.com/docs/en/plugin-evals#run-evals-in-ci): `--trust-plugin`, pinned models, `--json` and a cost ceiling, for a job like the one in [GitHub Actions](../05-github-actions.md).
-- [Submit to Anthropic's directory](https://code.claude.com/docs/en/plugins/publish#submit-to-anthropics-directory): list a plugin in the catalog people browse on claude.ai.
-- [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace): auto-update, release channels, and renaming or removing a plugin.
+- [Запуск evals в CI](https://code.claude.com/docs/en/plugin-evals#run-evals-in-ci): `--trust-plugin`, закреплённые модели, `--json` и потолок стоимости — для задания вроде того, что в [GitHub Actions](../05-github-actions.md).
+- [Отправка в каталог Anthropic](https://code.claude.com/docs/en/plugins/publish#submit-to-anthropics-directory): добавьте плагин в каталог, который люди просматривают на claude.ai.
+- [Размещение и сопровождение marketplace](https://code.claude.com/docs/en/plugins/host-marketplace): автообновление, каналы релизов, переименование и удаление плагина.
 
 ---
 
-<sub>Sources: [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals) · [Publish and distribute a plugin](https://code.claude.com/docs/en/plugins/publish) · [Create a Claude Code plugin](https://code.claude.com/docs/en/plugins/create) · [Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace) · [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace) · [Plugin commands reference](https://code.claude.com/docs/en/plugins/cli-reference) · [Plugin loading reference](https://code.claude.com/docs/en/plugins/loading) · [Marketplace reference](https://code.claude.com/docs/en/plugins/marketplace-reference) · [Plugin security and trust](https://code.claude.com/docs/en/plugins/security) · GitHub: [About repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories) · GitHub CLI manual: [gh repo create](https://cli.github.com/manual/gh_repo_create), [gh repo delete](https://cli.github.com/manual/gh_repo_delete)</sub>
+<sub>Источники: [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals) · [Publish and distribute a plugin](https://code.claude.com/docs/en/plugins/publish) · [Create a Claude Code plugin](https://code.claude.com/docs/en/plugins/create) · [Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace) · [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace) · [Plugin commands reference](https://code.claude.com/docs/en/plugins/cli-reference) · [Plugin loading reference](https://code.claude.com/docs/en/plugins/loading) · [Marketplace reference](https://code.claude.com/docs/en/plugins/marketplace-reference) · [Plugin security and trust](https://code.claude.com/docs/en/plugins/security) · GitHub: [About repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories) · GitHub CLI manual: [gh repo create](https://cli.github.com/manual/gh_repo_create), [gh repo delete](https://cli.github.com/manual/gh_repo_delete)</sub>
 
-<sub>Back to the [Advanced index](../README.md) · Topic: [Plugins](../../topics/plugins.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=a-publish-plugin)</sub>
+<sub>Назад к [оглавлению продвинутого уровня](../README.md) · Тема: [Плагины](../../topics/plugins.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=a-publish-plugin)</sub>

@@ -1,69 +1,69 @@
-# Run and save a dynamic workflow <a id="run-and-save-a-dynamic-workflow"></a>
+# Запуск и сохранение динамического workflow <a id="run-and-save-a-dynamic-workflow"></a>
 
-<sub>**Advanced** · Lesson 3 of 7 · about 20 minutes, plus run time · Needs: [Choose an orchestration pattern](02-orchestration-patterns.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
+<sub>**Продвинутый уровень** · Урок 3 из 7 · около 20 минут плюс время запуска · Нужно: [Выбор схемы оркестрации](02-orchestration-patterns.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-09</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this lesson you can have Claude write a dynamic workflow for a job that fans out across many files, keep the run small, and save it as a command that takes its input from `args`.
+После урока вы умеете поручить Claude написать динамический workflow для задачи, которая расходится по многим файлам, держать запуск небольшим и сохранить его как команду, берущую входные данные из `args`.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- One of your own repositories with at least two folders that each hold a `TODO` or `FIXME` comment that still applies to the code: `git grep -n -E 'TODO|FIXME'` lists them. If yours has none, use a local clone of a project that has some; you won't push to it. Run the check from your copy of the practice template, with Node.js LTS. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
-- Usage: heavy. Each run starts several subagents, and `/deep-research` also searches the web ([Run a bundled workflow](https://code.claude.com/docs/en/workflows#run-a-bundled-workflow)). Cheap variant: skip step 3, keep each run to one small folder, and start Claude Code with `--model sonnet` as step 1 shows.
+- Один из ваших репозиториев как минимум с двумя папками, в каждой из которых есть комментарий `TODO` или `FIXME`, всё ещё относящийся к коду: `git grep -n -E 'TODO|FIXME'` их перечисляет. Если в вашем репозитории их нет, возьмите локальный клон проекта, где они есть; отправлять в него ничего не будете. Запускайте проверку из своей копии шаблона для практики, с Node.js LTS. Если ещё не сделали, подготовьте папку `.practice/` в репозитории так, как описано в [уроке 1 начального уровня](../beginner/01-install-and-look-around.md#you-need).
+- Расход: большой. Каждый запуск стартует несколько субагентов, а `/deep-research` ещё и ищет в вебе ([Run a bundled workflow](https://code.claude.com/docs/en/workflows#run-a-bundled-workflow)). Дешёвый вариант: пропустите шаг 3, ограничивайте каждый запуск одной небольшой папкой и запускайте Claude Code с `--model sonnet`, как показывает шаг 1.
 
 > [!NOTE]
-> On Pro, dynamic workflows are off until you turn them on from the **Dynamic workflows** row in `/config`, and the size guideline defaults to `small` ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows), [Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
+> На тарифе Pro динамические workflows выключены, пока вы не включите их в строке **Dynamic workflows** команды `/config`, а рекомендация по размеру по умолчанию равна `small` ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows), [Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-A dynamic workflow is a JavaScript script that Claude writes for your task. A runtime runs it in the background while your session stays responsive ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows)). The script starts the subagents and keeps their results in its own variables, so only the final answer reaches your conversation: the script, not Claude, [holds the plan](02-orchestration-patterns.md#the-idea) ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow)).
+Динамический workflow — это скрипт на JavaScript, который Claude пишет под вашу задачу. Среда выполнения запускает его в фоне, пока ваша сессия остаётся отзывчивой ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows)). Скрипт запускает субагентов и хранит их результаты в собственных переменных, поэтому в ваш диалог попадает только итоговый ответ: [план держит](02-orchestration-patterns.md#the-idea) скрипт, а не Claude ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow)).
 
-Because the plan is code, you can read it before it runs, independent agents can check each other's findings before they're reported, and you can save a run that did what you wanted as a command, `/<name>`, that can take new input from `args` each time ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow), [Pass input to a saved workflow](https://code.claude.com/docs/en/workflows#pass-input-to-a-saved-workflow)).
+Раз план — это код, вы можете прочитать его до запуска, независимые агенты могут проверить находки друг друга до того, как о них сообщат, а удачный запуск можно сохранить как команду `/<name>`, которая каждый раз может получать новые входные данные из `args` ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow), [Pass input to a saved workflow](https://code.claude.com/docs/en/workflows#pass-input-to-a-saved-workflow)).
 
-A size guideline tells Claude how many agents to aim for when it writes the script. It is advice, not a cap ([Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
+Рекомендация по размеру (size guideline) подсказывает Claude, на сколько агентов ориентироваться, когда он пишет скрипт. Это совет, а не предел ([Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. At the root of your repository, start Claude Code in Manual mode:
+1. В корне репозитория запустите Claude Code в режиме Manual:
 
    ```bash
    claude --permission-mode manual
    ```
 
-   For the cheap variant, start it on Sonnet instead:
+   Для дешёвого варианта запустите его вместо этого на Sonnet:
 
    ```bash
    claude --permission-mode manual --model sonnet
    ```
 
-   The status bar shows `⏸ manual mode on` ([Switch permission modes](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)). In Manual mode, Claude Code asks before every workflow run, unless you've told it not to ask again for that workflow in this project, so you see each plan before it starts ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)).
+   В строке состояния появляется `⏸ manual mode on` ([Switch permission modes](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)). В режиме Manual Claude Code спрашивает перед каждым запуском workflow, если только вы не сказали больше не спрашивать об этом workflow в данном проекте, так что вы видите каждый план до старта ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)).
 
-   When nothing else assigns a model, a workflow's agents run on your session's model ([Cost](https://code.claude.com/docs/en/workflows#cost)). `--model` sets it for this session only, where `/model` would also save it as your default ([CLI flags](https://code.claude.com/docs/en/cli-reference#cli-flags), [Commands](https://code.claude.com/docs/en/commands#all-commands)).
-2. Set the size guideline:
+   Когда модель ничем другим не назначена, агенты workflow работают на модели вашей сессии ([Cost](https://code.claude.com/docs/en/workflows#cost)). `--model` задаёт её только для этой сессии, тогда как `/model` сохранил бы её ещё и как модель по умолчанию ([CLI flags](https://code.claude.com/docs/en/cli-reference#cli-flags), [Commands](https://code.claude.com/docs/en/commands#all-commands)).
+2. Задайте рекомендацию по размеру:
 
    ```text
    /config workflowSizeGuideline=small
    ```
 
-   `small` asks Claude for the fewest agents; the docs suggest it "when you want to bound what a workflow spends". Claude Code keeps this choice in `~/.claude.json`, not in the repository, and it applies from your next prompt ([All settings](https://code.claude.com/docs/en/settings-reference#workflowsizeguideline), [Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
-3. Skip this step in the cheap variant. Run the bundled research workflow ([Run a bundled workflow](https://code.claude.com/docs/en/workflows#run-a-bundled-workflow)). It needs the WebSearch tool, which Amazon Bedrock doesn't offer ([WebSearch tool behavior](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior)):
+   `small` просит Claude взять наименьшее число агентов; документация советует это, «когда вы хотите ограничить расход workflow» («when you want to bound what a workflow spends»). Claude Code хранит этот выбор в `~/.claude.json`, а не в репозитории, и он действует с вашего следующего запроса ([All settings](https://code.claude.com/docs/en/settings-reference#workflowsizeguideline), [Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
+3. В дешёвом варианте пропустите этот шаг. Запустите встроенный workflow для исследований ([Run a bundled workflow](https://code.claude.com/docs/en/workflows#run-a-bundled-workflow)). Ему нужен инструмент WebSearch, которого нет в Amazon Bedrock ([WebSearch tool behavior](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior)):
 
    ```text
-   /deep-research What changed in the Node.js permission model between v20 and v22?
+   /deep-research Что изменилось в модели разрешений Node.js между v20 и v22?
    ```
 
-   Claude Code lists the planned phases and asks whether to run it. Because you ran the workflow by name, it also offers **Yes, and don't ask again for `<name>` in `<path>`** ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)). Choose **Yes, run it**. The run works in the background. Its agents use your permission rules, so in Manual mode a search or a page fetch can stop for your approval, and the run waits until you answer ([Behavior and limits](https://code.claude.com/docs/en/workflows#behavior-and-limits)). When it finishes, the report appears in your session, citing its sources. Wait for it before you go on.
-4. Ask for a workflow of your own. Replace `<folder>` with a small folder of your repository:
+   Claude Code перечисляет запланированные фазы и спрашивает, запускать ли. Раз вы запустили workflow по имени, он предлагает также пункт **Yes, and don't ask again for `<name>` in `<path>`** (да, и больше не спрашивать об этом workflow в этой папке) ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)). Выберите **Yes, run it** (да, запустить). Запуск идёт в фоне. Его агенты пользуются вашими правилами разрешений, поэтому в режиме Manual поиск или загрузка страницы могут остановиться в ожидании вашего одобрения, и запуск ждёт ответа ([Behavior and limits](https://code.claude.com/docs/en/workflows#behavior-and-limits)). Когда он закончится, отчёт появится в вашей сессии со ссылками на источники. Дождитесь его, прежде чем идти дальше.
+4. Попросите workflow для себя. Замените `<folder>` небольшой папкой своего репозитория:
 
    ```text
-   use a workflow to audit every file under <folder> for errors that are caught and then ignored, and adversarially verify each finding before reporting it
+   используй workflow, чтобы проверить каждый файл в <folder> на ошибки, которые перехватываются и затем игнорируются, и состязательно перепроверь каждую находку, прежде чем о ней сообщать
    ```
 
-   Asking for "a workflow" in your own words tells Claude to write one for this task ([Ask for a workflow in your prompt](https://code.claude.com/docs/en/workflows#ask-for-a-workflow-in-your-prompt)). Claude Code then asks whether to run it, listing the planned phases, with **Yes, run it**, **View raw script** and **No**. A script Claude wrote for this task gets no don't-ask-again option. Choose **View raw script** to read it first, or press `Ctrl+G` to open it in your editor ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)). It has the shape of the docs' example, though yours will differ:
+   Просьба о «workflow» своими словами говорит Claude написать его для этой задачи ([Ask for a workflow in your prompt](https://code.claude.com/docs/en/workflows#ask-for-a-workflow-in-your-prompt)). Затем Claude Code спрашивает, запускать ли его, перечисляя запланированные фазы, с вариантами **Yes, run it**, **View raw script** (показать исходный скрипт) и **No** (нет). У скрипта, который Claude написал для этой задачи, нет варианта «больше не спрашивать». Выберите **View raw script**, чтобы прочитать его заранее, или нажмите `Ctrl+G`, чтобы открыть его в редакторе ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)). Он выглядит как пример из документации, хотя ваш будет другим:
 
    ```javascript
    export const meta = {
@@ -82,62 +82,62 @@ A size guideline tells Claude how many agents to aim for when it writes the scri
    return audits.filter(Boolean)
    ```
 
-   `agent()` starts one subagent, `pipeline()` runs one per item in a list, and `parallel()` runs a set of agents at the same time ([What the saved script looks like](https://code.claude.com/docs/en/workflows#what-the-saved-script-looks-like)). Then choose **Yes, run it**.
-5. While it works, run `/workflows` and select your audit run; when the session has only one run, it opens that run directly. The progress view shows each phase with its agent counts. `↑` and `↓` select, `Enter` opens a phase and then an agent (its prompt, its recent tool calls and its result), `Esc` backs out, and `p` pauses the run or resumes it ([Watch the run](https://code.claude.com/docs/en/workflows#watch-the-run)). A one-line progress summary also shows in the task panel below the input box ([Run a bundled workflow](https://code.claude.com/docs/en/workflows#run-a-bundled-workflow)).
-6. When the run finishes and its findings appear in your session, run `/workflows`, select your audit run, not the `/deep-research` one, and press `s`. In the save dialog, `Tab` switches between `.claude/workflows/` in your project, shared with everyone who clones the repository once you commit it, and `~/.claude/workflows/`, available in every project but only to you. Make sure `.claude/workflows/` in your project is selected, pressing `Tab` if it isn't, then press `Enter` ([Save the workflow for reuse](https://code.claude.com/docs/en/workflows#save-the-workflow-for-reuse)). Claude Code writes the script as a `.js` file to the closest `.claude/workflows/` folder that already exists between your working directory and the repository root, or to `.claude/workflows/` at the root if there's none yet. From your next session on, the workflow runs as a command, `/<name>`, listed in `/` autocomplete beside `/deep-research` ([Bundled workflows](https://code.claude.com/docs/en/workflows#bundled-workflows)).
+   `agent()` запускает одного субагента, `pipeline()` запускает по одному на каждый элемент списка, а `parallel()` запускает набор агентов одновременно ([What the saved script looks like](https://code.claude.com/docs/en/workflows#what-the-saved-script-looks-like)). Затем выберите **Yes, run it**.
+5. Пока он работает, выполните `/workflows` и выберите свой запуск проверки; если в сессии только один запуск, команда открывает его сразу. Экран хода работы показывает каждую фазу с числом агентов. `↑` и `↓` выбирают, `Enter` открывает фазу, а затем агента (его промпт, последние вызовы инструментов и результат), `Esc` возвращает назад, а `p` приостанавливает запуск или возобновляет его ([Watch the run](https://code.claude.com/docs/en/workflows#watch-the-run)). Однострочная сводка хода работы показывается также в панели задач под полем ввода ([Run a bundled workflow](https://code.claude.com/docs/en/workflows#run-a-bundled-workflow)).
+6. Когда запуск завершится и его находки появятся в вашей сессии, выполните `/workflows`, выберите свой запуск проверки, а не запуск `/deep-research`, и нажмите `s`. В окне сохранения `Tab` переключает между `.claude/workflows/` в вашем проекте, которым пользуется каждый, кто клонирует репозиторий, после того как вы закоммитите папку, и `~/.claude/workflows/`, доступной во всех проектах, но только вам. Убедитесь, что выбрана `.claude/workflows/` в вашем проекте, при необходимости нажмите `Tab`, затем нажмите `Enter` ([Save the workflow for reuse](https://code.claude.com/docs/en/workflows#save-the-workflow-for-reuse)). Claude Code записывает скрипт как файл `.js` в ближайшую уже существующую папку `.claude/workflows/` между вашей рабочей папкой и корнем репозитория, а если её ещё нет, то в `.claude/workflows/` в корне. Со следующей сессии workflow запускается как команда `/<name>`, показанная в автодополнении `/` рядом с `/deep-research` ([Bundled workflows](https://code.claude.com/docs/en/workflows#bundled-workflows)).
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-**Brief:** build a workflow that finds every `TODO` and `FIXME` comment in a folder you name, checks whether each one still applies to the current code, and reports only the ones that do. Keep it small: have its agents check the comments in a few batches, not one agent per comment. Pick two folders that each still hold at least one `TODO` or `FIXME` that applies: a report that finds none cites no `path:line` and fails the check.
+**Задание:** создайте workflow, который находит все комментарии `TODO` и `FIXME` в указанной вами папке, проверяет, относится ли каждый из них к текущему коду, и сообщает только о тех, что относятся. Держите его небольшим: пусть его агенты проверяют комментарии несколькими пакетами, а не по агенту на комментарий. Выберите две папки, в каждой из которых есть хотя бы один актуальный `TODO` или `FIXME`: отчёт, не нашедший ни одного, не содержит ни одной ссылки `path:line` и не проходит проверку.
 
-**Acceptance criteria:**
+**Критерии приёмки:**
 
-- It's saved in `.claude/workflows/`, committed, and runs by name. Its first statement stays `export const meta`, a plain object literal with a `name` and a `description`: a variable, a function call or a spread there drops `/<name>` from `/` autocomplete ([Edit a saved script](https://code.claude.com/docs/en/workflows#edit-a-saved-script)).
-- It reads the folder from `args`, so `Run /<name> on <folder>` works on any folder without editing the script.
-- Each reported item starts with its `TODO` or `FIXME` line as a `path:line` from the repository root, then says in one line why it still applies, without citing any other `path:line`. Items that no longer apply are left out.
-- A run on one small folder shows no `Large workflow` warning in the task panel. With a guideline chosen, the warning appears when a run schedules more agents than the guideline's count ([Cost](https://code.claude.com/docs/en/workflows#cost)).
+- Он сохранён в `.claude/workflows/`, закоммичен и запускается по имени. Его первая инструкция остаётся `export const meta` — простым литералом объекта с `name` и `description`: переменная, вызов функции или spread на этом месте убирает `/<name>` из автодополнения `/` ([Edit a saved script](https://code.claude.com/docs/en/workflows#edit-a-saved-script)).
+- Он читает папку из `args`, так что `Run /<name> on <folder>` работает на любой папке без правки скрипта.
+- Каждый пункт отчёта начинается со строки с `TODO` или `FIXME` в виде `path:line` от корня репозитория, затем одной строкой объясняет, почему он ещё актуален, не ссылаясь ни на какой другой `path:line`. Пункты, которые уже не актуальны, не включаются.
+- Запуск на одной небольшой папке не показывает предупреждения `Large workflow` в панели задач. Если рекомендация выбрана, предупреждение появляется, когда запуск планирует больше агентов, чем число в рекомендации ([Cost](https://code.claude.com/docs/en/workflows#cost)).
 
-One way to get there: write the first version with a "use a workflow" request on one folder, and save it as in step 6. Then run `/workflow-authoring`, which loads the reference Claude works from when it writes scripts, and ask Claude to change the saved script so it takes the folder from `args` ([Edit a saved script](https://code.claude.com/docs/en/workflows#edit-a-saved-script)). Run `/reload-skills`, then ask `Run /<name> on <folder>`.
+Один из способов добиться этого: напишите первую версию запросом «используй workflow» на одной папке и сохраните её, как в шаге 6. Затем выполните `/workflow-authoring`, которая загружает справочник, по которому Claude пишет скрипты, и попросите Claude изменить сохранённый скрипт так, чтобы он брал папку из `args` ([Edit a saved script](https://code.claude.com/docs/en/workflows#edit-a-saved-script)). Выполните `/reload-skills`, затем попросите `Run /<name> on <folder>`.
 
-When the script meets the other criteria, commit it. Then run it by name on two different folders, without editing it between the runs. After each run, ask Claude to save the report:
+Когда скрипт удовлетворяет остальным критериям, закоммитьте его. Затем запустите его по имени на двух разных папках, не правя между запусками. После каждого запуска попросите Claude сохранить отчёт:
 
 ```text
-Save that report to .practice/a-3-run1.md: the folder you ran it on as the first line, then one line per item that still applies, starting with its path:line, and nothing else.
+Сохрани этот отчёт в .practice/a-3-run1.md: первой строкой — папка, на которой ты его запускал, затем по одной строке на каждый актуальный пункт, начиная с path:line, и больше ничего.
 ```
 
-Use `.practice/a-3-run2.md` for the second folder.
+Для второй папки используйте `.practice/a-3-run2.md`.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Вы закончили, когда выполнено всё из этого списка:
 
-- [ ] A committed script in `.claude/workflows/` has a literal `export const meta`, with a `name` and a `description`, as its first statement, and reads its input from `args`: `git ls-tree -r --name-only HEAD .claude/workflows` lists it.
-- [ ] `.practice/a-3-run1.md` and `.practice/a-3-run2.md` name two different folders on their first lines, and each cites at least one `path:line` inside its folder.
-- [ ] Every cited `path:line` exists and holds `TODO` or `FIXME`.
-- [ ] Self-check (not tested): you ran the saved workflow by name for both reports without editing it between the runs, and neither run showed a `Large workflow` warning in the task panel.
+- [ ] Закоммиченный скрипт в `.claude/workflows/` первой инструкцией содержит литерал `export const meta` с `name` и `description` и читает входные данные из `args`: `git ls-tree -r --name-only HEAD .claude/workflows` его перечисляет.
+- [ ] В `.practice/a-3-run1.md` и `.practice/a-3-run2.md` первыми строками указаны две разные папки, и каждый отчёт ссылается как минимум на один `path:line` внутри своей папки.
+- [ ] Каждый указанный `path:line` существует и содержит `TODO` или `FIXME`.
+- [ ] Самопроверка (не тестируется): оба отчёта вы получили, запустив сохранённый workflow по имени и не правя его между запусками, и ни один запуск не показал предупреждения `Large workflow` в панели задач.
 
-Run `npm run check -- a-3 --dir <your repo>` from your practice copy.
+Запустите `npm run check -- a-3 --dir <your repo>` из своей учебной копии.
 
-If the first item fails, check that the script is committed (`git check-ignore -v .claude/workflows/<file>.js` names any ignore rule that hides it; add it with `git add -f` and commit it) and that it reads `args`. If a report cites a `path:line` outside its folder, or none inside it, make sure the script reads the folder from `args` and reports only files inside it, start `claude` at the repository root so paths start there, and run it again on a folder where a `TODO` or `FIXME` still applies. If a cited line holds no `TODO` or `FIXME`, either the report cites other lines in its reasons or the file changed after the run: ask Claude to cite only the `TODO` and `FIXME` lines, or run the workflow again and save the new report with the prompt above.
+Если не проходит первый пункт, проверьте, что скрипт закоммичен (`git check-ignore -v .claude/workflows/<file>.js` называет любое правило игнорирования, которое его скрывает; добавьте файл через `git add -f` и закоммитьте), и что он читает `args`. Если отчёт ссылается на `path:line` вне своей папки или ни на один внутри неё, убедитесь, что скрипт читает папку из `args` и сообщает только о файлах внутри неё, запустите `claude` в корне репозитория, чтобы пути начинались оттуда, и запустите его снова на папке, где `TODO` или `FIXME` ещё актуален. Если в указанной строке нет `TODO` или `FIXME`, то либо отчёт ссылается на другие строки в своих пояснениях, либо файл изменился после запуска: попросите Claude ссылаться только на строки с `TODO` и `FIXME` или запустите workflow заново и сохраните новый отчёт приведённым выше запросом.
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- In auto mode, Claude Code asks only before your first workflow launch: any **Yes** records consent in your user settings, and later launches start without asking. A workflow's agents use your permission rules, and when your session is in accept-edits, auto or bypass mode, they run in that same mode ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs), [Permission modes](https://code.claude.com/docs/en/sub-agents#permission-modes)). Read each script before you approve it, and stay in Manual mode for a workflow you haven't read.
-- A run can use meaningfully more tokens than the same task in conversation, and it counts toward your plan's usage and rate limits. Try a workflow on one small folder first, and ask Claude to use a smaller model for stages that don't need the strongest one. `/workflows` shows each agent's token usage as the run goes, and `x` on a selected run stops it. When a run grows unusually large, its progress line shows a `Large workflow` warning. Once you choose a size guideline, its agent count replaces the warning's built-in agent threshold, and a large projected token total can still trigger it. The warning doesn't pause or limit the run ([Cost](https://code.claude.com/docs/en/workflows#cost)).
-- `p` pauses and resumes a run, but a run you stopped doesn't resume with `p`: ask Claude to relaunch it with the same script, in the same session or one you reopen with `claude --resume`. Agents that were still running when you stopped start over ([Resume after a pause](https://code.claude.com/docs/en/workflows#resume-after-a-pause)). An agent whose output stops for too long also starts over on its own, and `/workflows` adds `(retry 1)` to its name ([When an agent stalls and restarts](https://code.claude.com/docs/en/workflows#when-an-agent-stalls-and-restarts)). At v2.1.285, an agent also starts over from its prompt when its connection stalls for a few minutes mid-response (fixed in v2.1.286) or your Mac wakes from sleep (fixed in v2.1.290) ([CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)), so keep the machine awake while a run works.
+- В auto mode (автоматическом режиме) Claude Code спрашивает только перед первым запуском workflow: любой ответ **Yes** записывает согласие в ваши пользовательские настройки, и последующие запуски стартуют без вопросов. Агенты workflow пользуются вашими правилами разрешений, а когда ваша сессия в режиме accept-edits, auto или bypass, они работают в том же режиме ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs), [Permission modes](https://code.claude.com/docs/en/sub-agents#permission-modes)). Читайте каждый скрипт, прежде чем одобрить его, и оставайтесь в режиме Manual для workflow, который не читали.
+- Запуск может потратить заметно больше токенов, чем та же задача в диалоге, и идёт в лимиты вашего тарифа. Сначала пробуйте workflow на одной небольшой папке и просите Claude брать модель поменьше для этапов, которым не нужна самая сильная. `/workflows` показывает расход токенов каждого агента по ходу запуска, а `x` на выбранном запуске останавливает его. Когда запуск становится необычно большим, в его строке хода работы появляется предупреждение `Large workflow`. Когда вы выбрали рекомендацию по размеру, её число агентов заменяет встроенный порог агентов в предупреждении, а большая прогнозируемая сумма токенов всё равно может его вызвать. Предупреждение не приостанавливает и не ограничивает запуск ([Cost](https://code.claude.com/docs/en/workflows#cost)).
+- `p` приостанавливает и возобновляет запуск, но остановленный запуск `p` не возобновляет: попросите Claude перезапустить его с тем же скриптом, в той же сессии или в сессии, которую вы снова открыли командой `claude --resume`. Агенты, которые ещё работали в момент остановки, начинают заново ([Resume after a pause](https://code.claude.com/docs/en/workflows#resume-after-a-pause)). Агент, вывод которого слишком долго не появляется, тоже сам начинает заново, и `/workflows` добавляет `(retry 1)` к его имени ([When an agent stalls and restarts](https://code.claude.com/docs/en/workflows#when-an-agent-stalls-and-restarts)). В v2.1.285 агент также начинает заново с исходного промпта, если соединение зависает на несколько минут посреди ответа (исправлено в v2.1.286) или ваш Mac выходит из сна (исправлено в v2.1.290) ([CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)), поэтому не давайте компьютеру засыпать, пока идёт запуск.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [This guide's own saved workflow](../../.claude/workflows/stale-docs-audit.js): a real script that reads `args`, groups its agents into phases, and has separate agents verify each claim before it's reported.
-- [Example workflow prompts](https://code.claude.com/docs/en/workflows#example-workflow-prompts): more task shapes, such as migrating many files or fixing until a check passes.
-- [When a run hits your usage limit](https://code.claude.com/docs/en/workflows#when-a-run-hits-your-usage-limit): when a run waits for your limit to reset instead of failing.
+- [Собственный сохранённый workflow этого руководства](../../.claude/workflows/stale-docs-audit.js): настоящий скрипт, который читает `args`, группирует агентов по фазам и поручает отдельным агентам проверять каждое утверждение, прежде чем о нём сообщить.
+- [Example workflow prompts](https://code.claude.com/docs/en/workflows#example-workflow-prompts): другие виды задач, например миграция многих файлов или правка до тех пор, пока проверка не пройдёт.
+- [When a run hits your usage limit](https://code.claude.com/docs/en/workflows#when-a-run-hits-your-usage-limit): когда запуск ждёт сброса лимита, а не завершается с ошибкой.
 
 ---
 
-<sub>Sources: [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [Create custom subagents](https://code.claude.com/docs/en/sub-agents) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Commands](https://code.claude.com/docs/en/commands) · [All settings](https://code.claude.com/docs/en/settings-reference) · [Tools reference](https://code.claude.com/docs/en/tools-reference) · [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)</sub>
+<sub>Источники: [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [Create custom subagents](https://code.claude.com/docs/en/sub-agents) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Commands](https://code.claude.com/docs/en/commands) · [All settings](https://code.claude.com/docs/en/settings-reference) · [Tools reference](https://code.claude.com/docs/en/tools-reference) · [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)</sub>
 
-<sub>← [Choose an orchestration pattern](02-orchestration-patterns.md) · [Advanced index](README.md) · [Script Claude Code with `claude -p`](04-headless.md) → · Topic: [Subagents and parallel work](../topics/subagents-and-parallel-work.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=a-3)</sub>
+<sub>← [Выбор схемы оркестрации](02-orchestration-patterns.md) · [Оглавление продвинутого уровня](README.md) · [Скрипты с Claude Code: `claude -p`](04-headless.md) → · Тема: [Субагенты и параллельная работа](../topics/subagents-and-parallel-work.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=a-3)</sub>

@@ -1,83 +1,83 @@
-# Advanced <a id="advanced"></a>
+# Продвинутый уровень <a id="advanced"></a>
 
-<sub>**Advanced** · about 3 hours 20 minutes, plus run time · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>**Продвинутый уровень** · около 3 часов 20 минут плюс время запуска · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-Beyond one session: parallel sessions, orchestration, unattended runs in scripts and CI, a setup your team shares, and limits that keep an autonomous run safe.
+За рамками одной сессии: параллельные сессии, оркестрация, автономные запуски в скриптах и CI, общая для команды настройка и ограничения, которые делают автономный запуск безопасным.
 
 <a id="youre-ready-for-this-level-if-you-can"></a>
-## You're ready for this level if you can
+## Вы готовы к этому уровню, если умеете
 
-- [ ] Write a project skill that runs by name and loads on its own when it applies.
-- [ ] Write a hook that enforces a rule, and show it firing.
-- [ ] Delegate to a custom subagent with limited tools.
-- [ ] Add an MCP server at project scope, and install a plugin from an Anthropic marketplace.
-- [ ] Put permission rules in the right scope, turn on the sandbox, and pick the model and effort for a task.
-- [ ] Organize project memory, and find out what loaded when an instruction isn't followed.
+- [ ] Написать проектный skill (навык), который запускается по имени и сам подгружается, когда подходит.
+- [ ] Написать hook (хук), который обеспечивает соблюдение правила, и показать, как он срабатывает.
+- [ ] Передать задачу собственному субагенту с ограниченным набором инструментов.
+- [ ] Добавить MCP-сервер на уровне проекта и установить плагин из marketplace (каталога плагинов) Anthropic.
+- [ ] Разложить правила разрешений по нужным уровням настроек, включить песочницу (sandbox) и выбрать модель и effort (уровень усилий) под задачу.
+- [ ] Организовать память проекта и выяснить, что загрузилось, если инструкция не выполняется.
 
 <a id="practice"></a>
-## Practice
+## Практика
 
-Practice in your own repository, and run each check from your copy of the [practice template](https://github.com/wesammustafa/claude-code-practice) as `npm run check -- <lesson-id> --dir <your repo>`. The GitHub Actions lesson and the capstone are the exceptions: they run in a separate template copy, which you tear down afterwards so no workflow or secret is left behind.
+Практикуйтесь в своём репозитории, а каждую проверку запускайте из своей копии [шаблона для практики](https://github.com/runowata/claude-code-practice-ru) командой `npm run check -- <lesson-id> --dir <your repo>`. Исключение — урок про GitHub Actions и итоговый проект: они выполняются в отдельной копии шаблона, которую после работы удаляют, чтобы не осталось ни workflow, ни секрета.
 
-A copy you made for an earlier level may not have the Advanced checks: `npm run check` then lists no `a-` lessons. Bring them in from the template, in your copy:
+В копии, созданной для предыдущего уровня, могут не оказаться проверок продвинутого уровня: тогда `npm run check` не покажет ни одного урока с префиксом `a-`. Подтяните их из шаблона в своей копии:
 
 ```bash
-git fetch https://github.com/wesammustafa/claude-code-practice main
+git fetch https://github.com/runowata/claude-code-practice-ru main
 git checkout FETCH_HEAD -- checks capstone
 git commit -m "Add the Advanced checks"
 ```
 
 <a id="lessons"></a>
-## Lessons
+## Уроки
 
-1. [Parallel sessions with worktrees](01-parallel-sessions.md)
-2. [Choose an orchestration pattern](02-orchestration-patterns.md)
-3. [Run and save a dynamic workflow](03-dynamic-workflows.md)
-4. [Script Claude Code with `claude -p`](04-headless.md)
+1. [Параллельные сессии с worktrees](01-parallel-sessions.md)
+2. [Выбор схемы оркестрации](02-orchestration-patterns.md)
+3. [Запуск и сохранение динамического workflow](03-dynamic-workflows.md)
+4. [Скрипты с Claude Code: `claude -p`](04-headless.md)
 5. [GitHub Actions](05-github-actions.md)
-6. [Share your setup with a team](06-share-your-setup.md)
-7. [Put bounds on autonomous runs](07-bounded-runs.md)
+6. [Делимся настройкой с командой](06-share-your-setup.md)
+7. [Границы для автономных запусков](07-bounded-runs.md)
 
-Each lesson takes 10 to 20 minutes, plus the time an agent run takes.
+Каждый урок занимает от 10 до 20 минут плюс время работы агента.
 
 <a id="capstone"></a>
-## Capstone
+## Итоговый проект
 
-[Add CI review your team can share](capstone.md): in a new template copy, two parallel worktree sessions, a bounded `claude -p` review script, a team marketplace, a saved dynamic workflow and a pull request review workflow with limits. Then tear down the workflow, the secret and, with an API key, the key.
+[Ревью в CI, которым пользуется вся команда](capstone.md): в новой копии шаблона — две параллельные сессии в worktrees, ограниченный скрипт ревью на `claude -p`, marketplace команды, сохранённый динамический workflow и workflow ревью pull request с ограничениями. В конце вы убираете workflow, секрет и, если использовали API-ключ, сам ключ.
 
 <a id="by-the-end-of-this-level-you-can"></a>
-## By the end of this level you can
+## После уровня вы умеете
 
-- [ ] Run parallel sessions in worktrees and merge their work.
-- [ ] Choose between subagents, a workflow or a team by need and cost, and run a dynamic workflow.
-- [ ] Write a `claude -p` script and a GitHub Actions workflow.
-- [ ] Share a setup as committed config and a team marketplace plugin.
-- [ ] Bound an autonomous run with least privilege, the sandbox, turn or spend limits, a review gate and a cost estimate.
+- [ ] Запускать параллельные сессии в worktrees и сливать их работу.
+- [ ] Выбирать между субагентами, workflow и командой агентов по потребности и стоимости и запускать динамический workflow.
+- [ ] Писать скрипт на `claude -p` и workflow для GitHub Actions.
+- [ ] Делиться настройкой как закоммиченным конфигом и плагином из marketplace команды.
+- [ ] Ограничивать автономный запуск: минимум прав, песочница, лимиты на число ходов или расходы, этап проверки человеком и оценка стоимости.
 
 <a id="electives"></a>
-## Electives
+## Дополнительные уроки
 
-Optional lessons beside the core path:
+Необязательные уроки рядом с основным путём:
 
-- [Agent teams](electives/agent-teams.md): a lead and teammates that message each other, staffed from your own subagent definitions.
-- [Agent view](electives/agent-view.md): hand tasks to background sessions from one screen, and step in only when one needs you.
-- [`/goal`, `/loop` and routines](electives/goal-loop-routines.md): keep Claude working toward a condition, on an interval, or on a schedule in the cloud.
-- [Testing and publishing a plugin](electives/publish-a-plugin.md): check a plugin's files and behavior, then publish it in your own marketplace.
-- [Dev containers](electives/dev-containers.md): run Claude Code in a container with a firewall, keep your sign-in, and let it work unattended.
+- [Agent teams (команды агентов)](electives/agent-teams.md) (команды агентов): ведущий и участники, которые переписываются друг с другом; их набирают из ваших собственных определений субагентов.
+- [Agent view (экран агентов)](electives/agent-view.md): передавайте задачи фоновым сессиям с одного экрана и вмешивайтесь, только когда сессии нужны вы.
+- [`/goal`, `/loop` и routines](electives/goal-loop-routines.md): пусть Claude продолжает работу, пока не выполнится условие, с заданным интервалом или по расписанию в облаке.
+- [Тестирование и публикация плагина](electives/publish-a-plugin.md): проверьте файлы и поведение плагина, затем опубликуйте его в своём marketplace.
+- [Dev-контейнеры](electives/dev-containers.md): запускайте Claude Code в контейнере с межсетевым экраном, сохраняйте вход в аккаунт и позволяйте ему работать без присмотра.
 
 <a id="official-companions"></a>
-## Official companions
+## Официальные материалы
 
-- [Run agents in parallel](https://code.claude.com/docs/en/agents): Anthropic's comparison of the ways Claude Code takes on several tasks at once.
-- [The AI-native SDLC playbook](https://academy.claude.com/courses/ai-native-sdlc-playbook): Claude Academy's course on reshaping a team's development lifecycle around AI.
+- [Run agents in parallel](https://code.claude.com/docs/en/agents): сравнение от Anthropic способов, которыми Claude Code берётся за несколько задач одновременно.
+- [The AI-native SDLC playbook](https://academy.claude.com/courses/ai-native-sdlc-playbook): курс Claude Academy о том, как перестроить жизненный цикл разработки в команде под ИИ.
 
 <a id="beyond-this-guide"></a>
-## Beyond this guide
+## За пределами руководства
 
-[Beyond this guide](beyond-this-guide.md): building your own agents and MCP servers, and running and rolling out Claude Code for an organization.
+[За пределами руководства](beyond-this-guide.md): создание собственных агентов и MCP-серверов, запуск и внедрение Claude Code в организации.
 
 ---
 
-<sub>Sources: [Run agents in parallel](https://code.claude.com/docs/en/agents) · [The AI-native SDLC playbook](https://academy.claude.com/courses/ai-native-sdlc-playbook)</sub>
+<sub>Источники: [Run agents in parallel](https://code.claude.com/docs/en/agents) · [The AI-native SDLC playbook](https://academy.claude.com/courses/ai-native-sdlc-playbook)</sub>
 
-<sub>Up: [Claude Code: Everything You Need to Know](../../README.md#pick-your-level)</sub>
+<sub>Вверх: [Claude Code: всё, что нужно знать](../../README.md#pick-your-level)</sub>

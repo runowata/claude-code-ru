@@ -1,29 +1,29 @@
-# Customize the status line <a id="customize-the-status-line"></a>
+# Настраиваем status line <a id="customize-the-status-line"></a>
 
-<sub>**Intermediate** · Elective · about 15 minutes · Needs: [Pick the model and effort](../03-model-and-effort.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
+<sub>**Средний уровень** · Дополнительный урок · около 15 минут · Нужно: [Выбираем модель и effort](../03-model-and-effort.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-06</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this Elective you can give Claude Code a status line of your own, from a script that shows the model, the folder and how full the context window is.
+После этого дополнительного урока вы умеете задать Claude Code собственную status line (настраиваемую строку внизу экрана) скриптом, который показывает модель, папку и степень заполнения окна контекста.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- `jq`, and macOS or Linux: the script is bash. On Windows, [Windows configuration](https://code.claude.com/docs/en/statusline#windows-configuration) has PowerShell and Git Bash versions.
-- Usage: none. The status line runs on your machine and uses no API tokens.
+- `jq` и macOS или Linux: скрипт написан на bash. Для Windows в разделе [Windows configuration](https://code.claude.com/docs/en/statusline#windows-configuration) есть версии для PowerShell и Git Bash.
+- Расход: нет. Status line работает на вашем компьютере и не тратит токены API.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-The [status line](https://code.claude.com/docs/en/statusline) is a bar at the bottom of Claude Code that shows whatever your script prints. Claude Code runs the script with JSON about the session on stdin, such as the model's name and how full the context window is. It runs when the session starts, and again on events such as each new message from Claude.
+[Status line](https://code.claude.com/docs/en/statusline) — строка внизу Claude Code, в которой показывается всё, что выводит ваш скрипт. Claude Code запускает скрипт, передавая в stdin JSON о сессии, например название модели и степень заполнения окна контекста. Скрипт запускается при старте сессии и снова при событиях, например при каждом новом сообщении от Claude.
 
-There are two ways to set one up. `/statusline` followed by a description asks Claude Code to write the script and the setting for you. Or you write the script yourself and add a `statusLine` setting that runs it, which is what this Elective does, so you know what each part does.
+Настроить её можно двумя способами. `/statusline` с описанием просит Claude Code самому написать скрипт и настройку. Или вы пишете скрипт сами и добавляете настройку `statusLine`, которая его запускает; именно это делается в этом дополнительном уроке, чтобы вы понимали, за что отвечает каждая часть.
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. Save this script as `~/.claude/statusline.sh`, then run `chmod +x ~/.claude/statusline.sh`:
+1. Сохраните этот скрипт как `~/.claude/statusline.sh`, затем выполните `chmod +x ~/.claude/statusline.sh`:
 
    ```bash
    #!/bin/bash
@@ -34,14 +34,14 @@ There are two ways to set one up. `/statusline` followed by a description asks C
    echo "[$MODEL] ${DIR##*/} | ${PCT}% context"
    ```
 
-2. Test it without Claude Code, with the kind of JSON it receives:
+2. Проверьте его без Claude Code на таком JSON, какой он получает:
 
    ```bash
    echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"/home/me/linkcheck"},"context_window":{"used_percentage":12.5}}' | ~/.claude/statusline.sh
    ```
 
-   It prints `[Opus] linkcheck | 12% context`.
-3. Add the setting to `~/.claude/settings.json`, your personal file, beside any keys already there:
+   Он выведет `[Opus] linkcheck | 12% context`.
+3. Добавьте настройку в `~/.claude/settings.json` — ваш личный файл — рядом с уже имеющимися там ключами:
 
    ```json
    "statusLine": {
@@ -50,38 +50,38 @@ There are two ways to set one up. `/statusline` followed by a description asks C
    }
    ```
 
-4. Start `claude` and send a prompt. The bar shows your line, and the percentage grows as the conversation does. Claude Code runs it only in a folder whose trust dialog you accepted.
+4. Запустите `claude` и отправьте запрос. В строке появится ваш текст, а процент будет расти вместе с разговором. Claude Code запускает скрипт только в папке, для которой вы приняли окно доверия.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-Add the current git branch to the line. In the script, before the `echo`, add:
+Добавьте в строку текущую ветку git. В скрипте перед `echo` добавьте:
 
 ```bash
 BRANCH=$(git -C "$DIR" branch --show-current 2>/dev/null)
 ```
 
-Then add ` | $BRANCH` to the `echo`, test the script again with the JSON from step 2, using a `current_dir` that is a git repository, and watch the bar in a session.
+Затем добавьте ` | $BRANCH` в `echo`, снова проверьте скрипт на JSON из шага 2, указав в `current_dir` репозиторий git, и посмотрите на строку в сессии.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Вы закончили, когда выполнено всё из этого списка:
 
-- [ ] `jq .statusLine ~/.claude/settings.json` shows your command.
-- [ ] Piping the step 2 JSON, with a `current_dir` in a git repository, into your script prints the model, the folder, the percentage and the branch.
-- [ ] Self-check (not tested): in a session, the bar shows your line.
+- [ ] `jq .statusLine ~/.claude/settings.json` показывает вашу команду.
+- [ ] Если передать скрипту JSON из шага 2, где `current_dir` указывает на репозиторий git, он выводит модель, папку, процент и ветку.
+- [ ] Самопроверка (не проверяется автоматически): в сессии строка показывает ваш текст.
 
-If the bar stays empty, run the script with the JSON from step 2: a script that exits with an error or prints nothing leaves the bar blank ([Troubleshooting](https://code.claude.com/docs/en/statusline#troubleshooting)). Then check that it is executable, with `chmod +x`, and that you accepted the folder's trust dialog.
+Если строка остаётся пустой, запустите скрипт с JSON из шага 2: скрипт, который завершается с ошибкой или ничего не выводит, оставляет строку пустой ([Troubleshooting](https://code.claude.com/docs/en/statusline#troubleshooting)). Затем проверьте, что он исполняемый (`chmod +x`) и что вы приняли окно доверия к папке.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Available data](https://code.claude.com/docs/en/statusline#available-data): every field your script receives, such as cost, rate limits and the session's name.
-- [Examples](https://code.claude.com/docs/en/statusline#examples): colors, several lines, clickable links and cached git status.
+- [Available data](https://code.claude.com/docs/en/statusline#available-data) (доступные данные): все поля, которые получает ваш скрипт, например стоимость, лимиты и название сессии.
+- [Examples](https://code.claude.com/docs/en/statusline#examples) (примеры): цвета, несколько строк, кликабельные ссылки и кэшированное состояние git.
 
 ---
 
-<sub>Sources: [Customize your status line](https://code.claude.com/docs/en/statusline)</sub>
+<sub>Источники: [Customize your status line](https://code.claude.com/docs/en/statusline)</sub>
 
-<sub>Back to the [Intermediate index](../README.md) · Topic: [Models, effort and cost](../../topics/models-effort-and-cost.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=i-status-line)</sub>
+<sub>Назад к [оглавлению Среднего уровня](../README.md) · Тема: [Модели, effort и стоимость](../../topics/models-effort-and-cost.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=i-status-line)</sub>

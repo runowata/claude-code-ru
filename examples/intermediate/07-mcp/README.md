@@ -1,29 +1,29 @@
-# MCP server for Intermediate lesson 7 <a id="mcp-server-for-intermediate-lesson-7"></a>
+# MCP-сервер для урока 7 Среднего уровня <a id="mcp-server-for-intermediate-lesson-7"></a>
 
-`dot-mcp.json` adds [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) (Vendor: Google, Apache-2.0) to a project, for the Intermediate lesson "Connect a tool with MCP". It lets Claude open pages in Chrome, read console messages and network requests, take screenshots and record performance traces.
+`dot-mcp.json` добавляет в проект [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) (производитель: Google, Apache-2.0) для урока Среднего уровня «Подключение инструмента через MCP». Он позволяет Claude открывать страницы в Chrome, читать сообщения консоли и сетевые запросы, делать скриншоты и записывать трассы производительности.
 
-Copy it to `.mcp.json` at your project's root, the file Claude Code reads project-scope servers from ([Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp#project-scope)):
+Скопируйте его в `.mcp.json` в корне проекта — из этого файла Claude Code читает серверы уровня проекта ([Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp#project-scope)):
 
 ```bash
 cp <path-to-this-folder>/dot-mcp.json .mcp.json
 ```
 
 `dot-mcp.json`:
-- **What:** one stdio server, `chrome-devtools`, started with `npx` at the pinned version `chrome-devtools-mcp@1.10.1`.
-- **When:** in an interactive session, Claude Code asks you to approve a project's servers before it uses them. In a `claude -p` run it loads them without asking ([Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp#project-scope)).
-- **Side effects:** `npx` downloads the package from npm the first time. The server starts Chrome when Claude first uses a browser tool. `--isolated` gives that browser a temporary profile, deleted when the browser closes, so no cookies or logins carry over between sessions ([upstream advanced usage](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/advanced-usage.md#user-data-directory)).
-- **Requires:** Node.js LTS with npm, and Chrome, current stable or newer ([upstream requirements](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md#requirements)).
-- **Remove:** delete the `chrome-devtools` entry from `.mcp.json`, or the file.
+- **Что:** один stdio-сервер `chrome-devtools`, запускаемый через `npx` с закреплённой версией `chrome-devtools-mcp@1.10.1`.
+- **Когда:** в интерактивной сессии Claude Code просит вас одобрить серверы проекта, прежде чем их использовать. В запуске `claude -p` он загружает их без вопросов ([Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp#project-scope)).
+- **Побочные эффекты:** при первом запуске `npx` скачивает пакет из npm. Сервер запускает Chrome, когда Claude впервые использует инструмент браузера. `--isolated` даёт этому браузеру временный профиль, который удаляется при закрытии браузера, так что cookies и входы не переходят из сессии в сессию ([upstream advanced usage](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/advanced-usage.md#user-data-directory)).
+- **Требуется:** Node.js LTS с npm и Chrome текущей стабильной версии или новее ([upstream requirements](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md#requirements)).
+- **Как удалить:** удалите запись `chrome-devtools` из `.mcp.json` или весь файл.
 
 > [!WARNING]
-> Data that leaves your machine. By default the server sends usage statistics to Google, may send the URLs of performance traces to Google's CrUX API, and checks npm for updates ([upstream README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md)). This config turns all three off with `--no-usage-statistics`, `--no-performance-crux` and `CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS`. The pages Claude opens are still fetched from the web as in any browser, and the server exposes everything in that browser to Claude: don't open pages with data you wouldn't paste into a session.
+> Данные, которые покидают ваш компьютер. По умолчанию сервер отправляет статистику использования в Google, может отправлять URL трасс производительности в Google CrUX API и проверяет обновления в npm ([upstream README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md)). Эта конфигурация отключает все три потока через `--no-usage-statistics`, `--no-performance-crux` и `CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS`. Страницы, которые открывает Claude, по-прежнему загружаются из сети, как в любом браузере, а сервер открывает Claude всё, что есть в этом браузере: не открывайте страницы с данными, которые не вставили бы в сессию.
 
-Third-party: it can run code on your machine or give Claude new tools. Review it before installing; this guide does not audit it.
+Сторонний инструмент: он может выполнять код на вашем компьютере или давать Claude новые инструменты. Просмотрите его перед установкой; это руководство его не проверяет.
 
-Listings checked against the listing bar on 2026-10-06.
+Листинги сверены с планкой листингов 2026-10-06.
 
-Smoke test, without Claude or the network: `bash test.sh`.
+Смоук-тест без Claude и без сети: `bash test.sh`.
 
-Tested in Claude Code v2.1.285 (stable) on macOS, 2026-10-06
+Проверено на Claude Code v2.1.285 (stable) на macOS, 2026-10-06
 
-Sources: [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp), [Chrome DevTools MCP README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md), [Chrome DevTools MCP configuration](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/configuration.md), [Chrome DevTools MCP advanced usage](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/advanced-usage.md)
+Источники: [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp), [Chrome DevTools MCP README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md), [Chrome DevTools MCP configuration](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/configuration.md), [Chrome DevTools MCP advanced usage](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/advanced-usage.md)

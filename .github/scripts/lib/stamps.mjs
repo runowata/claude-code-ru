@@ -1,7 +1,8 @@
 // The Stamp, the stamped set and the CHANGELOG's edition entries.
 
 // `Verified against Claude Code vX.Y.Z (stable) on YYYY-MM-DD`
-export const STAMP = /Verified against Claude Code v(\d+)\.(\d+)\.(\d+) \(stable\) on (\d{4}-\d{2}-\d{2})/;
+// Russian translation: `Проверено на Claude Code vX.Y.Z (stable) YYYY-MM-DD` (English form still accepted).
+export const STAMP = /(?:Verified against|Проверено на) Claude Code v(\d+)\.(\d+)\.(\d+) \(stable\) (?:on )?(\d{4}-\d{2}-\d{2})/;
 
 // Pages from before the rework that are not yet split. They carry a
 // "From the previous edition, not yet re-verified" note instead of a Stamp.
@@ -54,7 +55,7 @@ export function readStamp(markdown) {
   if (line === null) return { error: 'no H1, so no header line to hold the Stamp' };
   const m = line.match(STAMP);
   if (!m) {
-    return /Verified against/i.test(line)
+    return /Verified against|Проверено на/i.test(line)
       ? { error: `malformed Stamp in the header line; expected "Verified against Claude Code vX.Y.Z (stable) on YYYY-MM-DD": ${line.trim()}` }
       : { error: 'no Stamp in the line under the H1' };
   }
@@ -79,7 +80,7 @@ export function editions(changelog) {
     } else if (/^## /.test(line)) {
       current = null;
     } else if (current && !current.version) {
-      const v = line.match(/Verified against Claude Code v(\d+\.\d+\.\d+) \(stable\)/);
+      const v = line.match(/(?:Verified against|Проверено на) Claude Code v(\d+\.\d+\.\d+) \(stable\)/);
       if (v) current.version = v[1];
     }
   }

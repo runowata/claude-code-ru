@@ -1,47 +1,47 @@
-# Organize project memory and see what loaded <a id="organize-project-memory-and-see-what-loaded"></a>
+# Организуем память проекта и смотрим, что загрузилось <a id="organize-project-memory-and-see-what-loaded"></a>
 
-<sub>**Intermediate** · Lesson 2 of 8 · about 20 minutes · Needs: [Turn a repeated workflow into a skill](01-first-skill.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
+<sub>**Средний уровень** · Урок 2 из 8 · около 20 минут · Нужно: [Превращаем повторяющийся процесс в skill](01-first-skill.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-06</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this lesson you can split a project's instructions into imports and scoped rules, and find out which instruction files loaded when Claude doesn't follow one.
+После урока вы умеете разделить инструкции проекта на импорты и правила с областью действия, а также выяснить, какие файлы с инструкциями загрузились, если Claude не выполняет одну из них.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- One of your own repositories with a committed `CLAUDE.md`, as [Beginner lesson 5](../beginner/05-project-memory.md) leaves it, and your copy of the practice template with Node.js LTS: the check runs from the copy. To practice in the template copy instead, use it for both. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
-- `jq`, for the load log in the Worked example.
-- Usage: light.
+- Один из ваших репозиториев с закоммиченным `CLAUDE.md` — в том виде, как его оставляет [урок 5 начального уровня](../beginner/05-project-memory.md), — а также ваша учебная копия шаблона для практики с Node.js LTS: проверка запускается из копии. Если практикуетесь в самой учебной копии, используйте её для обоих целей. Если вы ещё не сделали этого, подготовьте в репозитории папку `.practice/`, как описано в [уроке 1 начального уровня](../beginner/01-install-and-look-around.md#you-need).
+- `jq` — для журнала загрузок в разборе на примере.
+- Расход: небольшой.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-A long `CLAUDE.md` is hard to maintain, and every line of it loads into every session. Two tools split it up ([How Claude remembers your project](https://code.claude.com/docs/en/memory)):
+Длинный `CLAUDE.md` трудно поддерживать, а каждая его строка загружается в каждую сессию. Разделить его помогают два инструмента ([How Claude remembers your project](https://code.claude.com/docs/en/memory)):
 
-- An **import**, a line such as `@docs/conventions.md` in `CLAUDE.md`, loads another file along with it. It organizes the file but saves no context.
-- A **rule** is a Markdown file in `.claude/rules/`. With `paths:` frontmatter it loads only when Claude works on a matching file.
+- **Импорт** — строка вроде `@docs/conventions.md` в `CLAUDE.md` — загружает другой файл вместе с ним. Он упорядочивает файл, но контекст не экономит.
+- **Правило** (rule) — Markdown-файл в `.claude/rules/`. С frontmatter `paths:` он загружается только тогда, когда Claude работает с подходящим файлом.
 
-| Instruction file | Loads |
+| Файл с инструкциями | Когда загружается |
 |---|---|
-| `CLAUDE.md` at the project root, and a rule without `paths:` | When the session starts |
-| A file named in an `@path` import | With the file that imports it |
-| A rule with `paths:` | When Claude reads a matching file with its Read tool |
-| Auto memory, the notes Claude keeps for itself | When the session starts: the first 200 lines or 25KB of its `MEMORY.md` index |
+| `CLAUDE.md` в корне проекта и правило без `paths:` | При старте сессии |
+| Файл, указанный в импорте `@path` | Вместе с файлом, который его импортирует |
+| Правило с `paths:` | Когда Claude читает подходящий файл инструментом Read |
+| Auto memory — заметки, которые Claude ведёт для себя | При старте сессии: первые 200 строк или 25 КБ его индекса `MEMORY.md` |
 
-When Claude ignores an instruction, first find out whether its file loaded. If it did, the wording is the likely problem: make it concrete, and remove any instruction that contradicts it ([Debug your configuration](https://code.claude.com/docs/en/debug-your-config#see-what-loaded-into-context)).
+Если Claude игнорирует инструкцию, сначала выясните, загрузился ли её файл. Если загрузился, вероятная причина в формулировке: сделайте её конкретной и уберите любую инструкцию, которая ей противоречит ([Debug your configuration](https://code.claude.com/docs/en/debug-your-config#see-what-loaded-into-context)).
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. In your repository, add an import to `CLAUDE.md`. In the practice template, import `package.json`; in your own repository, a document your team keeps, such as `@docs/architecture.md`:
+1. В своём репозитории добавьте импорт в `CLAUDE.md`. В шаблоне для практики импортируйте `package.json`; в своём репозитории — документ, который ведёт ваша команда, например `@docs/architecture.md`:
 
    ```markdown
    - npm scripts: @package.json
    ```
 
-   An import's path runs until the first space, so don't put a period right after it.
-2. Save a rule for your test files as `.claude/rules/testing.md`. Change the pattern to match where your tests live:
+   Путь импорта продолжается до первого пробела, поэтому не ставьте точку сразу после него.
+2. Сохраните правило для файлов с тестами как `.claude/rules/testing.md`. Измените шаблон так, чтобы он соответствовал расположению ваших тестов:
 
    ```markdown
    ---
@@ -54,7 +54,7 @@ When Claude ignores an instruction, first find out whether its file loaded. If i
    - Use `node:test` and `node:assert/strict`; no other test libraries.
    ```
 
-3. Save this load log to `.practice/i-2-hook.json`. It is an [`InstructionsLoaded` hook](https://code.claude.com/docs/en/hooks#instructionsloaded): each time a `CLAUDE.md`, a rule or an imported file loads, it appends the reason and the file's path to `.practice/i-2-loaded.txt`. It logs nothing else, and runs only in sessions you start with it:
+3. Сохраните этот журнал загрузок в `.practice/i-2-hook.json`. Это [hook на событие `InstructionsLoaded`](https://code.claude.com/docs/en/hooks#instructionsloaded) (хук — команда, которую Claude Code запускает на событии): каждый раз, когда загружается `CLAUDE.md`, правило или импортированный файл, он дописывает причину и путь к файлу в `.practice/i-2-loaded.txt`. Больше он ничего не записывает и работает только в сессиях, которые вы запускаете с ним:
 
    ```json
    {
@@ -66,21 +66,21 @@ When Claude ignores an instruction, first find out whether its file loaded. If i
    }
    ```
 
-4. Start a session with the log, `claude --settings .practice/i-2-hook.json` ([CLI reference](https://code.claude.com/docs/en/cli-reference#cli-flags)), and run `/context all`: plain `/context` can collapse its list, and `all` expands it ([Commands](https://code.claude.com/docs/en/commands)). Under **Memory files** it lists the instruction files that loaded at the start, such as `CLAUDE.md` ([Set up a project CLAUDE.md](https://code.claude.com/docs/en/memory#set-up-a-project-claude-md)). The scoped rule isn't among them: nothing has read a test file yet.
-5. Ask Claude to read a test file with its Read tool. Name the tool: Claude sometimes reads a file through a shell command, which doesn't load scoped rules.
+4. Запустите сессию с журналом: `claude --settings .practice/i-2-hook.json` ([CLI reference](https://code.claude.com/docs/en/cli-reference#cli-flags)) — и выполните `/context all`: обычный `/context` может свернуть список, а `all` разворачивает его ([Commands](https://code.claude.com/docs/en/commands)). В разделе **Memory files** перечислены файлы с инструкциями, загруженные при старте, например `CLAUDE.md` ([Set up a project CLAUDE.md](https://code.claude.com/docs/en/memory#set-up-a-project-claude-md)). Правила с областью действия среди них нет: файл с тестами пока никто не читал.
+5. Попросите Claude прочитать файл с тестами инструментом Read. Назовите инструмент: иногда Claude читает файл через команду оболочки, а она правила с областью действия не загружает.
 
    ```text
-   Use your Read tool to read test/config.test.js, then tell me in one sentence what it checks.
+   Прочитай инструментом Read файл test/config.test.js и одним предложением скажи, что он проверяет.
    ```
 
-   In a second terminal, `cat .practice/i-2-loaded.txt` shows every load with its reason: `session_start` for `CLAUDE.md`, `include` for `package.json`, and now `path_glob_match` for the rule.
+   Во втором терминале `cat .practice/i-2-loaded.txt` показывает каждую загрузку с причиной: `session_start` для `CLAUDE.md`, `include` для `package.json` и теперь `path_glob_match` для правила.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-A teammate's rule never takes effect. Find out why, and fix it.
+Правило коллеги никак не срабатывает. Выясните почему и исправьте.
 
-1. Save this rule as `.claude/rules/cli.md`. In your own repository, write a rule for one of your source folders and misspell the folder's name in its pattern:
+1. Сохраните это правило как `.claude/rules/cli.md`. В своём репозитории напишите правило для одной из ваших папок с исходниками и допустите опечатку в названии папки в шаблоне:
 
    ```markdown
    ---
@@ -93,41 +93,41 @@ A teammate's rule never takes effect. Find out why, and fix it.
    - Print errors to stderr, starting with `linkcheck:`.
    ```
 
-2. Start a logged session, `claude --settings .practice/i-2-hook.json`, and ask Claude to use its Read tool on `src/cli.js`, or on a file in your folder.
-3. Read the log: the rule never loaded. Compare its pattern with the files that exist, `git ls-files src`.
-4. Fix the pattern, start a new logged session and repeat step 2. The log now has a `path_glob_match` line for `cli.md`.
-5. Commit `CLAUDE.md` and `.claude/rules/`. Delete `.practice/i-2-hook.json` when you no longer need the log.
+2. Запустите сессию с журналом, `claude --settings .practice/i-2-hook.json`, и попросите Claude прочитать инструментом Read файл `src/cli.js` или файл в вашей папке.
+3. Прочитайте журнал: правило так и не загрузилось. Сравните его шаблон с существующими файлами: `git ls-files src`.
+4. Исправьте шаблон, запустите новую сессию с журналом и повторите шаг 2. Теперь в журнале есть строка `path_glob_match` для `cli.md`.
+5. Закоммитьте `CLAUDE.md` и `.claude/rules/`. Когда журнал больше не нужен, удалите `.practice/i-2-hook.json`.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Урок пройден, когда выполнено всё:
 
-- [ ] The committed `CLAUDE.md` imports a file that exists: `git show HEAD:CLAUDE.md | grep '@'` shows the import.
-- [ ] Every committed rule with `paths:` matches a file: for each pattern, `git ls-files ':(glob)<pattern>'` lists at least one file. With the `:(glob)` prefix, git's `*` stays inside one folder and `**/` matches any number of folders, as in rules ([gitglossary: pathspec](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec)). Git doesn't expand braces, which rules do ([Path-specific rules](https://code.claude.com/docs/en/memory#path-specific-rules)), so check a pattern such as `src/**/*.{ts,tsx}` one extension at a time.
-- [ ] The log shows the import and a scoped rule loading: `grep -E '^(include|path_glob_match)' .practice/i-2-loaded.txt` prints at least one line of each kind.
-- [ ] Self-check (not tested): you can say which of your instruction files load at the start and which load later, and how you saw each one load.
+- [ ] Закоммиченный `CLAUDE.md` импортирует существующий файл: `git show HEAD:CLAUDE.md | grep '@'` показывает импорт.
+- [ ] Каждое закоммиченное правило с `paths:` подходит хотя бы к одному файлу: для каждого шаблона `git ls-files ':(glob)<pattern>'` выводит минимум один файл. С префиксом `:(glob)` символ `*` в git остаётся внутри одной папки, а `**/` соответствует любому числу папок — как в правилах ([gitglossary: pathspec](https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec)). Git не раскрывает фигурные скобки, а правила раскрывают ([Path-specific rules](https://code.claude.com/docs/en/memory#path-specific-rules)), поэтому шаблон вроде `src/**/*.{ts,tsx}` проверяйте по одному расширению.
+- [ ] Журнал показывает загрузку импорта и правила с областью действия: `grep -E '^(include|path_glob_match)' .practice/i-2-loaded.txt` выводит минимум по одной строке каждого вида.
+- [ ] Самопроверка (не проверяется автоматически): вы можете сказать, какие из ваших файлов с инструкциями загружаются при старте, а какие позже, и как вы видели каждую загрузку.
 
-Run `npm run check -- i-2 --dir <your repo>` from your practice copy, or `npm run check -- i-2` in the copy itself.
+Запустите `npm run check -- i-2 --dir <your repo>` из учебной копии или `npm run check -- i-2` в самой копии.
 
-If the import check fails, look for punctuation right after the path, or a path written relative to the wrong folder: an import resolves from the file that holds it. If a rule matches no file, its pattern is relative to the project root, so `source/**` matches nothing in a project whose code is in `src/`. If the log has no `path_glob_match` line, start the session with `--settings .practice/i-2-hook.json` and ask for the Read tool by name.
+Если не прошла проверка импорта, ищите знак препинания сразу после пути или путь, записанный относительно не той папки: импорт разрешается относительно файла, в котором он лежит. Если правило не подходит ни к одному файлу, его шаблон задан относительно корня проекта, так что `source/**` ничего не найдёт в проекте, где код лежит в `src/`. Если в журнале нет строки `path_glob_match`, запустите сессию с `--settings .practice/i-2-hook.json` и попросите инструмент Read по имени.
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- An import that points outside your working directory, such as `@~/notes.md`, asks for your approval the first time a project uses it; if you decline, it stays off ([Import additional files](https://code.claude.com/docs/en/memory#import-additional-files)).
-- Claude Code reads the project's `CLAUDE.md` once, at the start. An edit to it reaches the session after `/clear`, `/compact` or a restart ([Editing CLAUDE.md mid-session](https://code.claude.com/docs/en/prompt-caching#editing-claude-md-mid-session)).
-- To find instructions that contradict each other or name files that no longer exist, run `/doctor prompt-audit` ([Audit your instruction files](https://code.claude.com/docs/en/memory#audit-your-instruction-files)). It proposes edits and changes nothing until you ask.
+- Импорт, который указывает за пределы рабочей папки, например `@~/notes.md`, при первом использовании в проекте запрашивает ваше одобрение; если вы откажетесь, он остаётся выключенным ([Import additional files](https://code.claude.com/docs/en/memory#import-additional-files)).
+- Claude Code читает `CLAUDE.md` проекта один раз, при старте. Правка доходит до сессии после `/clear`, `/compact` или перезапуска ([Editing CLAUDE.md mid-session](https://code.claude.com/docs/en/prompt-caching#editing-claude-md-mid-session)).
+- Чтобы найти инструкции, которые противоречат друг другу или называют уже не существующие файлы, выполните `/doctor prompt-audit` ([Audit your instruction files](https://code.claude.com/docs/en/memory#audit-your-instruction-files)). Он предлагает правки и ничего не меняет, пока вы не попросите.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory): the files you write in `.claude/` and `~/.claude`, and when Claude Code loads each one.
-- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config): what to check when a setting, hook or server doesn't take effect.
-- [Auto memory](https://code.claude.com/docs/en/memory#auto-memory): what Claude saves for itself, where, and how to turn it off.
+- [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory): файлы, которые вы пишете в `.claude/` и `~/.claude`, и когда Claude Code загружает каждый из них.
+- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config): что проверить, если настройка, hook или сервер не срабатывает.
+- [Auto memory](https://code.claude.com/docs/en/memory#auto-memory): что Claude сохраняет для себя, где и как это отключить.
 
 ---
 
-<sub>Sources: [How Claude remembers your project](https://code.claude.com/docs/en/memory) · [Hooks reference](https://code.claude.com/docs/en/hooks) · [Debug your configuration](https://code.claude.com/docs/en/debug-your-config) · [How Claude Code uses prompt caching](https://code.claude.com/docs/en/prompt-caching) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Commands](https://code.claude.com/docs/en/commands) · [gitglossary](https://git-scm.com/docs/gitglossary)</sub>
+<sub>Источники: [How Claude remembers your project](https://code.claude.com/docs/en/memory) · [Hooks reference](https://code.claude.com/docs/en/hooks) · [Debug your configuration](https://code.claude.com/docs/en/debug-your-config) · [How Claude Code uses prompt caching](https://code.claude.com/docs/en/prompt-caching) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Commands](https://code.claude.com/docs/en/commands) · [gitglossary](https://git-scm.com/docs/gitglossary)</sub>
 
-<sub>← [Turn a repeated workflow into a skill](01-first-skill.md) · [Intermediate index](README.md) · [Pick the model and effort](03-model-and-effort.md) → · Topic: [Memory and context](../topics/memory-and-context.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=i-2)</sub>
+<sub>← [Превращаем повторяющийся процесс в skill](01-first-skill.md) · [Оглавление уровня](README.md) · [Выбираем модель и effort](03-model-and-effort.md) → · Тема: [Память и контекст](../topics/memory-and-context.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=i-2)</sub>

@@ -1,19 +1,19 @@
-# Reference <a id="reference"></a>
+# Справочник <a id="reference"></a>
 
-<sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-Pages to look things up in. Each one adds a table or decision aid that the official docs don't have, and links the official pages for everything else.
+Страницы, где можно что-то посмотреть. Каждая добавляет таблицу или подсказку для выбора, которых нет в официальной документации, а за остальным отсылает к официальным страницам.
 
-- [Models and effort](models.md)
-- [Commands by level](commands.md)
-- [Feature map](feature-map.md): every feature's stability label and who gets it.
-- [Further learning](further-reading.md)
-- [Glossary](glossary.md): the guide's own words.
+- [Модели и effort](models.md)
+- [Команды по уровням](commands.md)
+- [Карта возможностей](feature-map.md): метка стабильности каждой возможности и кому она доступна.
+- [Что читать дальше](further-reading.md)
+- [Глоссарий](glossary.md): собственные слова руководства.
 
-For Claude Code's own terms, see the official [Glossary](https://code.claude.com/docs/en/glossary).
+Термины самого Claude Code смотрите в официальном [глоссарии](https://code.claude.com/docs/en/glossary).
 
 ---
 
-<sub>Sources: [Glossary](https://code.claude.com/docs/en/glossary)</sub>
+<sub>Источники: [Glossary](https://code.claude.com/docs/en/glossary)</sub>
 
-<sub>Up: [Claude Code: Everything You Need to Know](../../README.md)</sub>
+<sub>Наверх: [Claude Code: всё, что нужно знать](../../README.md)</sub>

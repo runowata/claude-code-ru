@@ -1,121 +1,121 @@
-# Advanced capstone: add CI review your team can share <a id="advanced-capstone-add-ci-review-your-team-can-share"></a>
+# Итоговый проект продвинутого уровня: CI-проверка, которой может пользоваться команда <a id="advanced-capstone-add-ci-review-your-team-can-share"></a>
 
-<sub>**Advanced** · Capstone · 30 to 60 minutes, plus run time · Needs: the seven [Advanced lessons](README.md), or their skills · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
+<sub>**Продвинутый уровень** · Итоговый проект · от 30 до 60 минут плюс время запуска · Нужно: семь [уроков продвинутого уровня](README.md) или соответствующие навыки · Проверено на Claude Code v2.1.285 (stable) 2026-10-09</sub>
 
-This task puts the whole Advanced level together, in a new copy of the practice template that you tear down at the end. It has no worked example: the brief says what the team needs, and you choose how to build it. The [Advanced Exit](README.md#by-the-end-of-this-level-you-can) is the list of what you can do by the end of this level. The check reads what you commit and two files you save under `.practice/`, and you tick the rest of the Exit yourself under [What the check can't see](#what-the-check-cant-see).
+Это задание собирает вместе весь продвинутый уровень в новой копии шаблона для практики, которую вы в конце убираете. Разбора на примере здесь нет: задание говорит, что нужно команде, а как это построить — решаете вы. [Итог продвинутого уровня](README.md#by-the-end-of-this-level-you-can) — это перечень того, что вы умеете к концу уровня. Проверка читает то, что вы закоммитили, и два файла, сохранённых в `.practice/`, а остальные пункты итога вы отмечаете сами в разделе [Чего проверка не видит](#what-the-check-cant-see).
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Node.js LTS, git, `jq`, and the GitHub CLI signed in with `gh auth login`.
-- A new private copy of the practice template, made for this capstone and torn down after it. Make it with:
+- Node.js LTS, git, `jq` и GitHub CLI, в который вы вошли командой `gh auth login`.
+- Новая приватная копия шаблона для практики, созданная для этого итогового проекта и убираемая после него. Создайте её так:
 
   ```bash
   gh repo create claude-capstone --template wesammustafa/claude-code-practice --private --clone
   cd claude-capstone
   ```
 
-  `--template` bases the new repository on the template, and `--clone` clones it ([gh repo create](https://cli.github.com/manual/gh_repo_create)). The check runs in this copy, without `--dir`.
-- In the copy, start `claude` once, accept the trust dialog and exit. In a folder you haven't trusted, `claude --worktree` exits with an error ([Start Claude in a worktree](https://code.claude.com/docs/en/worktrees#start-claude-in-a-worktree)).
-- A credential for CI: a Claude Console API key made for the capstone, recommended because the teardown deletes it, or, on a Pro, Max, Team or Enterprise plan, a token from `claude setup-token` ([Manual setup](https://code.claude.com/docs/en/github-actions#manual-setup)).
-- On Pro, dynamic workflows turned on from the **Dynamic workflows** row in `/config` ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows)).
-- macOS, Linux or WSL 2: the review script is bash.
-- Usage: heavy. Two sessions at once, a dynamic workflow, a scripted run and a CI run. Each CI run uses your GitHub Actions minutes, and tokens, which an API key bills to your Console account and a subscription token draws from your plan ([Manage costs](https://code.claude.com/docs/en/github-actions#manage-costs)). Cheap variant: start every session with `--model sonnet` ([Model aliases](https://code.claude.com/docs/en/model-config#model-aliases)), put `--model sonnet` in the script and in `claude_args` ([Pass CLI arguments](https://code.claude.com/docs/en/github-actions#pass-cli-arguments)), and have the dynamic workflow in part 4 review only two of the files in `src/`.
+  `--template` создаёт новый репозиторий на основе шаблона, а `--clone` клонирует его ([gh repo create](https://cli.github.com/manual/gh_repo_create)). Проверка запускается в этой копии, без `--dir`.
+- В копии один раз запустите `claude`, примите окно доверия к папке и выйдите. В папке, которой вы не доверяли, `claude --worktree` завершается с ошибкой ([Start Claude in a worktree](https://code.claude.com/docs/en/worktrees#start-claude-in-a-worktree)).
+- Учётные данные для CI: ключ API из Claude Console, созданный для итогового проекта (рекомендуется, потому что при уборке вы его удалите), или, на тарифе Pro, Max, Team или Enterprise, токен от `claude setup-token` ([Manual setup](https://code.claude.com/docs/en/github-actions#manual-setup)).
+- На Pro — включённые динамические workflows (dynamic workflows) в строке **Dynamic workflows** в `/config` ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows)).
+- macOS, Linux или WSL 2: скрипт проверки написан на bash.
+- Расход: большой. Две сессии одновременно, динамический workflow, скриптовый запуск и запуск в CI. Каждый запуск в CI тратит ваши минуты GitHub Actions и токены: ключ API списывает их с вашего аккаунта Console, а токен подписки — с вашего тарифа ([Manage costs](https://code.claude.com/docs/en/github-actions#manage-costs)). Дешёвый вариант: запускайте каждую сессию с `--model sonnet` ([Model aliases](https://code.claude.com/docs/en/model-config#model-aliases)), добавьте `--model sonnet` в скрипт и в `claude_args` ([Pass CLI arguments](https://code.claude.com/docs/en/github-actions#pass-cli-arguments)), а динамический workflow в части 4 пусть проверяет только два файла из `src/`.
 
 <a id="the-task"></a>
-## The task
+## Задание
 
-The team wants Claude to review every pull request in CI, the same way on everyone's machine, with nothing it runs left unbounded. The brief is in `capstone/advanced-brief.md` in your copy.
+Команда хочет, чтобы Claude проверял каждый pull request в CI, одинаково на компьютере каждого, и чтобы ничто из запускаемого им не оставалось без границ. Постановка лежит в `capstone/advanced-brief.md` в вашей копии.
 
-Build each part the way its lesson taught:
+Постройте каждую часть так, как учил соответствующий урок:
 
-1. **Two sessions at once** ([lesson 1](01-parallel-sessions.md)). Ignore `.claude/worktrees/` in the committed `.gitignore`, and push `main`: new worktrees branch from the remote's default branch ([Choose the base branch](https://code.claude.com/docs/en/worktrees#choose-the-base-branch)). Then, in two terminals at the same time, start `claude --worktree <name>` twice, with a different name each time ([Reuse a worktree name](https://code.claude.com/docs/en/worktrees#reuse-a-worktree-name)): one session builds part 2, the other part 3, and each commits on its own branch. Once both have committed, and while both worktrees exist, save their state from the main checkout:
+1. **Две сессии одновременно** ([урок 1](01-parallel-sessions.md)). Внесите `.claude/worktrees/` в закоммиченный `.gitignore` и отправьте `main`: новые worktrees ответвляются от ветки удалённого репозитория по умолчанию ([Choose the base branch](https://code.claude.com/docs/en/worktrees#choose-the-base-branch)). Затем в двух терминалах одновременно дважды запустите `claude --worktree <name>`, каждый раз с другим именем ([Reuse a worktree name](https://code.claude.com/docs/en/worktrees#reuse-a-worktree-name)): одна сессия строит часть 2, другая — часть 3, и каждая коммитит в своей ветке. Когда обе закоммитили и пока обе worktree существуют, сохраните их состояние из основной рабочей копии:
 
    ```bash
    mkdir -p .practice && git worktree list --porcelain > .practice/a-capstone-worktrees.txt
    ```
 
-   Then merge both branches into `main` with `git merge`, not `git merge --squash`, and remove both worktrees.
-2. **A review script** ([lesson 4](04-headless.md)): `scripts/review-staged.sh`, to lesson 4's criteria. It pipes the staged diff into one `claude -p` call with JSON output and `dontAsk` mode ([dontAsk mode](https://code.claude.com/docs/en/permission-modes#allow-only-pre-approved-tools-with-dontask-mode)), pre-approves only `Read`, `Grep` and `Glob`, and caps turns at 10 or fewer ([CLI flags](https://code.claude.com/docs/en/cli-reference#cli-flags)). After the merges, stage a one-line change in the main checkout, run the script once, read the review and commit the change:
+   Затем слейте обе ветки в `main` командой `git merge`, не `git merge --squash`, и удалите обе worktree.
+2. **Скрипт проверки** ([урок 4](04-headless.md)): `scripts/review-staged.sh` по критериям урока 4. Он передаёт индексированный дифф (staged diff) в один вызов `claude -p` с выводом JSON и режимом `dontAsk` ([dontAsk mode](https://code.claude.com/docs/en/permission-modes#allow-only-pre-approved-tools-with-dontask-mode)), заранее одобряет только `Read`, `Grep` и `Glob` и ограничивает число ходов 10 или меньше ([CLI flags](https://code.claude.com/docs/en/cli-reference#cli-flags)). После слияний добавьте в индекс (stage) однострочное изменение в основной копии, один раз запустите скрипт, прочитайте проверку и закоммитьте изменение:
 
    ```bash
    mkdir -p .practice && scripts/review-staged.sh .practice/a-capstone-run.json
    ```
 
-   The saved JSON's `total_cost_usd` estimates what one review spends. As with lesson 7's slice, it's a client-side estimate, not your bill ([Track cost and usage](https://code.claude.com/docs/en/agent-sdk/cost-tracking#estimates-not-billing)).
-3. **The team's plugin** ([lesson 6](06-share-your-setup.md)): a marketplace in `team-marketplace/` that lists one plugin by a relative path, with the plugin in its own folder under `team-marketplace/`, as in lesson 6's example kit, and at least one skill or agent in the plugin. The committed `.claude/settings.json` registers the marketplace by a relative path and turns the plugin on ([Require plugins per repository](https://code.claude.com/docs/en/plugins/org#require-plugins-per-repository)). Both validations pass: `claude plugin validate` on the marketplace, and on the plugin directory with `--strict` ([plugin validate](https://code.claude.com/docs/en/plugins/cli-reference#plugin-validate)). The kit is a good start; its [`settings.snippet.json`](../../examples/advanced/06-share-your-setup/settings.snippet.json) also denies reading `.env`, which this copy has no rule for yet. Test the plugin only after the merges: a relative path resolves against the repository's main checkout, even from a worktree ([Require plugins per repository](https://code.claude.com/docs/en/plugins/org#require-plugins-per-repository)), so the part-3 session can't load it yet.
-4. **A saved dynamic workflow** ([lessons 2](02-orchestration-patterns.md) and [3](03-dynamic-workflows.md)): from a session in the main checkout, after the merges, ask for a workflow that reviews each file under `src/` and has a second agent check each finding. While it runs, `/workflows` shows each agent's token usage ([Cost](https://code.claude.com/docs/en/workflows#cost)). Save it to the project: a project save writes to the closest `.claude/workflows/` folder that already exists between the session's working directory and the repository root, or, if none exists yet, to `.claude/workflows/` at the repository root ([Save the workflow for reuse](https://code.claude.com/docs/en/workflows#save-the-workflow-for-reuse)). Commit it.
-5. **CI review with limits** ([lessons 5](05-github-actions.md) and [7](07-bounded-runs.md)): `.github/workflows/claude-review.yml` runs on `pull_request` ([Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request)) and uses `anthropics/claude-code-action` (Anthropic) with a `prompt` that asks for a review of the pull request's changes ([Action parameters](https://code.claude.com/docs/en/github-actions#action-parameters)). Hold it to lesson 5's limits:
-   - the action pinned to a release tag or a full commit SHA ([Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsuses));
-   - the credential from a repository secret, through the matching input, `anthropic_api_key` or `claude_code_oauth_token` ([Manual setup](https://code.claude.com/docs/en/github-actions#manual-setup));
-   - a read-only job token: no write access in `permissions` except `id-token: write` ([Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)), and `github_token` set to the job's own `GITHUB_TOKEN`, so Claude acts with that token instead of the Claude GitHub App's ([Action parameters](https://code.claude.com/docs/en/github-actions#action-parameters));
-   - in `claude_args`, `--max-turns` of 10 or fewer and an `--allowedTools` list without unrestricted Bash;
-   - a `timeout-minutes` of 30 or fewer ([Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes)).
+   Поле `total_cost_usd` в сохранённом JSON оценивает, сколько тратит одна проверка. Как и на части задачи (slice) в уроке 7, это оценка на стороне клиента, а не ваш счёт ([Track cost and usage](https://code.claude.com/docs/en/agent-sdk/cost-tracking#estimates-not-billing)).
+3. **Плагин команды** ([урок 6](06-share-your-setup.md)): marketplace в `team-marketplace/`, перечисляющий один плагин по относительному пути, с плагином в своей папке внутри `team-marketplace/`, как в примере набора из урока 6, и хотя бы одним skill или агентом в плагине. Закоммиченный `.claude/settings.json` регистрирует marketplace по относительному пути и включает плагин ([Require plugins per repository](https://code.claude.com/docs/en/plugins/org#require-plugins-per-repository)). Обе проверки проходят: `claude plugin validate` для marketplace и для папки плагина с `--strict` ([plugin validate](https://code.claude.com/docs/en/plugins/cli-reference#plugin-validate)). Набор — хорошее начало; его [`settings.snippet.json`](../../examples/advanced/06-share-your-setup/settings.snippet.json) заодно запрещает чтение `.env`, для чего в этой копии правила пока нет. Проверяйте плагин только после слияний: относительный путь отсчитывается от основной рабочей копии репозитория, даже из worktree ([Require plugins per repository](https://code.claude.com/docs/en/plugins/org#require-plugins-per-repository)), поэтому сессия части 3 пока не может его загрузить.
+4. **Сохранённый динамический workflow** ([уроки 2](02-orchestration-patterns.md) и [3](03-dynamic-workflows.md)): из сессии в основной копии, после слияний, попросите workflow, который проверяет каждый файл в `src/`, а второй агент проверяет каждую находку. Пока он работает, `/workflows` показывает расход токенов каждого агента ([Cost](https://code.claude.com/docs/en/workflows#cost)). Сохраните его в проект: сохранение в проект записывает в ближайшую папку `.claude/workflows/`, которая уже существует между рабочей папкой сессии и корнем репозитория, а если такой ещё нет — в `.claude/workflows/` в корне репозитория ([Save the workflow for reuse](https://code.claude.com/docs/en/workflows#save-the-workflow-for-reuse)). Закоммитьте его.
+5. **Проверка в CI с лимитами** ([уроки 5](05-github-actions.md) и [7](07-bounded-runs.md)): `.github/workflows/claude-review.yml` запускается на `pull_request` ([Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request)) и использует `anthropics/claude-code-action` (Anthropic) с `prompt`, который просит проверить изменения pull request ([Action parameters](https://code.claude.com/docs/en/github-actions#action-parameters)). Выдержите лимиты урока 5:
+   - действие закреплено на теге релиза или полном SHA коммита ([Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsuses));
+   - учётные данные берутся из секрета репозитория через соответствующий параметр, `anthropic_api_key` или `claude_code_oauth_token` ([Manual setup](https://code.claude.com/docs/en/github-actions#manual-setup));
+   - токен задания только для чтения: в `permissions` нет доступа на запись, кроме `id-token: write` ([Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)), а `github_token` равен собственному `GITHUB_TOKEN` задания, поэтому Claude действует с этим токеном, а не с токеном приложения Claude GitHub App ([Action parameters](https://code.claude.com/docs/en/github-actions#action-parameters));
+   - в `claude_args` — `--max-turns` не больше 10 и список `--allowedTools` без неограниченного Bash;
+   - `timeout-minutes` не больше 30 ([Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idtimeout-minutes)).
 
-   With a plain-text prompt, Claude has no shell until you allow the commands it needs ([Run on a schedule](https://code.claude.com/docs/en/github-actions#run-on-a-schedule)). To let it see the change, check out the full history, as the template's `.github/workflows/progress.yml` does, and allow `git diff` with `Bash(git diff *)`, a rule that matches only `git diff` commands ([Wildcard patterns](https://code.claude.com/docs/en/permissions#wildcard-patterns)). As lesson 7's slice prompt did for `npm test`, ask in the `prompt` for `git diff` as a command on its own: a rule must match each command in a chain ([Compound commands](https://code.claude.com/docs/en/permissions#compound-commands)).
+   При промпте в виде простого текста у Claude нет оболочки, пока вы не разрешите нужные ему команды ([Run on a schedule](https://code.claude.com/docs/en/github-actions#run-on-a-schedule)). Чтобы он видел изменение, заберите полную историю (checkout), как это делает `.github/workflows/progress.yml` шаблона, и разрешите `git diff` правилом `Bash(git diff *)`, которое совпадает только с командами `git diff` ([Wildcard patterns](https://code.claude.com/docs/en/permissions#wildcard-patterns)). Как промпт части задачи в уроке 7 делал для `npm test`, попросите в `prompt` выполнить `git diff` отдельной командой: правило должно совпадать с каждой командой в цепочке ([Compound commands](https://code.claude.com/docs/en/permissions#compound-commands)).
 
-   Set `display_report: true`, as lesson 5 does, so Claude's review appears on the run's summary page ([action.yml at v1.0.237](https://github.com/anthropics/claude-code-action/blob/v1.0.237/action.yml), [Adding a job summary](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-job-summary)). The action says to turn it on only when its input is trusted, as here: the pull requests are your own, in a private copy.
+   Задайте `display_report: true`, как в уроке 5, чтобы проверка Claude появлялась на странице сводки запуска ([action.yml at v1.0.237](https://github.com/anthropics/claude-code-action/blob/v1.0.237/action.yml), [Adding a job summary](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-job-summary)). Действие советует включать его только при доверенном вводе — как здесь: pull request ваши, в приватной копии.
 
-   Add the credential as a repository secret, as the second step of the docs' [Manual setup](https://code.claude.com/docs/en/github-actions#manual-setup) does: run `gh secret set ANTHROPIC_API_KEY`, or `gh secret set CLAUDE_CODE_OAUTH_TOKEN`, and paste the value when it asks ([gh secret set](https://cli.github.com/manual/gh_secret_set)). Never commit the credential; keep it in the repository secret ([Protect your credentials](https://code.claude.com/docs/en/github-actions#protect-your-credentials)). Skip Manual setup's other steps: the action authenticates as the Claude GitHub App only when `github_token` is omitted ([Action parameters](https://code.claude.com/docs/en/github-actions#action-parameters)), and your review workflow replaces its `claude.yml`.
+   Добавьте учётные данные как секрет репозитория, как во втором шаге [Manual setup](https://code.claude.com/docs/en/github-actions#manual-setup) из документации: выполните `gh secret set ANTHROPIC_API_KEY` или `gh secret set CLAUDE_CODE_OAUTH_TOKEN` и вставьте значение, когда команда попросит ([gh secret set](https://cli.github.com/manual/gh_secret_set)). Никогда не коммитьте учётные данные; храните их в секрете репозитория ([Protect your credentials](https://code.claude.com/docs/en/github-actions#protect-your-credentials)). Остальные шаги Manual setup пропустите: действие аутентифицируется как приложение Claude GitHub App, только если `github_token` не указан ([Action parameters](https://code.claude.com/docs/en/github-actions#action-parameters)), а ваш процесс проверки заменяет его `claude.yml`.
 
-   Commit the workflow to `main` and push. Then push a one-line change on a new branch and open a pull request. Read Claude's review on the run's summary page, as in lesson 5, and merge the pull request yourself.
+   Закоммитьте рабочий процесс в `main` и отправьте. Затем отправьте однострочное изменение в новой ветке и откройте pull request. Прочитайте проверку Claude на странице сводки запуска, как в уроке 5, и слейте pull request сами.
 
-Finish on `main`, with the merged pull request pulled, everything committed and `npm test` passing.
+Закончите на `main`, с подтянутым слитым pull request, всё закоммичено и `npm test` проходит.
 
-Listings checked against the listing bar on 2026-10-09.
+Перечни проверены по планке для перечней 2026-10-09.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Проект пройден, когда выполнено всё:
 
-- [ ] A committed `.gitignore` ignores `.claude/worktrees/` and not the rest of `.claude/`.
-- [ ] `.practice/a-capstone-worktrees.txt` lists two worktrees under `.claude/worktrees/` whose commits split from each other, and both are merged into your branch.
-- [ ] A committed script in `.claude/workflows/` has a literal `export const meta`, with a `name` and a `description`, as its first statement, and starts subagents with `agent()`.
-- [ ] `scripts/review-staged.sh` is committed and executable.
-- [ ] Its `claude -p` call asks for JSON, runs in `dontAsk` mode, pre-approves only `Read`, `Grep` and `Glob`, caps turns at 10 or fewer, and has the prompt right after `-p`.
-- [ ] It pipes the staged diff in, saves the JSON where its argument says, prints the result, exits non-zero when the run fails, and doesn't call Claude when nothing is staged.
-- [ ] `.practice/a-capstone-run.json` holds a run that succeeded within your cap.
-- [ ] A committed workflow runs `anthropics/claude-code-action` on `pull_request`, pinned to a release tag or a full commit SHA, in automation mode, with its credential from a secret and none in the file, a read-only job token (no write access in `permissions` except `id-token: write`, and `github_token` set to the job's own token), `--max-turns` of 10 or fewer, an `--allowedTools` list without unrestricted Bash and a `timeout-minutes` of 30 or fewer.
-- [ ] No Claude API key or token is committed, at `HEAD` or in the commit the check reads your workflow from.
-- [ ] A committed team marketplace lists a plugin by a relative path, and the entry's name matches the `name` in the plugin's `plugin.json`.
-- [ ] The committed `.claude/settings.json` registers that marketplace by a relative path and turns the plugin on.
-- [ ] `npm test` passes, and `git status --porcelain` prints nothing.
+- [ ] Закоммиченный `.gitignore` игнорирует `.claude/worktrees/`, а не всю папку `.claude/`.
+- [ ] `.practice/a-capstone-worktrees.txt` перечисляет две worktree в `.claude/worktrees/`, чьи коммиты разошлись друг с другом, и обе слиты в вашу ветку.
+- [ ] Закоммиченный скрипт в `.claude/workflows/` начинается с буквального `export const meta` с полями `name` и `description` первым оператором и запускает субагентов через `agent()`.
+- [ ] `scripts/review-staged.sh` закоммичен и исполняемый.
+- [ ] Его вызов `claude -p` просит JSON, работает в режиме `dontAsk`, заранее одобряет только `Read`, `Grep` и `Glob`, ограничивает ходы 10 или меньше и ставит промпт сразу после `-p`.
+- [ ] Он передаёт индексированный дифф на вход, сохраняет JSON туда, куда указывает его аргумент, печатает результат, завершается с ненулевым кодом при сбое запуска и не вызывает Claude, если в индексе ничего нет.
+- [ ] `.practice/a-capstone-run.json` содержит запуск, который завершился успешно в пределах вашего лимита.
+- [ ] Закоммиченный рабочий процесс запускает `anthropics/claude-code-action` на `pull_request`, закреплённый на теге релиза или полном SHA коммита, в автоматическом режиме, с учётными данными из секрета и без них в файле, с токеном задания только для чтения (нет доступа на запись в `permissions`, кроме `id-token: write`, а `github_token` равен собственному токену задания), `--max-turns` не больше 10, списком `--allowedTools` без неограниченного Bash и `timeout-minutes` не больше 30.
+- [ ] Ни ключ API Claude, ни токен не закоммичены — ни в `HEAD`, ни в коммите, из которого проверка читает ваш рабочий процесс.
+- [ ] Закоммиченный marketplace команды перечисляет плагин по относительному пути, и имя записи совпадает с `name` в `plugin.json` плагина.
+- [ ] Закоммиченный `.claude/settings.json` регистрирует этот marketplace по относительному пути и включает плагин.
+- [ ] `npm test` проходит, а `git status --porcelain` ничего не печатает.
 
-Run `npm run check -- a-capstone` in this copy. Each item that fails prints what to fix. The check runs your script with a stand-in for `claude`, so it uses none of your usage, and it reads the workflow from your history, so it passes before and after the teardown.
+Запустите `npm run check -- a-capstone` в этой копии. Каждый непройденный пункт печатает, что исправить. Проверка запускает ваш скрипт с заглушкой вместо `claude`, поэтому ваш расход она не тратит, и читает рабочий процесс из вашей истории, поэтому проходит и до уборки, и после.
 
 <a id="what-the-check-cant-see"></a>
-## What the check can't see
+## Чего проверка не видит
 
-The check doesn't look at these parts of the Advanced Exit. Tick them yourself, honestly:
+Проверка не смотрит на эти части итога продвинутого уровня. Отметьте их сами, честно:
 
-- [ ] I ran both worktree sessions at the same time, and neither saw the other's uncommitted edits.
-- [ ] I can take the per-file review, with a second agent checking each finding, through lesson 2's questions and say why they end at a dynamic workflow, not subagents in one conversation.
-- [ ] I can say when an unattended run needs the sandbox from [lesson 7](07-bounded-runs.md), and whether my review script and CI workflow need it.
-- [ ] I saw the CI run on my pull request and read Claude's review on its summary page before I merged.
-- [ ] A new session in the main checkout, after the merges, loaded my team plugin with no install command.
-- [ ] Before I turned CI on, I used the local run's `total_cost_usd`, as lesson 7 used its slice, to estimate what one review in CI spends, and saw in `/workflows` how many tokens the per-file review used.
+- [ ] Я запускал обе сессии worktree одновременно, и ни одна не видела чужих незакоммиченных правок.
+- [ ] Я могу провести проверку по файлам, где второй агент проверяет каждую находку, через вопросы урока 2 и объяснить, почему они приводят к динамическому workflow, а не к субагентам в одном разговоре.
+- [ ] Я могу сказать, когда автономному запуску нужна песочница из [урока 7](07-bounded-runs.md) и нужна ли она моему скрипту проверки и рабочему процессу CI.
+- [ ] Я видел запуск CI на своём pull request и прочитал проверку Claude на странице его сводки, прежде чем слил.
+- [ ] Новая сессия в основной копии, после слияний, загрузила мой плагин команды без команды установки.
+- [ ] Прежде чем включить CI, я использовал `total_cost_usd` локального запуска, как урок 7 использовал свою часть задачи, чтобы оценить, сколько тратит одна проверка в CI, и увидел в `/workflows`, сколько токенов израсходовала проверка по файлам.
 
-When every box on this page is ticked, you've shown the Advanced Exit and finished the last of the guide's three levels. One step remains: the teardown below.
+Когда отмечен каждый пункт на этой странице, вы показали итог продвинутого уровня и закончили последний из трёх уровней руководства. Остаётся один шаг: уборка ниже.
 
-If this level helped, a star helps other developers find the guide.
+Если этот уровень вам помог, звезда на GitHub поможет другим разработчикам найти руководство.
 
 <a id="tear-down"></a>
-## Tear down
+## Уборка
 
-When the check passes, tear down: this is required.
+Когда проверка пройдёт, уберите за собой: это обязательно.
 
 > [!WARNING]
-> Until you tear down, a live credential sits in the copy's secrets. Deleting a secret leaves the credential it held valid ([Uninstall](https://code.claude.com/docs/en/github-actions#uninstall)). On 2026-10-09, a token from `claude setup-token` is valid for one year ([Authentication](https://code.claude.com/docs/en/authentication#generate-a-long-lived-token)), and deleting the secret doesn't revoke it.
+> Пока вы не убрались, в секретах копии лежат действующие учётные данные. Удаление секрета не отзывает учётные данные, которые в нём лежали ([Uninstall](https://code.claude.com/docs/en/github-actions#uninstall)). На 2026-10-09 токен от `claude setup-token` действует один год ([Authentication](https://code.claude.com/docs/en/authentication#generate-a-long-lived-token)), и удаление секрета его не отзывает.
 
-1. Delete the workflow with `git rm .github/workflows/claude-review.yml`, then commit and push. With the workflow gone, the Claude Code GitHub Action no longer runs ([Uninstall](https://code.claude.com/docs/en/github-actions#uninstall)).
-2. Delete the secret: `gh secret delete ANTHROPIC_API_KEY`, or `gh secret delete CLAUDE_CODE_OAUTH_TOKEN` ([gh secret delete](https://cli.github.com/manual/gh_secret_delete)). `gh secret list` no longer shows it ([gh secret list](https://cli.github.com/manual/gh_secret_list)).
-3. With an API key, delete the key on the Claude Console's [API keys page](https://platform.claude.com/settings/keys).
+1. Удалите рабочий процесс командой `git rm .github/workflows/claude-review.yml`, затем закоммитьте и отправьте. Когда рабочего процесса нет, Claude Code GitHub Action больше не запускается ([Uninstall](https://code.claude.com/docs/en/github-actions#uninstall)).
+2. Удалите секрет: `gh secret delete ANTHROPIC_API_KEY` или `gh secret delete CLAUDE_CODE_OAUTH_TOKEN` ([gh secret delete](https://cli.github.com/manual/gh_secret_delete)). `gh secret list` его больше не показывает ([gh secret list](https://cli.github.com/manual/gh_secret_list)).
+3. Если вы использовали ключ API, удалите ключ на странице [API keys](https://platform.claude.com/settings/keys) в Claude Console.
 
-Run `npm run check -- a-capstone` once more: it still passes.
+Запустите `npm run check -- a-capstone` ещё раз: он по-прежнему проходит.
 
 ---
 
-<sub>Sources: [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees) · [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows) · [Track cost and usage](https://code.claude.com/docs/en/agent-sdk/cost-tracking) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Model configuration](https://code.claude.com/docs/en/model-config) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Plugin commands reference](https://code.claude.com/docs/en/plugins/cli-reference) · [Manage Claude Code plugins for your organization](https://code.claude.com/docs/en/plugins/org) · [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions) · [Authentication](https://code.claude.com/docs/en/authentication) · claude-code-action at v1.0.237: [action.yml](https://github.com/anthropics/claude-code-action/blob/v1.0.237/action.yml) · GitHub: [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows), [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), [Workflow commands](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands) · GitHub CLI manual: [gh repo create](https://cli.github.com/manual/gh_repo_create), [gh secret set](https://cli.github.com/manual/gh_secret_set), [gh secret delete](https://cli.github.com/manual/gh_secret_delete), [gh secret list](https://cli.github.com/manual/gh_secret_list) · the [Advanced lessons](README.md), which cite the official pages for each step.</sub>
+<sub>Источники: [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees) · [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows) · [Track cost and usage](https://code.claude.com/docs/en/agent-sdk/cost-tracking) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Model configuration](https://code.claude.com/docs/en/model-config) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Plugin commands reference](https://code.claude.com/docs/en/plugins/cli-reference) · [Manage Claude Code plugins for your organization](https://code.claude.com/docs/en/plugins/org) · [Claude Code GitHub Actions](https://code.claude.com/docs/en/github-actions) · [Authentication](https://code.claude.com/docs/en/authentication) · claude-code-action at v1.0.237: [action.yml](https://github.com/anthropics/claude-code-action/blob/v1.0.237/action.yml) · GitHub: [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows), [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax), [Workflow commands](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands) · GitHub CLI manual: [gh repo create](https://cli.github.com/manual/gh_repo_create), [gh secret set](https://cli.github.com/manual/gh_secret_set), [gh secret delete](https://cli.github.com/manual/gh_secret_delete), [gh secret list](https://cli.github.com/manual/gh_secret_list) · the [Advanced lessons](README.md), which cite the official pages for each step.</sub>
 
-<sub>← [Put bounds on autonomous runs](07-bounded-runs.md) · [Advanced index](README.md) · [Beyond this guide](beyond-this-guide.md) → · [Stuck on this capstone?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=a-capstone)</sub>
+<sub>← [Границы для автономных запусков](07-bounded-runs.md) · [Оглавление уровня](README.md) · [За пределами руководства](beyond-this-guide.md) → · [Застряли на проекте?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=a-capstone)</sub>

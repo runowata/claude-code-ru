@@ -1,19 +1,19 @@
 ---
-# What: a project skill that builds a feature test-first. Unfinished on purpose: lesson 1's Your turn has you finish it.
-# Runs: when you type /tdd <feature>. Once finished, also when Claude matches your request to the description.
-# Side effects: Claude edits code and tests and runs your test command, with your usual permission prompts.
-# Requires: Claude Code and a project with a test command. Platforms: any.
-# Remove: delete .claude/skills/tdd/.
+# What: проектный skill, который строит функцию, начиная с теста. Намеренно не дописан: в разделе «Ваша очередь» урока 1 вы его заканчиваете.
+# Runs: когда вы вводите /tdd <функция>. После доработки также когда Claude сопоставляет ваш запрос с описанием.
+# Side effects: Claude правит код и тесты и запускает вашу команду тестов, с вашими обычными запросами разрешений.
+# Requires: Claude Code и проект с командой тестов. Платформы: любые.
+# Remove: удалите .claude/skills/tdd/.
 # Tested in Claude Code v2.1.285 (stable) on macOS, 2026-10-06
 name: tdd
 description: TODO
 disable-model-invocation: true
 ---
 
-Build this test-first, one behavior at a time: $ARGUMENTS
+Построй это, начиная с теста, по одному поведению за раз: $ARGUMENTS
 
-1. Red: write one failing test for the next behavior. Run the tests and confirm that it fails, and fails for the reason you expect. Don't change code outside the tests in this step.
+1. Red: напиши один падающий тест для следующего поведения. Запусти тесты и убедись, что он падает, и именно по той причине, которую ты ожидаешь. На этом шаге не меняй код вне тестов.
 2. Green: TODO
 3. Refactor: TODO
 
-Repeat until the feature is done, then run the whole test suite and commit the tests and the code together.
+Повторяй, пока функция не будет готова, затем запусти весь набор тестов и закоммить тесты и код вместе.

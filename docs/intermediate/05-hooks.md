@@ -1,25 +1,25 @@
-# Enforce a rule with a hook <a id="enforce-a-rule-with-a-hook"></a>
+# Закрепляем правило с помощью hook <a id="enforce-a-rule-with-a-hook"></a>
 
-<sub>**Intermediate** · Lesson 5 of 8 · about 20 minutes · Needs: [Permissions, settings scopes and the sandbox](04-permissions-and-sandbox.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
+<sub>**Средний уровень** · Урок 5 из 8 · около 20 минут · Нужно: [Разрешения, уровни настроек и песочница](04-permissions-and-sandbox.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-06</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this lesson you can add a hook that enforces a rule every time Claude edits a file, and show it firing.
+После урока вы умеете добавить hook, который обеспечивает выполнение правила при каждой правке файла Claude, и показать, как он срабатывает.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- The repository from [lesson 4](04-permissions-and-sandbox.md), with its `.claude/settings.json`, and your copy of the practice template with Node.js LTS: the check runs from the copy.
-- `jq`, which the hook scripts use, and `python3`, which `format-after-edit.sh` uses.
-- Usage: light.
+- Репозиторий из [урока 4](04-permissions-and-sandbox.md) с его `.claude/settings.json`, а также ваша учебная копия шаблона для практики с Node.js LTS: проверка запускается из копии.
+- `jq`, который используют скрипты hooks, и `python3`, который использует `format-after-edit.sh`.
+- Расход: небольшой.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-A `CLAUDE.md` rule is advice that Claude can miss. A [hook](https://code.claude.com/docs/en/hooks-guide) is your own command that Claude Code runs at a fixed point in a session, every time, whatever Claude decides. Claude Code passes the hook JSON about the event on stdin. A `PreToolUse` hook runs before a tool call; if it exits with code 2, the call is blocked, and what it printed to stderr goes to Claude as the reason ([Hooks reference](https://code.claude.com/docs/en/hooks#exit-code-2-behavior-per-event), [Block edits to protected files](https://code.claude.com/docs/en/hooks-guide#block-edits-to-protected-files)).
+Правило в `CLAUDE.md` — это совет, который Claude может пропустить. [Hook](https://code.claude.com/docs/en/hooks-guide) (хук) — это ваша собственная команда, которую Claude Code запускает в определённой точке сессии каждый раз, что бы ни решил Claude. Claude Code передаёт hook на stdin JSON о событии. Hook `PreToolUse` запускается перед вызовом инструмента; если он завершается с кодом 2, вызов блокируется, а то, что он вывел в stderr, уходит Claude как причина ([Hooks reference](https://code.claude.com/docs/en/hooks#exit-code-2-behavior-per-event), [Block edits to protected files](https://code.claude.com/docs/en/hooks-guide#block-edits-to-protected-files)).
 
-These are the events this lesson uses, and where they fall in a turn:
+Вот события, которые использует этот урок, и их место в ходе:
 
 ```mermaid
 flowchart LR
@@ -35,12 +35,14 @@ flowchart LR
   N[Notification, when Claude Code needs you]
 ```
 
-A matcher picks the tools a hook watches: `Edit|Write` runs it for those two tools only ([Filter hooks with matchers](https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers)). `PreToolUse` hooks fire before the permission-mode check, so a block holds in every mode ([Hooks and permission modes](https://code.claude.com/docs/en/hooks-guide#hooks-and-permission-modes)).
+На схеме: сессия начинается с `SessionStart`; каждый промпт запускает `UserPromptSubmit`; перед каждым вызовом инструмента работает `PreToolUse`, а код выхода 2 блокирует вызов (stderr уходит Claude); после успешного вызова работает `PostToolUse`, затем Claude может вызвать другой инструмент; когда Claude заканчивает ответ, срабатывает `Stop`; `Notification` срабатывает сам, когда Claude Code нужно ваше внимание.
+
+Matcher (сопоставитель) выбирает инструменты, за которыми следит hook: `Edit|Write` запускает его только для этих двух инструментов ([Filter hooks with matchers](https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers)). Hooks `PreToolUse` срабатывают до проверки режима разрешений, поэтому блокировка действует в любом режиме ([Hooks and permission modes](https://code.claude.com/docs/en/hooks-guide#hooks-and-permission-modes)).
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. In your repository, download two of this guide's [example hooks](../../examples/intermediate/05-hooks/README.md) and make them executable. Read them before you use them:
+1. В своём репозитории скачайте два из [примеров hooks](../../examples/intermediate/05-hooks/README.md) этого руководства и сделайте их исполняемыми. Прочитайте их, прежде чем использовать:
 
    ```bash
    mkdir -p .claude/hooks
@@ -50,8 +52,8 @@ A matcher picks the tools a hook watches: `Edit|Write` runs it for those two too
    chmod +x .claude/hooks/*.sh
    ```
 
-   `protect-files.sh` is the hooks guide's script for blocking edits to `.env`, `package-lock.json` and `.git/`. `format-after-edit.sh` removes trailing spaces from a source file after Claude edits it.
-2. Register them in `.claude/settings.json`, beside the `permissions` block from lesson 4:
+   `protect-files.sh` — скрипт из руководства по hooks, блокирующий правки `.env`, `package-lock.json` и `.git/`. `format-after-edit.sh` убирает пробелы в конце строк в исходном файле после того, как Claude его отредактировал.
+2. Зарегистрируйте их в `.claude/settings.json` рядом с блоком `permissions` из урока 4:
 
    ```json
    "hooks": {
@@ -64,27 +66,27 @@ A matcher picks the tools a hook watches: `Edit|Write` runs it for those two too
    }
    ```
 
-   With `"args": []`, Claude Code runs the script directly, without a shell, so the path needs no quotes ([Exec form and shell form](https://code.claude.com/docs/en/hooks#exec-form-and-shell-form)).
-3. Test the hook without Claude, by piping in the JSON an Edit call would send. Edit and Write always send an absolute path ([PreToolUse input](https://code.claude.com/docs/en/hooks#pretooluse-input)), so build it from `$PWD`:
+   При `"args": []` Claude Code запускает скрипт напрямую, без оболочки, поэтому кавычки вокруг пути не нужны ([Exec form and shell form](https://code.claude.com/docs/en/hooks#exec-form-and-shell-form)).
+3. Проверьте hook без Claude, подав на вход JSON, который отправил бы вызов Edit. Edit и Write всегда присылают абсолютный путь ([PreToolUse input](https://code.claude.com/docs/en/hooks#pretooluse-input)), поэтому соберите его из `$PWD`:
 
    ```bash
    echo "{\"tool_input\":{\"file_path\":\"$PWD/package-lock.json\"}}" | .claude/hooks/protect-files.sh; echo "exit $?"
    ```
 
-   It prints a `Blocked:` line and `exit 2`.
-4. Start `claude` and run `/hooks`: your hooks appear under `PreToolUse` and `PostToolUse` ([Debug your configuration](https://code.claude.com/docs/en/debug-your-config#check-hooks)).
-5. Ask for an edit the hook protects. In the practice template, `package-lock.json` exists; in your repository, name a protected file that it has:
+   Он выводит строку `Blocked:` и `exit 2`.
+4. Запустите `claude` и выполните `/hooks`: ваши hooks видны под `PreToolUse` и `PostToolUse` ([Debug your configuration](https://code.claude.com/docs/en/debug-your-config#check-hooks)).
+5. Попросите правку, которую hook защищает. В шаблоне для практики `package-lock.json` существует; в своём репозитории назовите защищённый файл, который в нём есть:
 
    ```text
-   Use your Edit tool, not a shell command, to change the top-level version in package-lock.json to 1.0.1.
+   Используй инструмент Edit, а не команду оболочки, чтобы изменить version верхнего уровня в package-lock.json на 1.0.1.
    ```
 
-   The Edit is blocked: Claude Code passes your script's `Blocked:` message to Claude as feedback ([Exit code output](https://code.claude.com/docs/en/hooks#exit-code-output)). Ask for the Edit tool by name here: Claude can also edit a file through a shell command, which an `Edit|Write` hook doesn't see.
+   Edit блокируется: Claude Code передаёт сообщение `Blocked:` вашего скрипта Claude как обратную связь ([Exit code output](https://code.claude.com/docs/en/hooks#exit-code-output)). Здесь назовите инструмент Edit по имени: Claude может отредактировать файл и через команду оболочки, а её hook `Edit|Write` не видит.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-The guide's script matches substrings. `*".env"*` also blocks `.env.example`, which teams commit on purpose, and a file such as `src/config.envelope.ts`; and nothing blocks a `secrets/` folder. Replace `.claude/hooks/protect-files.sh` with this skeleton, which keeps the guide's `package-lock.json` and `.git/` blocks, and finish it:
+Скрипт из руководства сопоставляет подстроки. Шаблон `*".env"*` блокирует и `.env.example`, который команды коммитят намеренно, и файл вроде `src/config.envelope.ts`; а папку `secrets/` не блокирует ничто. Замените `.claude/hooks/protect-files.sh` этой заготовкой, которая сохраняет блокировки `package-lock.json` и `.git/` из руководства, и доработайте её:
 
 ```bash
 #!/bin/bash
@@ -106,17 +108,19 @@ esac
 exit 0
 ```
 
-1. Each block prints a `Blocked:` reason to stderr and exits with 2; everything else exits with 0.
-2. Run the Check's test table until every row gives its expected exit code.
-3. In a session, ask Claude to use its Write tool to create `secrets/test.key`. Your hook blocks it.
-4. Commit the script and `.claude/settings.json`. Keep the script executable: `git ls-files -s .claude/hooks/protect-files.sh` starts with `100755`.
+Две строки `# TODO` нужно заменить кодом: заблокировать файл с именем `.env` или `.env.` с любым продолжением, кроме `example`, и любой файл внутри папки `secrets/`.
+
+1. Каждая блокировка выводит причину `Blocked:` в stderr и завершается с кодом 2; всё остальное завершается с кодом 0.
+2. Запускайте таблицу проверок из раздела «Проверка», пока каждая строка не даст ожидаемый код выхода.
+3. В сессии попросите Claude создать `secrets/test.key` инструментом Write. Ваш hook это блокирует.
+4. Закоммитьте скрипт и `.claude/settings.json`. Оставьте скрипт исполняемым: `git ls-files -s .claude/hooks/protect-files.sh` начинается с `100755`.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Урок пройден, когда выполнено всё:
 
-- [ ] Each path gives its expected exit code: 2 for `.env`, `config/.env.local`, `secrets/api.key`, `package-lock.json` and `.git/config`; 0 for `.env.example`, `src/config.envelope.ts` and `src/app.js`. Run this from your repository's root:
+- [ ] Каждый путь даёт ожидаемый код выхода: 2 для `.env`, `config/.env.local`, `secrets/api.key`, `package-lock.json` и `.git/config`; 0 для `.env.example`, `src/config.envelope.ts` и `src/app.js`. Запустите это из корня своего репозитория:
 
   ```bash
   for p in .env config/.env.local .env.example secrets/api.key src/config.envelope.ts src/app.js package-lock.json .git/config; do
@@ -124,29 +128,29 @@ You are done when all of these are true:
   done
   ```
 
-- [ ] The script is committed and executable, and the committed `.claude/settings.json` runs it as a `PreToolUse` hook for `Edit|Write`: `git show HEAD:.claude/settings.json | jq .hooks.PreToolUse` shows it.
-- [ ] Self-check (not tested): Claude's attempt to create `secrets/test.key` was blocked with your `Blocked:` message.
+- [ ] Скрипт закоммичен и исполняемый, а закоммиченный `.claude/settings.json` запускает его как hook `PreToolUse` для `Edit|Write`: `git show HEAD:.claude/settings.json | jq .hooks.PreToolUse` его показывает.
+- [ ] Самопроверка (не проверяется автоматически): попытка Claude создать `secrets/test.key` была заблокирована вашим сообщением `Blocked:`.
 
-Run `npm run check -- i-5 --dir <your repo>` from your practice copy, or `npm run check -- i-5` in the copy itself.
+Запустите `npm run check -- i-5 --dir <your repo>` из учебной копии или `npm run check -- i-5` в самой копии.
 
-If a row is wrong, test that path alone and print the name the script sees: `basename` of `.env.local` is `.env.local`, so a `case` pattern `.env.*` matches it. The check runs the committed script, so commit each fix before you run it. If the second item fails on the file mode, run `chmod +x .claude/hooks/protect-files.sh`, then `git add` it and commit again.
+Если строка в таблице неверна, проверьте этот путь отдельно и выведите имя, которое видит скрипт: `basename` от `.env.local` — это `.env.local`, так что шаблон `case` `.env.*` ему подходит. Проверка запускает закоммиченный скрипт, поэтому коммитьте каждое исправление до запуска. Если второй пункт не прошёл из-за режима файла, выполните `chmod +x .claude/hooks/protect-files.sh`, затем `git add` и закоммитьте снова.
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- Hooks run with your user's rights: in an interactive session once you trust the folder, and in a `claude -p` run without asking ([Workspace trust](https://code.claude.com/docs/en/hooks#workspace-trust)). Read a repository's hooks before you trust it or script Claude Code in it.
-- An `Edit|Write` hook doesn't see shell commands: `echo X >> .env` goes through Bash. Lesson 4's `Read` rules stop commands such as `cat .env` from reading those files, but a write such as that `>>` is checked against `Edit` rules, which lesson 4 doesn't add ([Redirections](https://code.claude.com/docs/en/permissions#redirections)). For a hook that sees every change, the hooks guide adds a `Bash|PowerShell` matcher or a `Stop` hook that scans the working tree ([Filter hooks with matchers](https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers)).
-- A Notification hook, such as the example [`desktop-notify.sh`](../../examples/intermediate/05-hooks/dot-claude/hooks/desktop-notify.sh), is about you, not the project: the hooks guide registers its notification examples in `~/.claude/settings.json`. Do the same, with the path to wherever you keep the script.
+- Hooks работают с правами вашего пользователя: в интерактивной сессии — после того, как вы доверили папку, а в запуске `claude -p` — без вопросов ([Workspace trust](https://code.claude.com/docs/en/hooks#workspace-trust)). Читайте hooks репозитория, прежде чем доверять ему или запускать в нём Claude Code из скриптов.
+- Hook `Edit|Write` не видит команды оболочки: `echo X >> .env` идёт через Bash. Правила `Read` из урока 4 мешают командам вроде `cat .env` читать эти файлы, но запись вроде этого `>>` проверяется по правилам `Edit`, которых урок 4 не добавляет ([Redirections](https://code.claude.com/docs/en/permissions#redirections)). Для hook, который видит каждое изменение, руководство по hooks добавляет matcher `Bash|PowerShell` или hook `Stop`, сканирующий рабочее дерево ([Filter hooks with matchers](https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers)).
+- Hook Notification, например пример [`desktop-notify.sh`](../../examples/intermediate/05-hooks/dot-claude/hooks/desktop-notify.sh), касается вас, а не проекта: руководство по hooks регистрирует свои примеры уведомлений в `~/.claude/settings.json`. Сделайте так же, указав путь к тому месту, где вы храните скрипт.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide): more ready-made hooks, including notifications and re-injecting context after compaction.
-- [Hooks reference](https://code.claude.com/docs/en/hooks): every event, its input and its output.
-- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config#check-hooks): what to check when a hook doesn't fire.
+- [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide): больше готовых hooks, включая уведомления и повторную подачу контекста после сжатия.
+- [Hooks reference](https://code.claude.com/docs/en/hooks): все события, их входные и выходные данные.
+- [Debug your configuration](https://code.claude.com/docs/en/debug-your-config#check-hooks): что проверить, если hook не срабатывает.
 
 ---
 
-<sub>Sources: [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide) · [Hooks reference](https://code.claude.com/docs/en/hooks) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)</sub>
+<sub>Источники: [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide) · [Hooks reference](https://code.claude.com/docs/en/hooks) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)</sub>
 
-<sub>← [Permissions, settings scopes and the sandbox](04-permissions-and-sandbox.md) · [Intermediate index](README.md) · [Delegate to a custom subagent](06-subagents.md) → · Topic: [Hooks](../topics/hooks.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=i-5)</sub>
+<sub>← [Разрешения, уровни настроек и песочница](04-permissions-and-sandbox.md) · [Оглавление уровня](README.md) · [Поручаем задачу своему субагенту](06-subagents.md) → · Тема: [Hooks](../topics/hooks.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=i-5)</sub>

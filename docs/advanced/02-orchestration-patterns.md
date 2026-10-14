@@ -1,72 +1,72 @@
-# Choose an orchestration pattern <a id="choose-an-orchestration-pattern"></a>
+# Выбор схемы оркестрации <a id="choose-an-orchestration-pattern"></a>
 
-<sub>**Advanced** · Lesson 2 of 7 · about 20 minutes · Needs: [Parallel sessions with worktrees](01-parallel-sessions.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
+<sub>**Продвинутый уровень** · Урок 2 из 7 · около 20 минут · Нужно: [Параллельные сессии с worktrees](01-parallel-sessions.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-09</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this lesson you can choose between the main conversation, subagents, a dynamic workflow and an agent team by what a job needs and what it costs, and run a job as parallel subagents.
+После урока вы умеете выбирать между основным диалогом, субагентами, динамическим workflow и командой агентов (agent team) по тому, что нужно задаче и во что она обойдётся, и запускать задачу как параллельных субагентов.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Your repository from [lesson 1](01-parallel-sessions.md), with at least three top-level folders that hold files, and your copy of the practice template with Node.js LTS: the check runs from the copy. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
-- macOS, Linux or WSL 2, and `jq`: the delegation log in Your turn is a shell command that uses it.
-- Usage: moderate. Each subagent works in its own context window and sends its own requests, which count toward the same usage limits as your main conversation ([Create custom subagents](https://code.claude.com/docs/en/sub-agents)). For a lighter run, use two folders in the Worked example and two files in job 1.
+- Ваш репозиторий из [урока 1](01-parallel-sessions.md), в котором есть как минимум три папки верхнего уровня с файлами, и ваша копия шаблона для практики с Node.js LTS: проверка запускается из копии. Если ещё не сделали, подготовьте папку `.practice/` в репозитории так, как описано в [уроке 1 начального уровня](../beginner/01-install-and-look-around.md#you-need).
+- macOS, Linux или WSL 2 и `jq`: журнал делегирования в разделе «Ваша очередь» — это команда оболочки, которая его использует.
+- Расход: умеренный. Каждый субагент работает в своём окне контекста и отправляет собственные запросы, которые идут в те же лимиты, что и ваш основной диалог ([Create custom subagents](https://code.claude.com/docs/en/sub-agents)). Для более лёгкого запуска возьмите в разборе на примере две папки, а в задаче 1 — два файла.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-Subagents, a dynamic workflow and an agent team all split a job across workers; what differs is who holds the plan ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow)). With subagents, Claude decides turn by turn, and each result comes back into your conversation. A dynamic workflow is a script Claude writes: it holds the loop and the intermediate results, so it can run many agents, cross-check their findings and rerun the same way. In an agent team, a lead supervises teammates who message each other directly ([Choose an approach](https://code.claude.com/docs/en/agents#choose-an-approach)).
+Субагенты, динамический workflow и команда агентов делят задачу между исполнителями; различие в том, у кого находится план ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow)). С субагентами Claude решает ход за ходом, и каждый результат возвращается в ваш диалог. Динамический workflow — это скрипт, который пишет Claude: он держит цикл и промежуточные результаты, поэтому может запустить много агентов, сверить их находки и повториться точно так же. В команде агентов ведущий руководит участниками, которые переписываются напрямую ([Choose an approach](https://code.claude.com/docs/en/agents#choose-an-approach)).
 
-Every pattern past one conversation adds usage: each subagent, and each agent a workflow spawns, sends requests of its own ([Why usage climbs](https://code.claude.com/docs/en/costs#why-usage-climbs-in-a-long-session)), and agent teams "use significantly more tokens than a single session" ([When to use agent teams](https://code.claude.com/docs/en/agent-teams#when-to-use-agent-teams)). So pick the cheapest pattern the job needs: ask these questions in order, and stop at the first answer that settles it.
+Любая схема сложнее одного диалога увеличивает расход: каждый субагент и каждый агент, которого запускает workflow, отправляет собственные запросы ([Why usage climbs](https://code.claude.com/docs/en/costs#why-usage-climbs-in-a-long-session)), а команды агентов «расходуют существенно больше токенов, чем одна сессия» ([When to use agent teams](https://code.claude.com/docs/en/agent-teams#when-to-use-agent-teams)). Поэтому выбирайте самую дешёвую схему, которой хватает для задачи: задавайте эти вопросы по порядку и останавливайтесь на первом ответе, который всё решает.
 
 ```mermaid
 flowchart TD
-  accTitle: Who holds the plan
-  accDescr: A path for choosing how to split a job. If one conversation can do it without filling up, keep it in the main conversation. Otherwise, if the workers must talk to each other, a lead holds the plan in an agent team, which is experimental. If they need not talk and the job is a few tasks done once, Claude holds the plan and subagents return summaries. If it needs many agents, cross-checked findings or a rerun, a script holds the plan in a dynamic workflow.
-  A["A job"] --> B{"Can one conversation do it without filling up?"}
-  B -- yes --> M["Main conversation"]
-  B -- no --> C{"Must the workers talk to each other?"}
-  C -- yes --> T["Agent team: a lead holds the plan"]
-  C -- no --> D{"Does it need many agents, cross-checked findings or a rerun?"}
-  D -- no --> S["Subagents: Claude holds the plan"]
-  D -- yes --> W["Dynamic workflow: a script holds the plan"]
+  accTitle: У кого находится план
+  accDescr: Путь выбора способа разделить задачу. Если с ней справится один диалог и он не переполнится, оставьте её в основном диалоге. Иначе, если исполнители должны общаться друг с другом, план держит ведущий в команде агентов (это экспериментальная функция). Если общаться им не нужно, а задача — несколько дел, выполняемых один раз, план держит Claude, а субагенты возвращают краткие итоги. Если нужно много агентов, перекрёстная проверка находок или повторный запуск, план держит скрипт в динамическом workflow.
+  A["Задача"] --> B{"Справится ли один диалог, не переполнившись?"}
+  B -- да --> M["Основной диалог"]
+  B -- нет --> C{"Должны ли исполнители общаться друг с другом?"}
+  C -- да --> T["Команда агентов: план держит ведущий"]
+  C -- нет --> D{"Нужно ли много агентов, перекрёстная проверка находок или повторный запуск?"}
+  D -- нет --> S["Субагенты: план держит Claude"]
+  D -- да --> W["Динамический workflow: план держит скрипт"]
 ```
 
 > [!NOTE]
-> "Agent teams are experimental and disabled by default." ([Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams)) This lesson names them as one option and doesn't run one; the [Agent teams](electives/agent-teams.md) Elective does.
+> «Agent teams are experimental and disabled by default» (команды агентов экспериментальные и по умолчанию выключены). ([Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams)) Этот урок называет их как один из вариантов и не запускает; запускает дополнительный урок [Agent teams (команды агентов)](electives/agent-teams.md).
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. Pick three top-level folders in your repository, such as `src`, `test` and `docs`, and start `claude`.
-2. Ask the chart's questions about one job: a newcomer's summary of each folder. One conversation would fill with file reads it won't need again, so not the main conversation ([Choose between subagents and main conversation](https://code.claude.com/docs/en/sub-agents#choose-between-subagents-and-main-conversation)). The summaries needn't talk to each other, so no team. It's three tasks, done once, so subagents.
-3. Ask for them, with your own folder names, as the docs' parallel research example does ([Run parallel research](https://code.claude.com/docs/en/sub-agents#run-parallel-research)):
+1. Выберите в своём репозитории три папки верхнего уровня, например `src`, `test` и `docs`, и запустите `claude`.
+2. Задайте вопросы схемы об одной задаче: краткое описание каждой папки для новичка. Один диалог заполнился бы чтением файлов, которые больше не понадобятся, поэтому не основной диалог ([Choose between subagents and main conversation](https://code.claude.com/docs/en/sub-agents#choose-between-subagents-and-main-conversation)). Описаниям не нужно общаться друг с другом, значит, не команда. Это три задачи, выполняемые один раз, значит, субагенты.
+3. Попросите об этом, подставив названия своих папок, как в примере параллельного исследования из документации ([Run parallel research](https://code.claude.com/docs/en/sub-agents#run-parallel-research)):
 
    ```text
-   Research the src, test and docs folders in parallel using separate subagents, and give me two sentences on each.
+   Исследуй папки src, test и docs параллельно, каждую отдельным субагентом, и дай мне по два предложения о каждой.
    ```
 
-   By default, an interactive session runs subagents in the background, so your prompt stays free ([Run subagents in foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)). The panel below the prompt shows a row for each one while it works.
-4. While they work, run `/tasks`. It lists each subagent with its state and the model it runs on; press Enter on a row to open its transcript ([Check on running work](https://code.claude.com/docs/en/agents#check-on-running-work), [Choose a model](https://code.claude.com/docs/en/sub-agents#choose-a-model)). Claude may start [built-in](https://code.claude.com/docs/en/sub-agents#built-in-subagents) `Explore` or `general-purpose` subagents, or forks of your conversation, so your rows will differ. When one finishes successfully, its row leaves the panel and the footer briefly shows `/tasks to see subagents`; the row of one that fails stays for a moment.
-5. When the summaries arrive, run `/usage`. On a Pro, Max, Team or Enterprise plan, its usage breakdown attributes your recent usage to skills, subagents, plugins and MCP servers, and flags behaviors, such as long context, that account for a notable share of it ([Plan usage breakdown](https://code.claude.com/docs/en/costs#plan-usage-breakdown)). Its Session block, intended for API users such as those signed in with a Console account, shows this session's estimated cost ([Using the `/usage` command](https://code.claude.com/docs/en/costs#using-the-%2Fusage-command)). Both are estimates.
-6. Name what would change the answer. The same summary for every folder, cross-checked and rerun before each release, would be a workflow, the next lesson's pattern. Reviewers who must argue a root cause out between themselves would be an agent team.
+   По умолчанию интерактивная сессия запускает субагентов в фоне, так что строка ввода остаётся свободной ([Run subagents in foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)). Панель под строкой ввода показывает строку для каждого, пока он работает.
+4. Пока они работают, выполните `/tasks`. Команда перечисляет каждого субагента с его состоянием и моделью, на которой он работает; Enter на строке открывает его транскрипт ([Check on running work](https://code.claude.com/docs/en/agents#check-on-running-work), [Choose a model](https://code.claude.com/docs/en/sub-agents#choose-a-model)). Claude может запустить [встроенных](https://code.claude.com/docs/en/sub-agents#built-in-subagents) субагентов `Explore` или `general-purpose` либо ответвления вашего диалога (forks), так что ваши строки будут другими. Когда субагент успешно завершается, его строка исчезает из панели, а внизу ненадолго появляется `/tasks to see subagents`; строка субагента, завершившегося с ошибкой, остаётся на некоторое время.
+5. Когда итоги придут, выполните `/usage`. На тарифе Pro, Max, Team или Enterprise разбивка расхода относит ваш недавний расход к skills, субагентам, плагинам и MCP-серверам и отмечает действия, например длинный контекст, на которые приходится заметная доля ([Plan usage breakdown](https://code.claude.com/docs/en/costs#plan-usage-breakdown)). Блок Session, рассчитанный на пользователей API, например вошедших через аккаунт Console, показывает оценочную стоимость этой сессии ([Using the `/usage` command](https://code.claude.com/docs/en/costs#using-the-%2Fusage-command)). Обе цифры — оценки.
+6. Назовите, что изменило бы ответ. Такое же описание для каждой папки, перепроверяемое и перезапускаемое перед каждым релизом, было бы workflow — схемой следующего урока. Рецензенты, которым нужно между собой выяснить первопричину, были бы командой агентов.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-**Brief:** here are four jobs for your repository. Choose a pattern for each by what it needs and what it costs, write your choices down, then run the one that calls for subagents.
+**Задание:** вот четыре задачи для вашего репозитория. Выберите схему для каждой по тому, что ей нужно и во что она обойдётся, запишите выбор, затем запустите ту задачу, которая требует субагентов.
 
-1. Check the three largest source files for errors that are caught and ignored. Reading the files in your conversation would crowd it, and you only need the findings: one reviewer per file, once, and one short list back.
-2. Run the same check on every source file, verify each finding against the code before it's reported, and rerun it before every release.
-3. Fix a typo in one error message.
-4. Three investigators each test a different theory for a flaky test, message each other as they work to challenge each other's findings, and keep going until they agree on a cause.
+1. Проверьте три самых больших исходных файла на ошибки, которые перехватываются и игнорируются. Чтение файлов в вашем диалоге его бы переполнило, а нужны только находки: по рецензенту на файл, один раз, и один короткий список в ответ.
+2. Выполните ту же проверку для каждого исходного файла, сверьте каждую находку с кодом, прежде чем о ней сообщать, и повторяйте её перед каждым релизом.
+3. Исправьте опечатку в одном сообщении об ошибке.
+4. Три исследователя проверяют каждый свою версию причины нестабильного теста, переписываются в ходе работы, оспаривая находки друг друга, и продолжают, пока не договорятся о причине.
 
-**Acceptance criteria:**
+**Критерии приёмки:**
 
-- `.practice/a-2-choices.md` has one line per job, `<job number>: <pattern> because <reason>`, and each pattern is `main conversation`, `subagents`, `workflow` or `agent team`.
-- `.practice/a-2-hook.json` holds this [`SubagentStart` hook](https://code.claude.com/docs/en/hooks#subagentstart), which appends each subagent's id and type to `.practice/a-2-agents.txt` when it starts, like the delegation log in [Delegate to a custom subagent](../intermediate/06-subagents.md):
+- В `.practice/a-2-choices.md` по одной строке на задачу вида `<номер задачи>: <схема> because <причина>`, причём каждая схема — это `main conversation`, `subagents`, `workflow` или `agent team`.
+- В `.practice/a-2-hook.json` лежит этот [hook `SubagentStart`](https://code.claude.com/docs/en/hooks#subagentstart): при запуске каждого субагента он дописывает его id и тип в `.practice/a-2-agents.txt`, как журнал делегирования в уроке [Поручаем задачу своему субагенту](../intermediate/06-subagents.md):
 
   ```json
   {
@@ -78,39 +78,39 @@ flowchart TD
   }
   ```
 
-- Job 1 ran as parallel subagents, one per file, in a session you started with `claude --settings .practice/a-2-hook.json` ([CLI reference](https://code.claude.com/docs/en/cli-reference#cli-flags)).
-- Job 1 changed no file: the reviewers only report, and `git status` shows no change from them.
-- Only job 1 ran. The other three are choices.
+- Задача 1 выполнена как параллельные субагенты, по одному на файл, в сессии, запущенной командой `claude --settings .practice/a-2-hook.json` ([CLI reference](https://code.claude.com/docs/en/cli-reference#cli-flags)).
+- Задача 1 не изменила ни одного файла: рецензенты только докладывают, и `git status` не показывает от них никаких изменений.
+- Выполнена только задача 1. Остальные три — это выбор схемы.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Вы закончили, когда выполнено всё из этого списка:
 
-- [ ] `.practice/a-2-choices.md` picks the cheapest pattern that fits each job.
-- [ ] `.practice/a-2-agents.txt` shows at least two subagents starting for job 1: `cut -f1 .practice/a-2-agents.txt | sort -u` lists two or more ids.
-- [ ] Self-check (not tested): for one real job from your own backlog, you can name its pattern, the question that decided it, and why a cheaper pattern wouldn't do.
+- [ ] В `.practice/a-2-choices.md` для каждой задачи выбрана самая дешёвая подходящая схема.
+- [ ] В `.practice/a-2-agents.txt` видно, что для задачи 1 запустились как минимум два субагента: `cut -f1 .practice/a-2-agents.txt | sort -u` выводит два id или больше.
+- [ ] Самопроверка (не тестируется): для одной реальной задачи из вашего списка дел вы можете назвать её схему, вопрос, который это решил, и почему более дешёвая схема не подойдёт.
 
-Run `npm run check -- a-2 --dir <your repo>` from your practice copy.
+Запустите `npm run check -- a-2 --dir <your repo>` из своей учебной копии.
 
-If a job's pattern is wrong, ask the chart's questions in order: the check's hint names the question that settles that job. If the log has fewer than two ids, start the session with the hook file and ask for one subagent per file, in parallel. A subagent that Claude resumes logs its id again, so it counts once.
+Если схема для какой-то задачи выбрана неверно, задайте вопросы схемы по порядку: подсказка проверки называет вопрос, который решает эту задачу. Если в журнале меньше двух id, запустите сессию с файлом hook и попросите по одному субагенту на файл, параллельно. Субагент, которого Claude возобновил, пишет свой id в журнал ещё раз, поэтому считается один раз.
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- A background subagent's permission prompts appear in your main session, and an answer that lasts beyond that one tool call, such as a grant for the rest of the session, applies to the whole session, your main conversation included ([Run subagents in foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)). Approve each of those prompts for that one call only, never for the rest of the session, and ask reviewers only to read.
-- Each subagent's result returns to your conversation, and each subagent spends tokens of its own while it runs, so many detailed results crowd your context and add to your usage. Ask for short results ([Run parallel research](https://code.claude.com/docs/en/sub-agents#run-parallel-research)).
-- With agent teams turned on, a subagent that Claude names launches as a teammate, so a team can form when you asked for subagents. The hook also logs a line each time a teammate that runs inside your main terminal handles a new message ([Claude spawns teammates instead of subagents](https://code.claude.com/docs/en/agent-teams#claude-spawns-teammates-instead-of-subagents), [SubagentStart](https://code.claude.com/docs/en/hooks#subagentstart)). If you turned teams on, add `"env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "0" }` to `.practice/a-2-hook.json`, as a top-level key beside `"hooks"`. A `--settings` file overrides your user, project and local settings and a shell export, and only managed settings override it ([Settings precedence](https://code.claude.com/docs/en/settings#settings-precedence)).
+- Запросы разрешений от фонового субагента появляются в вашей основной сессии, а ответ, действующий дольше одного вызова инструмента, например разрешение до конца сессии, применяется ко всей сессии, включая основной диалог ([Run subagents in foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)). Одобряйте каждый такой запрос только для этого одного вызова, никогда на остаток сессии, и поручайте рецензентам только чтение.
+- Результат каждого субагента возвращается в ваш диалог, и каждый субагент тратит собственные токены, пока работает, поэтому много подробных результатов заполняют контекст и увеличивают расход. Просите короткие результаты ([Run parallel research](https://code.claude.com/docs/en/sub-agents#run-parallel-research)).
+- Если команды агентов включены, субагент, которого называет Claude, запускается как участник команды, так что команда может сложиться, когда вы просили субагентов. Кроме того, hook записывает строку каждый раз, когда участник, работающий в вашем основном терминале, обрабатывает новое сообщение ([Claude spawns teammates instead of subagents](https://code.claude.com/docs/en/agent-teams#claude-spawns-teammates-instead-of-subagents), [SubagentStart](https://code.claude.com/docs/en/hooks#subagentstart)). Если вы включили команды, добавьте `"env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "0" }` в `.practice/a-2-hook.json` ключом верхнего уровня рядом с `"hooks"`. Файл `--settings` переопределяет ваши пользовательские, проектные и локальные настройки и переменную, заданную в оболочке; переопределить его могут только управляемые настройки ([Settings precedence](https://code.claude.com/docs/en/settings#settings-precedence)).
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Run agents in parallel](https://code.claude.com/docs/en/agents): the official comparison of the ways Claude Code works on several tasks at once, and how to check on each.
-- [Fork the current conversation](https://code.claude.com/docs/en/sub-agents#fork-the-current-conversation): a subagent that inherits your whole conversation and shares its prompt cache, for a side task that needs the same context.
-- [Agent team token costs](https://code.claude.com/docs/en/costs#agent-team-token-costs): what drives a team's usage, and how to keep it small.
+- [Run agents in parallel](https://code.claude.com/docs/en/agents): официальное сравнение способов, которыми Claude Code работает над несколькими задачами одновременно, и как следить за каждым.
+- [Fork the current conversation](https://code.claude.com/docs/en/sub-agents#fork-the-current-conversation): субагент, который наследует весь ваш диалог и делит с ним кеш промпта, — для побочной задачи, которой нужен тот же контекст.
+- [Agent team token costs](https://code.claude.com/docs/en/costs#agent-team-token-costs): от чего зависит расход команды и как держать его небольшим.
 
 ---
 
-<sub>Sources: [Run agents in parallel](https://code.claude.com/docs/en/agents) · [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows) · [Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams) · [Create custom subagents](https://code.claude.com/docs/en/sub-agents) · [Manage costs effectively](https://code.claude.com/docs/en/costs) · [Hooks reference](https://code.claude.com/docs/en/hooks) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Settings files and precedence](https://code.claude.com/docs/en/settings)</sub>
+<sub>Источники: [Run agents in parallel](https://code.claude.com/docs/en/agents) · [Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows) · [Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams) · [Create custom subagents](https://code.claude.com/docs/en/sub-agents) · [Manage costs effectively](https://code.claude.com/docs/en/costs) · [Hooks reference](https://code.claude.com/docs/en/hooks) · [CLI reference](https://code.claude.com/docs/en/cli-reference) · [Settings files and precedence](https://code.claude.com/docs/en/settings)</sub>
 
-<sub>← [Parallel sessions with worktrees](01-parallel-sessions.md) · [Advanced index](README.md) · [Run and save a dynamic workflow](03-dynamic-workflows.md) → · Topic: [Subagents and parallel work](../topics/subagents-and-parallel-work.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=a-2)</sub>
+<sub>← [Параллельные сессии с worktrees](01-parallel-sessions.md) · [Оглавление продвинутого уровня](README.md) · [Запуск и сохранение динамического workflow](03-dynamic-workflows.md) → · Тема: [Субагенты и параллельная работа](../topics/subagents-and-parallel-work.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=a-2)</sub>

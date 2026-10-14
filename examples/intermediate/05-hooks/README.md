@@ -1,17 +1,17 @@
-# Hooks for Intermediate lesson 5 <a id="hooks-for-intermediate-lesson-5"></a>
+# Hooks для урока 5 Среднего уровня <a id="hooks-for-intermediate-lesson-5"></a>
 
-Three teaching hooks for the Intermediate lesson "Enforce a rule with a hook", and the settings that register them. Each script's header says what it does, when it runs, its side effects, platforms, how to remove it and its test line.
+Три учебных hooks для урока Среднего уровня «Правило через hook» и настройки, которые их регистрируют. Заголовок каждого скрипта говорит, что он делает, когда запускается, его побочные эффекты, платформы, как его удалить и строку проверки.
 
-| Script | Event and matcher | What it does |
+| Скрипт | Событие и matcher | Что делает |
 |---|---|---|
-| `dot-claude/hooks/protect-files.sh` | `PreToolUse`, `Edit\|Write` | Blocks edits to `.env`, `package-lock.json` and `.git/`, with exit code 2. The [hooks guide](https://code.claude.com/docs/en/hooks-guide#block-edits-to-protected-files)'s script, unchanged |
-| `dot-claude/hooks/format-after-edit.sh` | `PostToolUse`, `Edit\|Write` | Removes trailing spaces and tabs and leaves one final newline in the source file Claude just changed. Only common source-code extensions, such as `.js`, `.py` and `.sh`: Markdown, patches and data files stay as they are |
-| `dot-claude/hooks/desktop-notify.sh` | `Notification`, every type | Shows a desktop notification for every Claude Code notification, such as a permission prompt that has waited |
+| `dot-claude/hooks/protect-files.sh` | `PreToolUse`, `Edit\|Write` | Блокирует правки `.env`, `package-lock.json` и `.git/` с кодом выхода 2. Скрипт из [руководства по hooks](https://code.claude.com/docs/en/hooks-guide#block-edits-to-protected-files) без изменений |
+| `dot-claude/hooks/format-after-edit.sh` | `PostToolUse`, `Edit\|Write` | Убирает пробелы и табуляции в конце строк и оставляет один финальный перевод строки в файле с кодом, который Claude только что изменил. Только для распространённых расширений исходного кода, таких как `.js`, `.py` и `.sh`: Markdown, патчи и файлы с данными остаются как есть |
+| `dot-claude/hooks/desktop-notify.sh` | `Notification`, любой тип | Показывает уведомление на рабочем столе для каждого уведомления Claude Code, например для запроса разрешения, который долго ждёт |
 
 <a id="use-them"></a>
-## Use them
+## Как их использовать
 
-From your project's root:
+Из корня вашего проекта:
 
 ```bash
 mkdir -p .claude/hooks
@@ -19,9 +19,9 @@ cp <path-to-this-folder>/dot-claude/hooks/protect-files.sh <path-to-this-folder>
 chmod +x .claude/hooks/*.sh
 ```
 
-Then merge `settings.snippet.json` into your project's `.claude/settings.json`. If the file already has a `hooks` or `permissions` key, add these entries beside the existing ones instead of replacing them.
+Затем добавьте `settings.snippet.json` в `.claude/settings.json` вашего проекта. Если в файле уже есть ключ `hooks` или `permissions`, допишите эти записи рядом с существующими, а не заменяйте их.
 
-`desktop-notify.sh` is about you, not the project, so it goes in your user settings, where the [hooks guide](https://code.claude.com/docs/en/hooks-guide#get-notified-when-claude-needs-input) registers its notification examples. Copy it to `~/.claude/hooks/`, make it executable, and add this to `~/.claude/settings.json`, beside any keys already there. It uses shell form, so the shell expands `~`:
+`desktop-notify.sh` касается вас, а не проекта, поэтому он идёт в ваши пользовательские настройки, где [руководство по hooks](https://code.claude.com/docs/en/hooks-guide#get-notified-when-claude-needs-input) регистрирует свои примеры уведомлений. Скопируйте его в `~/.claude/hooks/`, сделайте исполняемым и добавьте вот это в `~/.claude/settings.json` рядом с уже имеющимися ключами. Здесь используется форма shell, поэтому оболочка раскрывает `~`:
 
 ```json
 "hooks": {
@@ -32,16 +32,16 @@ Then merge `settings.snippet.json` into your project's `.claude/settings.json`. 
 ```
 
 `settings.snippet.json`:
-- **What:** registers `protect-files.sh` and `format-after-edit.sh` in [exec form](https://code.claude.com/docs/en/hooks#exec-form-and-shell-form), so the `${CLAUDE_PROJECT_DIR}` path needs no quoting, and adds a `Read(.env)` deny rule, which also stops Claude's Edit and Write tools from changing a `.env` file ([Configure permissions](https://code.claude.com/docs/en/permissions#read-and-edit)).
-- **When:** Claude Code reads it when a session starts in the project, and reloads it when the file changes ([Settings](https://code.claude.com/docs/en/settings#when-edits-take-effect)).
-- **Side effects:** none of its own; the scripts' headers list theirs.
-- **Platforms:** macOS, Linux and WSL2. The scripts need bash and jq, and `format-after-edit.sh` also needs python3.
-- **Remove:** delete the entries from `.claude/settings.json`.
+- **Что:** регистрирует `protect-files.sh` и `format-after-edit.sh` в [форме exec](https://code.claude.com/docs/en/hooks#exec-form-and-shell-form), поэтому путь с `${CLAUDE_PROJECT_DIR}` не нужно заключать в кавычки, и добавляет правило deny `Read(.env)`, которое заодно не даёт инструментам Edit и Write изменять файл `.env` ([Configure permissions](https://code.claude.com/docs/en/permissions#read-and-edit)).
+- **Когда:** Claude Code читает его при старте сессии в проекте и перечитывает при изменении файла ([Settings](https://code.claude.com/docs/en/settings#when-edits-take-effect)).
+- **Побочные эффекты:** собственных нет; побочные эффекты скриптов перечислены в их заголовках.
+- **Платформы:** macOS, Linux и WSL2. Скриптам нужны bash и jq, а `format-after-edit.sh` ещё и python3.
+- **Как удалить:** удалите записи из `.claude/settings.json`.
 
-Hooks in a repository's `.claude/settings.json` run with your user's rights: in an interactive session once you trust the folder, and in a `claude -p` run without asking ([Hooks reference](https://code.claude.com/docs/en/hooks#workspace-trust)). Read every script before you register it.
+Hooks из `.claude/settings.json` репозитория выполняются с правами вашего пользователя: в интерактивной сессии — после того как вы доверили папку, а в запуске `claude -p` — без вопросов ([Hooks reference](https://code.claude.com/docs/en/hooks#workspace-trust)). Прочитайте каждый скрипт, прежде чем регистрировать его.
 
-Smoke test, without Claude: `bash test.sh`.
+Смоук-тест без Claude: `bash test.sh`.
 
-Tested in Claude Code v2.1.285 (stable) on macOS, 2026-10-06
+Проверено на Claude Code v2.1.285 (stable) на macOS, 2026-10-06
 
-Sources: [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide), [Hooks reference](https://code.claude.com/docs/en/hooks), [Configure permissions](https://code.claude.com/docs/en/permissions), [Settings](https://code.claude.com/docs/en/settings)
+Источники: [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide), [Hooks reference](https://code.claude.com/docs/en/hooks), [Configure permissions](https://code.claude.com/docs/en/permissions), [Settings](https://code.claude.com/docs/en/settings)

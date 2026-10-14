@@ -1,6 +1,16 @@
-@AGENTS.md
+# Русский перевод руководства — правила для Claude Code
 
-## Claude Code notes
+Это форк-перевод `wesammustafa/Claude-Code-Everything-You-Need-to-Know` (remote `upstream`) вместе с форком
+учебного шаблона `runowata/claude-code-practice-ru` (клон рядом: `../claude-code-practice-ru`).
+Читатель не знает английского: всё, что он читает или видит в терминале от уроков и проверок, — по-русски;
+надписи интерфейса самого Claude Code — как на экране.
 
-- When you edit this guide, load the bundled `/claude-api` skill before you state a model fact, then confirm the fact on its Tier 1 source from the table in `AGENTS.md`. The guide states no prices or plan limits.
-- This repo's root `.claude/` holds no hooks and no allow rules: only a deny rule for reading `.env` files, a skill and a workflow ([SECURITY.md](SECURITY.md)). `examples/` is inert until copied; review every file before copying it. Never add a `.claude/`, `CLAUDE.md`, `AGENTS.md`, `.mcp.json` or `.claude-plugin/marketplace.json` under `examples/`: a marketplace manifest goes in `dot-claude-plugin/`, so neither the example's folder nor this repo can be added as a plugin marketplace by its folder path or as `owner/repo`.
+- Порядок работ, решения и точка продолжения: `.translation/PLAN.md`. Синхронизация с оригиналом — по нему.
+- Словарь и правила перевода: `.translation/GLOSSARY.md` — обязателен для любой правки текста.
+- Английские якоря заголовков закреплены `<a id>`: не удалять; для новых заголовков после синхронизации
+  запускать `node .translation/tools/pin-anchors.mjs <файлы>` ДО перевода.
+- Проверки: `node .github/scripts/check.mjs`. `lesson-lint` и `stamps` адаптированы под русский,
+  `em-dash` отключено. Цитаты учебного приложения: `LEARN_DIR=../claude-code-practice-ru/learn/lessons node .github/scripts/check.mjs`.
+- `AGENTS.md` и `CONTRIBUTING.md` — правила авторов оригинала, на английском. Из них действуют правила
+  о примерах (`examples/` инертны, safety contract) и о якорях; правило про длинное тире не действует.
+- Если пользователь проходит курс (запускает примеры, задаёт вопросы), а не правит перевод, — просто помогай.

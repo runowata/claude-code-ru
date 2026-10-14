@@ -1,42 +1,42 @@
-# Permissions, settings scopes and the sandbox <a id="permissions-settings-scopes-and-the-sandbox"></a>
+# Разрешения, уровни настроек и песочница <a id="permissions-settings-scopes-and-the-sandbox"></a>
 
-<sub>**Intermediate** · Lesson 4 of 8 · about 20 minutes · Needs: [Organize project memory and see what loaded](02-organize-memory.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
+<sub>**Средний уровень** · Урок 4 из 8 · около 20 минут · Нужно: [Организуем память проекта и смотрим, что загрузилось](02-organize-memory.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-06</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this lesson you can put a permission rule in the settings file whose scope fits it, see which rules are in force, and turn on the sandbox so the shell commands Claude runs can't write outside your project, a temporary folder and any folders you've added.
+После урока вы умеете записать правило разрешений в файл настроек подходящего уровня, увидеть, какие правила действуют, и включить песочницу (sandbox), чтобы команды оболочки, которые запускает Claude, не могли писать за пределами вашего проекта, временной папки и добавленных вами папок.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Your copy of the practice template, for the Worked example, with Node.js LTS: the check runs from it. One of your own repositories with a test command, for Your turn; or use the template copy for both.
-- macOS, Linux or WSL 2. On Linux and WSL 2, the sandbox needs `bubblewrap` and `socat` ([Set up Linux and WSL2](https://code.claude.com/docs/en/sandboxing#set-up-linux-and-wsl2)); a Codespace on your template copy has both.
-- Usage: light.
+- Ваша учебная копия шаблона для практики с Node.js LTS — для разбора на примере: проверка запускается из неё. Один из ваших репозиториев с командой запуска тестов — для раздела «Ваша очередь»; либо используйте учебную копию для обоих целей.
+- macOS, Linux или WSL 2. В Linux и WSL 2 для песочницы нужны `bubblewrap` и `socat` ([Set up Linux and WSL2](https://code.claude.com/docs/en/sandboxing#set-up-linux-and-wsl2)); в Codespace на вашей учебной копии есть оба.
+- Расход: небольшой.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-Claude Code reads settings from four files, and the file a rule goes in decides who it affects ([Settings](https://code.claude.com/docs/en/settings#settings-files-and-who-they-affect)):
+Claude Code читает настройки из четырёх файлов, и файл, в который попадает правило, определяет, на кого оно действует ([Settings](https://code.claude.com/docs/en/settings#settings-files-and-who-they-affect)):
 
-| File | Affects | Put here |
+| Файл | На кого действует | Что сюда класть |
 |---|---|---|
-| `~/.claude/settings.json` | You, in every project | Your own preferences |
-| `.claude/settings.json`, committed | Everyone in the project | Team rules: files Claude must never read, commands everyone runs |
-| `.claude/settings.local.json`, kept out of git | You, in this project | Your own exceptions. "Yes, and don't ask again" on a Bash command saves here |
-| Managed settings | Everyone your organization deploys them to | Policy your settings can't override, apart from a few security keys where the stricter value wins |
+| `~/.claude/settings.json` | На вас, во всех проектах | Ваши личные предпочтения |
+| `.claude/settings.json`, закоммиченный | На всех в проекте | Правила команды: файлы, которые Claude не должен читать никогда, команды, которые запускают все |
+| `.claude/settings.local.json`, не попадает в git | На вас, в этом проекте | Ваши личные исключения. Сюда сохраняется выбор «Yes, and don't ask again» (да, и больше не спрашивать) для команды Bash |
+| Managed settings (управляемые настройки) | На всех, кому их разворачивает ваша организация | Политика, которую ваши настройки переопределить не могут, кроме нескольких ключей безопасности, где побеждает более строгое значение |
 
-When the same key is set in more than one place, the higher level wins: managed, then the command line, then local, then shared project, then user ([Settings precedence](https://code.claude.com/docs/en/settings#settings-precedence)). Rule lists such as `permissions.allow` merge across the files instead. Among the rules, deny is checked first, then ask, then allow, and the first match decides ([Configure permissions](https://code.claude.com/docs/en/permissions#manage-permissions)).
+Если один и тот же ключ задан в нескольких местах, побеждает более высокий уровень: managed, затем командная строка, затем local, затем общий проектный, затем пользовательский ([Settings precedence](https://code.claude.com/docs/en/settings#settings-precedence)). Списки правил вроде `permissions.allow`, напротив, объединяются из всех файлов. Среди правил сначала проверяется deny, затем ask, затем allow, и решает первое совпадение ([Configure permissions](https://code.claude.com/docs/en/permissions#manage-permissions)).
 
-Permission rules govern Claude's tools. The [sandbox](https://code.claude.com/docs/en/sandboxing) adds a boundary that the operating system enforces around the shell commands Claude runs: by default they can write only in the project, a per-user temporary folder and any folders you've added with `--add-dir` or `/add-dir`, and reach the network only through a proxy that checks each host against the hosts you allow. It's off until you turn it on. In its auto-allow mode, a command that runs inside it needs no permission prompt.
+Правила разрешений управляют инструментами Claude. [Песочница](https://code.claude.com/docs/en/sandboxing) добавляет границу, которую обеспечивает сама операционная система вокруг команд оболочки, запускаемых Claude: по умолчанию они могут писать только в проект, в временную папку пользователя и в папки, добавленные через `--add-dir` или `/add-dir`, а в сеть выходят только через прокси, который сверяет каждый хост с разрешёнными вами хостами. Пока вы её не включите, она выключена. В режиме auto-allow команда, запущенная внутри песочницы, не требует запроса разрешения.
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-In your practice copy:
+В вашей учебной копии:
 
-1. Start `claude` and run `/status`. Its `Setting sources` line lists the settings files this session loaded.
-2. Save the team's rules as `.claude/settings.json`. These are the docs' rules for keeping Claude out of `.env` files ([Exclude sensitive files](https://code.claude.com/docs/en/settings-reference#exclude-sensitive-files)), plus the test command:
+1. Запустите `claude` и выполните `/status`. Строка `Setting sources` перечисляет файлы настроек, которые загрузила эта сессия.
+2. Сохраните правила команды как `.claude/settings.json`. Это правила из документации, которые не пускают Claude к файлам `.env` ([Exclude sensitive files](https://code.claude.com/docs/en/settings-reference#exclude-sensitive-files)), плюс команда запуска тестов:
 
    ```json
    {
@@ -47,23 +47,23 @@ In your practice copy:
    }
    ```
 
-   Claude Code reloads a settings file when it changes ([When edits take effect](https://code.claude.com/docs/en/settings#when-edits-take-effect)). Run `/permissions`: it lists `Bash(npm test)` among the allow rules and the two `Read` rules among the deny rules.
-3. Ask Claude to `Run npm test`. It runs without a permission prompt: the allow rule covers it.
-4. Turn on the sandbox. Run `/sandbox` and, on the Mode tab, select auto-allow. Claude Code saves the setting to `.claude/settings.local.json`, your personal file ([Get started](https://code.claude.com/docs/en/sandboxing#get-started)).
-5. Ask Claude to try a write outside the project:
+   Claude Code перезагружает файл настроек, когда он меняется ([When edits take effect](https://code.claude.com/docs/en/settings#when-edits-take-effect)). Выполните `/permissions`: среди правил allow там `Bash(npm test)`, среди правил deny — два правила `Read`.
+3. Попросите Claude: `Запусти npm test`. Команда запускается без запроса разрешения: её покрывает правило allow.
+4. Включите песочницу. Выполните `/sandbox` и на вкладке Mode выберите auto-allow. Claude Code сохранит настройку в `.claude/settings.local.json`, вашем личном файле ([Get started](https://code.claude.com/docs/en/sandboxing#get-started)).
+5. Попросите Claude попробовать запись за пределами проекта:
 
    ```text
-   Run this exact command and show me its output: touch ~/sandbox-probe
+   Выполни ровно эту команду и покажи её вывод: touch ~/sandbox-probe
    ```
 
-   It runs without a prompt and fails: `Operation not permitted` on macOS, `Read-only file system` on Linux and WSL 2 ([Confirm commands run inside the sandbox](https://code.claude.com/docs/en/sandboxing#confirm-commands-run-inside-the-sandbox)). If Claude offers to retry outside the sandbox, decline.
+   Команда запускается без запроса и завершается ошибкой: `Operation not permitted` в macOS, `Read-only file system` в Linux и WSL 2 ([Confirm commands run inside the sandbox](https://code.claude.com/docs/en/sandboxing#confirm-commands-run-inside-the-sandbox)). Если Claude предложит повторить команду вне песочницы, откажитесь.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-Set up the same split in your own repository.
+Сделайте такое же разделение в своём репозитории.
 
-1. Save this partial file as `.claude/settings.json`, and replace each `TODO` with a rule. Allow only the one command that runs your tests, such as `Bash(npm test)` or `Bash(pytest)`:
+1. Сохраните этот частичный файл как `.claude/settings.json` и замените каждый `TODO` правилом. Разрешите только одну команду, которая запускает ваши тесты, например `Bash(npm test)` или `Bash(pytest)`:
 
    ```json
    {
@@ -74,39 +74,40 @@ Set up the same split in your own repository.
    }
    ```
 
-2. Commit it: these are rules for everyone who works in the repository.
-3. In a session there, turn on the sandbox with `/sandbox` in auto-allow mode, and repeat the Worked example's step 5.
-4. Run `git status`. `.claude/settings.local.json` isn't listed: Claude Code keeps it out of git when it creates it ([Keep personal settings out of a repository](https://code.claude.com/docs/en/settings#keep-personal-settings-out-of-a-repository)).
+   В `allow` нужна команда запуска ваших тестов, в `deny` — запрет чтения `.env` и запрет чтения `.env.local` и остальных файлов `.env.*`.
+2. Закоммитьте его: это правила для всех, кто работает в репозитории.
+3. В сессии там включите песочницу командой `/sandbox` в режиме auto-allow и повторите шаг 5 разбора на примере.
+4. Выполните `git status`. Файла `.claude/settings.local.json` в списке нет: Claude Code, создавая его, исключает его из git ([Keep personal settings out of a repository](https://code.claude.com/docs/en/settings#keep-personal-settings-out-of-a-repository)).
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Урок пройден, когда выполнено всё:
 
-- [ ] The committed `.claude/settings.json` denies reading `.env` and `.env.*` files and allows one test command: `git show HEAD:.claude/settings.json | jq .permissions` shows them.
-- [ ] The sandbox is on, and your personal file stays out of git: `jq .sandbox .claude/settings.local.json` shows `"enabled": true`, and `git ls-files .claude/settings.local.json` prints nothing.
-- [ ] Self-check (not tested): Claude's `touch ~/sandbox-probe` failed without asking you first.
+- [ ] В закоммиченном `.claude/settings.json` запрещено чтение файлов `.env` и `.env.*` и разрешена одна команда запуска тестов: `git show HEAD:.claude/settings.json | jq .permissions` их показывает.
+- [ ] Песочница включена, а ваш личный файл не попадает в git: `jq .sandbox .claude/settings.local.json` показывает `"enabled": true`, а `git ls-files .claude/settings.local.json` ничего не выводит.
+- [ ] Самопроверка (не проверяется автоматически): команда Claude `touch ~/sandbox-probe` завершилась ошибкой, и он не спрашивал вас заранее.
 
-Run `npm run check -- i-4 --dir <your repo>` from your practice copy, or `npm run check -- i-4` in the copy itself.
+Запустите `npm run check -- i-4 --dir <your repo>` из учебной копии или `npm run check -- i-4` в самой копии.
 
-If the first item fails on a broad rule, replace it with the one command: `Bash(npm *)` would let Claude run any npm command without asking. If `/sandbox` shows only a Dependencies tab, install `bubblewrap` and `socat`, restart Claude Code and run `/sandbox` again.
+Если первый пункт не прошёл из-за слишком широкого правила, замените его одной командой: `Bash(npm *)` позволило бы Claude запускать любую команду npm, не спрашивая. Если `/sandbox` показывает только вкладку Dependencies, установите `bubblewrap` и `socat`, перезапустите Claude Code и снова выполните `/sandbox`.
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- The sandbox wraps shell commands only. Claude's file and web tools run outside it and follow your permission rules; hooks and local MCP servers run outside it with your full access ([What runs outside the sandbox](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)). If the sandbox can't start, Claude Code runs commands unsandboxed unless `sandbox.failIfUnavailable` is `true`.
-- On its own, a `Read` deny rule covers Claude's file tools and the file commands Claude Code recognizes in Bash, such as `cat`, but not a script that opens files itself ([Read and Edit](https://code.claude.com/docs/en/permissions#read-and-edit)). With the sandbox on, Claude Code also adds your `Read` deny paths to the sandbox's [`filesystem.denyRead`](https://code.claude.com/docs/en/settings-reference#sandbox-filesystem-denyread), so sandboxed commands and the processes they start can't read those files either.
-- In a Codespace or another container, if sandboxed commands fail with `Can't mount proc on /newroot/proc`, see [Bubblewrap fails to start inside a container](https://code.claude.com/docs/en/sandboxing#bubblewrap-fails-to-start-inside-a-container).
+- Песочница оборачивает только команды оболочки. Файловые и веб-инструменты Claude работают вне её и подчиняются вашим правилам разрешений; hooks (хуки — команды, которые Claude Code запускает на событиях) и локальные MCP-серверы работают вне неё с вашими полными правами ([What runs outside the sandbox](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)). Если песочница не запускается, Claude Code выполняет команды без неё, пока `sandbox.failIfUnavailable` не равно `true`.
+- Само по себе правило deny для `Read` покрывает файловые инструменты Claude и файловые команды, которые Claude Code распознаёт в Bash, например `cat`, но не скрипт, который сам открывает файлы ([Read and Edit](https://code.claude.com/docs/en/permissions#read-and-edit)). При включённой песочнице Claude Code также добавляет ваши пути deny для `Read` в [`filesystem.denyRead`](https://code.claude.com/docs/en/settings-reference#sandbox-filesystem-denyread) песочницы, так что команды в песочнице и запущенные ими процессы тоже не могут читать эти файлы.
+- В Codespace или другом контейнере, если команды в песочнице падают с `Can't mount proc on /newroot/proc`, см. [Bubblewrap fails to start inside a container](https://code.claude.com/docs/en/sandboxing#bubblewrap-fails-to-start-inside-a-container).
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [How we built Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode): Anthropic on what auto mode's classifier catches and what it misses.
-- [Making Claude Code more secure and autonomous with sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing): why the sandbox has a filesystem boundary and a network boundary.
-- [Security](https://code.claude.com/docs/en/security): how Claude Code's protections fit together.
+- [How we built Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode): Anthropic о том, что классификатор auto mode (автоматического режима) ловит, а что пропускает.
+- [Making Claude Code more secure and autonomous with sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing): почему у песочницы есть граница файловой системы и граница сети.
+- [Security](https://code.claude.com/docs/en/security): как защиты Claude Code складываются в одну картину.
 
 ---
 
-<sub>Sources: [Settings files and precedence](https://code.claude.com/docs/en/settings) · [All settings](https://code.claude.com/docs/en/settings-reference) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Configure the sandboxed Bash tool](https://code.claude.com/docs/en/sandboxing)</sub>
+<sub>Источники: [Settings files and precedence](https://code.claude.com/docs/en/settings) · [All settings](https://code.claude.com/docs/en/settings-reference) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Configure the sandboxed Bash tool](https://code.claude.com/docs/en/sandboxing)</sub>
 
-<sub>← [Pick the model and effort](03-model-and-effort.md) · [Intermediate index](README.md) · [Enforce a rule with a hook](05-hooks.md) → · Topic: [Permissions and safety](../topics/permissions-and-safety.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=i-4)</sub>
+<sub>← [Выбираем модель и effort](03-model-and-effort.md) · [Оглавление уровня](README.md) · [Закрепляем правило с помощью hook](05-hooks.md) → · Тема: [Разрешения и безопасность](../topics/permissions-and-safety.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=i-4)</sub>

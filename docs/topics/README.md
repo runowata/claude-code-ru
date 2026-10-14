@@ -1,19 +1,19 @@
-# Topics <a id="topics"></a>
+# Темы <a id="topics"></a>
 
-<sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-Each topic page lists its lessons in level order, its Electives, its reference page and the official docs. Topic pages link; they don't teach.
+Страница каждой темы перечисляет свои уроки в порядке уровней, дополнительные уроки, страницу справочника и официальную документацию. Страницы тем отсылают к материалам, а не обучают.
 
-- [Memory and context](memory-and-context.md): what Claude Code knows at the start of a session and what fills its context as you work.
-- [Permissions and safety](permissions-and-safety.md): what Claude Code may do without asking, and how to keep it away from what it shouldn't touch.
-- [Skills](skills.md): packaged instructions that run by name or load when they apply.
-- [Hooks](hooks.md): commands that run at fixed points in a session, so a rule holds without relying on Claude to remember it.
-- [Subagents and parallel work](subagents-and-parallel-work.md): ways to split work across contexts and sessions: subagents, worktrees, dynamic workflows and agent teams.
-- [MCP](mcp.md): connecting Claude Code to outside tools and data with the Model Context Protocol.
-- [Plugins](plugins.md): bundles of skills, agents, hooks and MCP servers that you install from a marketplace.
-- [Automation](automation.md): running Claude Code without a person at the keyboard: scripts, CI and schedules.
-- [Models, effort and cost](models-effort-and-cost.md): which model and effort level a task needs, and what a session costs.
+- [Память и контекст](memory-and-context.md): что Claude Code знает в начале сессии и что заполняет его контекст по ходу работы.
+- [Разрешения и безопасность](permissions-and-safety.md): что Claude Code может делать без вопросов и как не подпускать его к тому, чего он трогать не должен.
+- [Skills](skills.md): готовые инструкции, которые запускаются по имени или подгружаются, когда подходят к задаче.
+- [Hooks](hooks.md): команды, которые запускаются в заданные моменты сессии, чтобы правило соблюдалось и не зависело от того, вспомнит ли о нём Claude.
+- [Субагенты и параллельная работа](subagents-and-parallel-work.md): способы разделить работу между контекстами и сессиями: субагенты, worktrees, dynamic workflows и agent teams.
+- [MCP](mcp.md): подключение Claude Code к внешним инструментам и данным через Model Context Protocol.
+- [Плагины](plugins.md): наборы skills, агентов, hooks и MCP-серверов, которые вы устанавливаете из marketplace.
+- [Автоматизация](automation.md): работа Claude Code без человека за клавиатурой: скрипты, CI и расписания.
+- [Модели, effort и стоимость](models-effort-and-cost.md): какие модель и уровень effort нужны задаче и сколько стоит сессия.
 
 ---
 
-<sub>Up: [Claude Code: Everything You Need to Know](../../README.md)</sub>
+<sub>Наверх: [Claude Code: всё, что нужно знать](../../README.md)</sub>

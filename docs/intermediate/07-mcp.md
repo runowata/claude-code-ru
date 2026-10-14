@@ -1,23 +1,23 @@
-# Connect a tool with MCP <a id="connect-a-tool-with-mcp"></a>
+# Подключаем инструмент через MCP <a id="connect-a-tool-with-mcp"></a>
 
-<sub>**Intermediate** · Lesson 7 of 8 · about 20 minutes · Needs: [Permissions, settings scopes and the sandbox](04-permissions-and-sandbox.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
+<sub>**Средний уровень** · Урок 7 из 8 · около 20 минут · Нужно: [Разрешения, уровни настроек и песочница](04-permissions-and-sandbox.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-06</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this lesson you can connect an MCP server for yourself, then share it with everyone in a project at project scope, pinned to one version.
+После урока вы умеете подключить MCP-сервер для себя, а затем поделиться им со всеми в проекте на уровне проекта, закрепив одну версию.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- One of your own repositories, and your copy of the practice template with Node.js LTS: the check runs from the copy. To practice in the template copy instead, use it for both. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
-- Chrome, and npm, which comes with Node.js: the server runs through `npx` ([upstream requirements](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md#requirements)).
-- Usage: light.
+- Один из ваших репозиториев, а также ваша учебная копия шаблона для практики с Node.js LTS: проверка запускается из копии. Если практикуетесь в самой учебной копии, используйте её для обоих целей. Если вы ещё не сделали этого, подготовьте в репозитории папку `.practice/`, как описано в [уроке 1 начального уровня](../beginner/01-install-and-look-around.md#you-need).
+- Chrome и npm, который идёт вместе с Node.js: сервер запускается через `npx` ([upstream requirements](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md#requirements)).
+- Расход: небольшой.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-[MCP](https://code.claude.com/docs/en/mcp) (the Model Context Protocol) lets Claude Code use tools that another program provides: an MCP server. This lesson's server is [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) (Vendor: Google), which runs on your machine and gives Claude tools to open pages in Chrome, read the console and take screenshots:
+[MCP](https://code.claude.com/docs/en/mcp) (Model Context Protocol, протокол контекста модели) позволяет Claude Code использовать инструменты, которые предоставляет другая программа, — MCP-сервер. Сервер этого урока — [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) (Vendor: Google, то есть от самого вендора). Он работает на вашей машине и даёт Claude инструменты, чтобы открывать страницы в Chrome, читать консоль и делать скриншоты:
 
 ```mermaid
 flowchart LR
@@ -28,23 +28,25 @@ flowchart LR
   B -->|result| A
 ```
 
-Where you add a server decides who gets it ([MCP installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes)):
+На схеме: Claude Code вызывает инструменты MCP-сервера chrome-devtools; сервер — локальный процесс, запущенный через `npx`, — управляет браузером Chrome и возвращает результаты в Claude Code.
 
-| Scope | Who gets it | Stored in |
+То, где вы добавляете сервер, определяет, у кого он будет ([MCP installation scopes](https://code.claude.com/docs/en/mcp#mcp-installation-scopes)):
+
+| Уровень | У кого есть | Где хранится |
 |---|---|---|
-| Local, the default | You, in this project | `~/.claude.json` |
-| Project | Everyone who works in the project | `.mcp.json` at the project root, committed |
-| User | You, in every project | `~/.claude.json` |
+| Local (локальный), по умолчанию | У вас, в этом проекте | `~/.claude.json` |
+| Project (проект) | У всех, кто работает в проекте | `.mcp.json` в корне проекта, коммитится |
+| User (пользователь) | У вас, во всех проектах | `~/.claude.json` |
 
-In an interactive session, Claude Code asks you to approve a project's servers before it uses them.
+В интерактивной сессии Claude Code просит вас одобрить серверы проекта, прежде чем их использовать.
 
 > [!WARNING]
-> Data that leaves your machine. By default, Chrome DevTools MCP sends usage statistics to Google, may send the URLs of performance traces to Google's CrUX API, and checks npm for updates ([upstream README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md)). This lesson always runs it with all three turned off. The pages Claude opens still load from the web, and the server shows Claude everything in that browser.
+> Данные, которые покидают вашу машину. По умолчанию Chrome DevTools MCP отправляет статистику использования в Google, может отправлять URL трассировок производительности в Google CrUX API и проверяет в npm наличие обновлений ([upstream README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md)). В этом уроке он всегда запускается с тремя выключенными функциями. Страницы, которые открывает Claude, по-прежнему загружаются из сети, а сервер показывает Claude всё, что есть в этом браузере.
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. Save a page to look at, in your repository:
+1. Сохраните страницу для просмотра в своём репозитории:
 
    ```bash
    cat > .practice/demo.html <<'EOF'
@@ -55,28 +57,28 @@ In an interactive session, Claude Code asks you to approve a project's servers b
    EOF
    ```
 
-2. Add the server at local scope, for yourself. The version is pinned, `--isolated` gives the browser a temporary profile, and the other two flags and the variable turn the data flows off ([configuration](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/configuration.md)). Everything after `--` is the server's own command:
+2. Добавьте сервер на локальном уровне, для себя. Версия закреплена, `--isolated` даёт браузеру временный профиль, а два других флага и переменная выключают потоки данных ([configuration](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/configuration.md)). Всё после `--` — собственная команда сервера:
 
    ```bash
    claude mcp add --env CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS=1 --transport stdio chrome-devtools -- npx -y chrome-devtools-mcp@1.10.1 --isolated --no-usage-statistics --no-performance-crux
    ```
 
-3. Run `claude mcp get chrome-devtools`. It shows which scope holds the server, local here, and the server's status ([Find your configuration on disk](https://code.claude.com/docs/en/mcp-quickstart#find-your-configuration-on-disk)).
-4. Start `claude` and run `/mcp`: `chrome-devtools` is listed with its tools. Then ask:
+3. Выполните `claude mcp get chrome-devtools`. Команда показывает, на каком уровне хранится сервер (здесь local), и состояние сервера ([Find your configuration on disk](https://code.claude.com/docs/en/mcp-quickstart#find-your-configuration-on-disk)).
+4. Запустите `claude` и выполните `/mcp`: `chrome-devtools` в списке вместе со своими инструментами. Затем попросите:
 
    ```text
-   Use the chrome-devtools tools to open .practice/demo.html as a file: URL, and tell me its title and console messages.
+   Используй инструменты chrome-devtools, чтобы открыть .practice/demo.html как URL file:, и скажи мне его заголовок и сообщения консоли.
    ```
 
-   A Chrome window opens, and Claude reports the title, `Linkcheck demo`, and the console warning. In Manual mode, Claude Code asks for permission the first time Claude uses each tool ([Configure permissions](https://code.claude.com/docs/en/permissions#permission-modes)).
+   Открывается окно Chrome, и Claude сообщает заголовок `Linkcheck demo` и предупреждение консоли. В режиме Manual Claude Code запрашивает разрешение при первом использовании Claude каждого инструмента ([Configure permissions](https://code.claude.com/docs/en/permissions#permission-modes)).
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-Share the server with your team at project scope.
+Поделитесь сервером с командой на уровне проекта.
 
-1. Remove your local copy, which would otherwise take precedence over a project server of the same name: `claude mcp remove chrome-devtools -s local`.
-2. Save this partial file as `.mcp.json` at the repository root, and replace each `TODO` with the values from the Worked example's command:
+1. Удалите свою локальную копию: иначе она имела бы приоритет над серверами проекта с тем же именем: `claude mcp remove chrome-devtools -s local`.
+2. Сохраните этот частичный файл как `.mcp.json` в корне репозитория и замените каждый `TODO` значениями из команды разбора на примере:
 
    ```json
    {
@@ -91,42 +93,43 @@ Share the server with your team at project scope.
    }
    ```
 
-3. Commit `.mcp.json`.
-4. Start `claude`. When it asks about the new MCP server found in this project, choose to use it. `/mcp` now shows it as connected ([Edit .mcp.json directly](https://code.claude.com/docs/en/mcp-quickstart#edit-mcp-json-directly)).
-5. Ask Claude to use the chrome-devtools tools to open `.practice/demo.html` and save a screenshot of it to `.practice/i-7-page.png`.
+   Вместо `TODO` нужны: пакет с точной версией, флаг отключения статистики использования, флаг отключения обращений к CrUX и переменная, выключающая проверку обновлений.
+3. Закоммитьте `.mcp.json`.
+4. Запустите `claude`. Когда он спросит про новый MCP-сервер, найденный в этом проекте, выберите его использовать. Теперь `/mcp` показывает его как подключённый ([Edit .mcp.json directly](https://code.claude.com/docs/en/mcp-quickstart#edit-mcp-json-directly)).
+5. Попросите Claude использовать инструменты chrome-devtools, чтобы открыть `.practice/demo.html` и сохранить его скриншот в `.practice/i-7-page.png`.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Урок пройден, когда выполнено всё:
 
-- [ ] The committed `.mcp.json` pins the package to an exact version and turns off usage statistics, CrUX lookups and update checks: `git show HEAD:.mcp.json | jq '.mcpServers["chrome-devtools"]'` shows them.
-- [ ] The server saved a screenshot: `file .practice/i-7-page.png` reports PNG image data.
-- [ ] Self-check (not tested): after you approved it, `/mcp` showed `chrome-devtools` as connected.
+- [ ] В закоммиченном `.mcp.json` пакет закреплён на точной версии, а статистика использования, обращения к CrUX и проверка обновлений выключены: `git show HEAD:.mcp.json | jq '.mcpServers["chrome-devtools"]'` их показывает.
+- [ ] Сервер сохранил скриншот: `file .practice/i-7-page.png` сообщает PNG image data.
+- [ ] Самопроверка (не проверяется автоматически): после вашего одобрения `/mcp` показал `chrome-devtools` как подключённый.
 
-Run `npm run check -- i-7 --dir <your repo>` from your practice copy, or `npm run check -- i-7` in the copy itself.
+Запустите `npm run check -- i-7 --dir <your repo>` из учебной копии или `npm run check -- i-7` в самой копии.
 
-If the first item fails, compare each argument with the Worked example's command: `@latest` isn't pinned. If there's no screenshot, run `/mcp` to see whether the server connected. If you missed the approval prompt, approve the server there; if you declined it, run `claude mcp reset-project-choices` and start `claude` again ([Project scope](https://code.claude.com/docs/en/mcp#project-scope)).
+Если не прошёл первый пункт, сверьте каждый аргумент с командой разбора на примере: `@latest` — это не закреплённая версия. Если скриншота нет, выполните `/mcp` и посмотрите, подключился ли сервер. Если вы пропустили запрос на одобрение, одобрите сервер там; если вы отказали, выполните `claude mcp reset-project-choices` и снова запустите `claude` ([Project scope](https://code.claude.com/docs/en/mcp#project-scope)).
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- A `claude -p` run loads a project's servers without asking ([Project scope](https://code.claude.com/docs/en/mcp#project-scope)). Read a repository's `.mcp.json` before you script Claude Code in it.
-- To be asked about a project's servers again, run `claude mcp reset-project-choices`.
+- Запуск `claude -p` загружает серверы проекта, не спрашивая ([Project scope](https://code.claude.com/docs/en/mcp#project-scope)). Читайте `.mcp.json` репозитория, прежде чем запускать в нём Claude Code из скриптов.
+- Чтобы вас снова спросили о серверах проекта, выполните `claude mcp reset-project-choices`.
 
-Third-party: it can run code on your machine or give Claude new tools. Review it before installing; this guide does not audit it.
+Сторонний продукт: он может выполнять код на вашей машине или давать Claude новые инструменты. Просмотрите его перед установкой; это руководство его не проверяет.
 
-Listings checked against the listing bar on 2026-10-06.
+Списки проверены по планке для списков 2026-10-06.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Connect to MCP servers](https://code.claude.com/docs/en/mcp-quickstart): adding remote servers, signing in to them, and other ways to add one.
-- [The MCP Registry](https://registry.modelcontextprotocol.io): the MCP project's list of public servers, which it labels "preview" ([About](https://modelcontextprotocol.io/registry/about)).
-- [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/getting-started/intro): the protocol itself.
+- [Connect to MCP servers](https://code.claude.com/docs/en/mcp-quickstart): добавление удалённых серверов, вход в них и другие способы добавить сервер.
+- [The MCP Registry](https://registry.modelcontextprotocol.io): список публичных серверов проекта MCP, который он помечает как «preview» (предварительная версия) ([About](https://modelcontextprotocol.io/registry/about)).
+- [What is the Model Context Protocol (MCP)?](https://modelcontextprotocol.io/docs/getting-started/intro): сам протокол.
 
 ---
 
-<sub>Sources: [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp) · [Connect to MCP servers](https://code.claude.com/docs/en/mcp-quickstart) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Chrome DevTools MCP README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md) · [Chrome DevTools MCP configuration](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/configuration.md) · [The MCP Registry](https://modelcontextprotocol.io/registry/about)</sub>
+<sub>Источники: [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp) · [Connect to MCP servers](https://code.claude.com/docs/en/mcp-quickstart) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Chrome DevTools MCP README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md) · [Chrome DevTools MCP configuration](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/docs/configuration.md) · [The MCP Registry](https://modelcontextprotocol.io/registry/about)</sub>
 
-<sub>← [Delegate to a custom subagent](06-subagents.md) · [Intermediate index](README.md) · [Install and manage plugins](08-plugins.md) → · Topic: [MCP](../topics/mcp.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=i-7)</sub>
+<sub>← [Поручаем задачу своему субагенту](06-subagents.md) · [Оглавление уровня](README.md) · [Устанавливаем плагины и управляем ими](08-plugins.md) → · Тема: [MCP](../topics/mcp.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=i-7)</sub>

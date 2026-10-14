@@ -1,22 +1,22 @@
 # Skills <a id="skills"></a>
 
-<sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>Тема · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-Packaged instructions that run by name or load when they apply.
+Готовые инструкции, которые запускаются по имени или подгружаются, когда подходят к задаче.
 
 <a id="lessons"></a>
-## Lessons
+## Уроки
 
-- Intermediate: [Turn a repeated workflow into a skill](../intermediate/01-first-skill.md)
-- Intermediate Elective: [Skill patterns](../intermediate/electives/skill-patterns.md)
+- Средний уровень: [Превращаем повторяющийся процесс в skill](../intermediate/01-first-skill.md)
+- Средний уровень, дополнительный урок: [Шаблоны skills](../intermediate/electives/skill-patterns.md)
 
 <a id="official-docs"></a>
-## Official docs
+## Официальная документация
 
-- [Extend Claude with skills](https://code.claude.com/docs/en/skills)
+- [Расширение Claude с помощью skills](https://code.claude.com/docs/en/skills)
 
 ---
 
-<sub>Sources: [Extend Claude with skills](https://code.claude.com/docs/en/skills)</sub>
+<sub>Источники: [Extend Claude with skills](https://code.claude.com/docs/en/skills)</sub>
 
-<sub>Up: [Topics](README.md)</sub>
+<sub>Наверх: [Темы](README.md)</sub>

@@ -1,18 +1,18 @@
-# Glossary <a id="glossary"></a>
+# Глоссарий <a id="glossary"></a>
 
-<sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-The words this guide uses for its own parts. For Claude Code's terms, such as hooks, subagents or compaction, see the official [Glossary](https://code.claude.com/docs/en/glossary).
+Слова, которыми руководство называет собственные части. Термины Claude Code, такие как hooks, субагенты или сжатие контекста, смотрите в официальном [глоссарии](https://code.claude.com/docs/en/glossary).
 
-- **Level:** how far along you are: Beginner, Intermediate or Advanced. Beginner covers one session and one change, Intermediate one developer's setup, and Advanced work beyond one session.
-- **Lesson:** a page that moves you one step toward a level's Exit by having you do something and check it. Each lesson belongs to one level and has one place in its order.
-- **Elective:** an optional lesson outside a level's core path. Nothing in a level's Exit depends on one.
-- **Capstone:** the task that ends a level and exercises its Exit in one go, with its own check.
-- **Check:** the last part of a lesson: observable state, such as files, git history, exit codes or settings, that shows your exercise worked. It never depends on how Claude words a reply.
-- **Exit:** the list of things you can do unaided at the end of a level. Each level's Exit is the next level's "You're ready for this level if you can" list.
+- **Level** (уровень): насколько вы продвинулись: Начальный, Средний или Продвинутый. Начальный охватывает одну сессию и одно изменение, Средний — настройку для одного разработчика, Продвинутый — работу за пределами одной сессии.
+- **Lesson** (урок): страница, которая приближает вас на один шаг к итогу уровня: вы что-то делаете и проверяете. Каждый урок относится к одному уровню и занимает в нём своё место по порядку.
+- **Elective** (дополнительный урок): необязательный урок вне основного пути уровня. От него ничего в итоге уровня не зависит.
+- **Capstone** (итоговый проект): задание, которым заканчивается уровень и которое сразу отрабатывает его итог, со своей проверкой.
+- **Check** (проверка): последняя часть урока — наблюдаемое состояние, например файлы, история git, коды завершения или настройки, показывающее, что упражнение сработало. Она никогда не зависит от того, как Claude сформулировал ответ.
+- **Exit** (итог уровня): список того, что вы умеете делать самостоятельно в конце уровня. Итог каждого уровня — это список «Вы готовы к этому уровню, если умеете» следующего.
 
 ---
 
-<sub>Sources: [Glossary](https://code.claude.com/docs/en/glossary)</sub>
+<sub>Источники: [Glossary](https://code.claude.com/docs/en/glossary)</sub>
 
-<sub>Up: [Reference](README.md)</sub>
+<sub>Наверх: [Справочник](README.md)</sub>

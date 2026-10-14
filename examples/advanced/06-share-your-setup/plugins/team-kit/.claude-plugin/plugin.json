@@ -1,7 +1,7 @@
 {
   "name": "team-kit",
   "version": "0.1.0",
-  "description": "A team's shared Claude Code setup: an onboarding skill and a read-only reviewer for the shared configuration",
+  "description": "Общая настройка Claude Code для команды: skill для знакомства с ней и рецензент общей конфигурации только для чтения",
   "author": {
     "name": "Your team"
   }

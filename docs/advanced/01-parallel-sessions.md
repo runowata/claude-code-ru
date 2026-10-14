@@ -1,33 +1,33 @@
-# Parallel sessions with worktrees <a id="parallel-sessions-with-worktrees"></a>
+# Параллельные сессии с worktrees <a id="parallel-sessions-with-worktrees"></a>
 
-<sub>**Advanced** · Lesson 1 of 7 · about 20 minutes · Needs: [Advanced index](README.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
+<sub>**Продвинутый уровень** · Урок 1 из 7 · около 20 минут · Нужно: [оглавление продвинутого уровня](README.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-09</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this lesson you can run two Claude Code sessions at once, each in its own git worktree, and merge their work into one branch.
+После урока вы умеете запускать две сессии Claude Code одновременно, каждую в своём git worktree (рабочей копии git в отдельной папке), и сливать их работу в одну ветку.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- One of your own repositories with a test command and no uncommitted changes, checked out on its default branch and up to date with a remote you can push to (Watch out says why), and your copy of the practice template with Node.js LTS and the Advanced checks ([Practice](README.md#practice)): the check runs from the copy. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
-- If you haven't run `claude` in that repository before, run it there once and accept the trust dialog: until then `claude --worktree` exits with an error ([Start Claude in a worktree](https://code.claude.com/docs/en/worktrees#start-claude-in-a-worktree)).
-- macOS, Linux or WSL 2, and three terminals open at the repository's root: two for the sessions, one for git.
-- Usage: moderate. Two sessions work at the same time.
+- Один из ваших репозиториев с командой запуска тестов и без незакоммиченных изменений: он должен быть на ветке по умолчанию и актуален относительно удалённого репозитория, куда вы можете сделать push (почему — в разделе «Осторожно»). А также ваша копия шаблона для практики с Node.js LTS и проверками продвинутого уровня ([Практика](README.md#practice)): проверка запускается из копии. Если ещё не сделали, подготовьте папку `.practice/` в репозитории так, как описано в [уроке 1 начального уровня](../beginner/01-install-and-look-around.md#you-need).
+- Если вы ещё не запускали `claude` в этом репозитории, запустите его там один раз и примите окно доверия: пока этого нет, `claude --worktree` завершается с ошибкой ([Start Claude in a worktree](https://code.claude.com/docs/en/worktrees#start-claude-in-a-worktree)).
+- macOS, Linux или WSL 2 и три терминала, открытые в корне репозитория: два для сессий, один для git.
+- Расход: умеренный. Две сессии работают одновременно.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-A [git worktree](https://git-scm.com/docs/git-worktree) is a second working folder, on its own branch, that shares the repository's history. `claude --worktree <name>` (or `-w <name>`) creates one under `.claude/worktrees/<name>/` on a new branch, `worktree-<name>`, and starts the session in it ([Start Claude in a worktree](https://code.claude.com/docs/en/worktrees#start-claude-in-a-worktree)). Each session edits its own copy of the files. Claude Code also stops a worktree session's file-editing tools from changing your main checkout, and its commands from running there or pointing git at it ([How Claude Code enforces isolation](https://code.claude.com/docs/en/worktrees#how-claude-code-enforces-isolation)).
+[Git worktree](https://git-scm.com/docs/git-worktree) — это вторая рабочая папка на собственной ветке, которая использует общую историю репозитория. Команда `claude --worktree <name>` (или `-w <name>`) создаёт её в `.claude/worktrees/<name>/` на новой ветке `worktree-<name>` и запускает сессию в ней ([Start Claude in a worktree](https://code.claude.com/docs/en/worktrees#start-claude-in-a-worktree)). Каждая сессия правит собственную копию файлов. Кроме того, Claude Code не даёт инструментам правки файлов в сессии worktree менять ваш основной checkout, а его командам — запускаться там или направлять git на него ([How Claude Code enforces isolation](https://code.claude.com/docs/en/worktrees#how-claude-code-enforces-isolation)).
 
-Commits and branches are shared. Uncommitted edits, installed dependencies and gitignored files such as `.env` are not: each worktree is a fresh checkout. A `.worktreeinclude` file at the repository root copies the gitignored files it lists into each new worktree ([Copy gitignored files into worktrees](https://code.claude.com/docs/en/worktrees#copy-gitignored-files-into-worktrees)); list only what the project needs, since every worktree gets its own copy of each secret.
+Коммиты и ветки общие. Незакоммиченные правки, установленные зависимости и файлы из gitignore, например `.env`, — нет: каждый worktree — это свежий checkout. Файл `.worktreeinclude` в корне репозитория копирует перечисленные в нём файлы из gitignore в каждый новый worktree ([Copy gitignored files into worktrees](https://code.claude.com/docs/en/worktrees#copy-gitignored-files-into-worktrees)); перечисляйте только то, что нужно проекту, ведь каждый worktree получает собственную копию каждого секрета.
 
-The work comes back through git: each session commits on its branch, you merge the branches from your main checkout, then remove the worktrees.
+Работа возвращается через git: каждая сессия коммитит в своей ветке, вы сливаете ветки из основного checkout, затем удаляете worktrees.
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. In your main checkout, ignore the folder the worktrees live in, then commit and push the rule. Without it, worktree contents show up as untracked files in your main checkout. The push puts it on the remote's default branch, where new worktrees start (Watch out says more):
+1. В основном checkout добавьте в игнор папку, где лежат worktrees, затем закоммитьте и отправьте это правило. Без него содержимое worktrees показывается в основном checkout как неотслеживаемые файлы. Push кладёт правило в ветку по умолчанию на удалённом репозитории, откуда стартуют новые worktrees (подробнее — в разделе «Осторожно»):
 
    ```bash
    printf '\n.claude/worktrees/\n' >> .gitignore
@@ -35,30 +35,30 @@ The work comes back through git: each session commits on its branch, you merge t
    git push
    ```
 
-   The leading `\n` puts the rule on a line of its own, even if your `.gitignore` doesn't end with a newline. Afterwards `git status --short` prints nothing, and `git log -1 --oneline` shows the commit.
-2. In terminal 1, start a session in a new worktree and give it a docs task:
+   Ведущий `\n` ставит правило на отдельную строку, даже если `.gitignore` не заканчивается переводом строки. После этого `git status --short` ничего не выводит, а `git log -1 --oneline` показывает этот коммит.
+2. В терминале 1 запустите сессию в новом worktree и дайте ей задачу по документации:
 
    ```bash
    claude --worktree docs-pass
    ```
 
    ```text
-   Tidy the wording of the README's first section, then wait for me before you commit.
+   Поправь формулировки в первом разделе README, затем дождись меня, прежде чем коммитить.
    ```
 
-   Claude Code creates `.claude/worktrees/docs-pass/` on the branch `worktree-docs-pass`, and the session works there. Approve the edit when it asks. Asking it to wait holds the commit until step 4 even where no permission prompt would: a worktree session uses your main checkout's `.claude/settings.local.json` ([Settings files and precedence](https://code.claude.com/docs/en/settings#where-claude-code-keeps-the-local-file-in-a-git-repository)), so with the sandbox's auto-allow mode from [Intermediate lesson 4](../intermediate/04-permissions-and-sandbox.md) on there, sandboxed commands such as `git commit` run without asking ([Sandbox modes](https://code.claude.com/docs/en/sandboxing#sandbox-modes)).
-3. In terminal 2, start a second session with the short flag and give it a test task:
+   Claude Code создаёт `.claude/worktrees/docs-pass/` на ветке `worktree-docs-pass`, и сессия работает там. Когда она спросит, одобрите правку. Просьба подождать удерживает коммит до шага 4, даже когда запроса разрешения не будет: сессия в worktree использует `.claude/settings.local.json` вашего основного checkout ([Settings files and precedence](https://code.claude.com/docs/en/settings#where-claude-code-keeps-the-local-file-in-a-git-repository)), поэтому при включённом там режиме автоодобрения песочницы из [урока 4 среднего уровня](../intermediate/04-permissions-and-sandbox.md) команды в песочнице, такие как `git commit`, выполняются без вопросов ([Sandbox modes](https://code.claude.com/docs/en/sandboxing#sandbox-modes)).
+3. В терминале 2 запустите вторую сессию с короткой формой флага и дайте ей задачу с тестом:
 
    ```bash
    claude -w test-pass
    ```
 
    ```text
-   This worktree is a fresh checkout: install the dependencies, then add one missing test for a small exported function and run the tests. Wait for me before you commit.
+   Этот worktree — свежий checkout: установи зависимости, затем добавь один недостающий тест для небольшой экспортируемой функции и запусти тесты. Дождись меня, прежде чем коммитить.
    ```
 
-   Claude Code creates `.claude/worktrees/test-pass/` on the branch `worktree-test-pass`; the session installs the dependencies there before it adds the test. Approve its steps the same way.
-4. In terminal 3, in your main checkout, look at all three checkouts while both sessions wait for you:
+   Claude Code создаёт `.claude/worktrees/test-pass/` на ветке `worktree-test-pass`; сессия устанавливает там зависимости, прежде чем добавить тест. Шаги одобряйте так же.
+4. В терминале 3, в основном checkout, посмотрите на все три рабочие копии, пока обе сессии ждут вас:
 
    ```bash
    git worktree list
@@ -67,72 +67,72 @@ The work comes back through git: each session commits on its branch, you merge t
    git -C .claude/worktrees/test-pass status --short
    ```
 
-   `git worktree list` shows your main checkout first, then `.claude/worktrees/docs-pass` on `[worktree-docs-pass]` and `.claude/worktrees/test-pass` on `[worktree-test-pass]`; git may mark each one `locked` while its session runs. `git status --short` doesn't list either session's edits: they happen in other folders. Each `git -C` command lists only the changes of the session in that folder, such as the README in `docs-pass`, and never the other session's. Now tell each session to commit: `git log --oneline --graph --all` then shows a new commit on each branch.
-5. Still in your main checkout, merge both branches, then run your tests:
+   `git worktree list` показывает сначала основной checkout, затем `.claude/worktrees/docs-pass` на `[worktree-docs-pass]` и `.claude/worktrees/test-pass` на `[worktree-test-pass]`; пока сессия работает, git может помечать каждый из них как `locked`. `git status --short` не перечисляет правки ни одной из сессий: они происходят в других папках. Каждая команда `git -C` показывает изменения только сессии в своей папке, например README в `docs-pass`, и никогда — другой сессии. Теперь скажите каждой сессии закоммитить: `git log --oneline --graph --all` покажет по новому коммиту на каждой ветке.
+5. Всё ещё в основном checkout, слейте обе ветки и запустите тесты:
 
    ```bash
    git merge worktree-docs-pass
    git merge worktree-test-pass
    ```
 
-   [`git merge`](https://git-scm.com/docs/git-merge) brings each branch's commits into yours. The first merge just moves your branch forward (a fast-forward): `worktree-docs-pass` started from the commit you pushed in step 1, so your branch has no commits it lacks. The second makes a merge commit, because your branch now has a commit `worktree-test-pass` lacks, and opens your editor for its message: save and close it. Run this step yourself: while a session is isolated in its worktree, Claude Code blocks its git commands that reach into the main checkout. If both tasks changed the same lines, git stops with a conflict: resolve it, or start `claude` in the main checkout and ask it to.
-6. In each session, run `/exit`. The worktree's branch has a new commit, so Claude Code asks whether to keep or remove the worktree: choose remove ([Clean up worktrees](https://code.claude.com/docs/en/worktrees#clean-up-worktrees)). `git worktree list` no longer shows either worktree.
+   [`git merge`](https://git-scm.com/docs/git-merge) переносит коммиты каждой ветки в вашу. Первое слияние просто двигает вашу ветку вперёд (fast-forward): `worktree-docs-pass` стартовала с коммита, который вы отправили на шаге 1, поэтому в вашей ветке нет коммитов, которых ей не хватает. Второе создаёт коммит слияния, потому что в вашей ветке теперь есть коммит, которого нет в `worktree-test-pass`, и открывает редактор для сообщения: сохраните его и закройте. Выполните этот шаг сами: пока сессия изолирована в своём worktree, Claude Code блокирует её git-команды, которые обращаются к основному checkout. Если обе задачи меняли одни и те же строки, git остановится с конфликтом: разрешите его сами или запустите `claude` в основном checkout и попросите об этом его.
+6. В каждой сессии выполните `/exit`. В ветке worktree есть новый коммит, поэтому Claude Code спросит, оставить worktree или удалить: выберите удалить ([Clean up worktrees](https://code.claude.com/docs/en/worktrees#clean-up-worktrees)). `git worktree list` больше не показывает ни один из worktrees.
 
 > [!CAUTION]
-> Removing a worktree deletes its folder and its branch, along with any work in them you haven't merged. Merge first, or choose keep.
+> Удаление worktree стирает его папку и ветку вместе со всей несслитой работой в них. Сначала слейте ветки или выберите «оставить».
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-Pick two small changes in your repository that touch different files, such as a fix in one module and a missing test for another. Make each one in its own worktree session, with both sessions running at the same time, and bring both into your branch.
+Выберите в своём репозитории два небольших изменения, которые затрагивают разные файлы, например исправление в одном модуле и недостающий тест для другого. Сделайте каждое в отдельной сессии worktree, обе сессии должны работать одновременно, и слейте оба изменения в свою ветку.
 
-If the work they should build on isn't on the remote's default branch yet (see Watch out), get it there first, or add `"worktree": {"baseRef": "head"}` to `.claude/settings.local.json`, your personal settings file from [Intermediate lesson 4](../intermediate/04-permissions-and-sandbox.md), so new worktrees start from your local `HEAD` ([`worktree.baseRef`](https://code.claude.com/docs/en/settings-reference#worktree-baseref)).
+Если работы, на которую они должны опираться, ещё нет в ветке по умолчанию на удалённом репозитории (см. «Осторожно»), сначала отправьте её туда или добавьте `"worktree": {"baseRef": "head"}` в `.claude/settings.local.json` — ваш личный файл настроек из [урока 4 среднего уровня](../intermediate/04-permissions-and-sandbox.md), — чтобы новые worktrees стартовали с вашего локального `HEAD` ([`worktree.baseRef`](https://code.claude.com/docs/en/settings-reference#worktree-baseref)).
 
-Acceptance criteria:
+Критерии приёмки:
 
-- A committed `.gitignore` ignores `.claude/worktrees/`, and doesn't ignore the rest of `.claude/`.
-- Each change is made in its own session, started with `claude --worktree <name>`, and committed on that worktree's branch.
-- `.practice/a-1-worktrees.txt` holds the output of `git worktree list --porcelain`, saved from the main checkout while both worktrees existed and both had committed:
+- Закоммиченный `.gitignore` игнорирует `.claude/worktrees/` и не игнорирует остальное содержимое `.claude/`.
+- Каждое изменение сделано в своей сессии, запущенной как `claude --worktree <name>`, и закоммичено в ветке этого worktree.
+- В `.practice/a-1-worktrees.txt` лежит вывод `git worktree list --porcelain`, сохранённый из основного checkout, пока существовали оба worktrees и в каждом уже был коммит:
 
   ```bash
   git worktree list --porcelain > .practice/a-1-worktrees.txt
   ```
 
-- Both branches are merged into your branch with `git merge`, not [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash).
-- Your tests pass after both merges (not checked).
-- Both worktrees are removed, and any branch you kept is deleted only after it's merged.
-- Optional, not checked: if your project needs a gitignored file to run, such as a local config, list it in a `.worktreeinclude` file at your repository root.
+- Обе ветки слиты в вашу командой `git merge`, а не [`git merge --squash`](https://git-scm.com/docs/git-merge#Documentation/git-merge.txt---squash).
+- Ваши тесты проходят после обоих слияний (не проверяется).
+- Оба worktrees удалены, а любая сохранённая ветка удалена только после слияния.
+- Необязательно, не проверяется: если проекту для запуска нужен файл из gitignore, например локальный конфиг, перечислите его в файле `.worktreeinclude` в корне репозитория.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Вы закончили, когда выполнено всё из этого списка:
 
-- [ ] A committed `.gitignore` ignores `.claude/worktrees/`, and not the rest of `.claude/`.
-- [ ] `.practice/a-1-worktrees.txt` lists two worktrees under `.claude/worktrees/` whose commits split from each other, and both are merged into your branch.
-- [ ] Neither of those worktrees still exists: `git worktree list` doesn't show them.
-- [ ] Self-check (not tested): while both sessions worked, neither saw the other's uncommitted edits.
+- [ ] Закоммиченный `.gitignore` игнорирует `.claude/worktrees/`, а остальное в `.claude/` — нет.
+- [ ] В `.practice/a-1-worktrees.txt` указаны два worktrees в `.claude/worktrees/`, чьи коммиты разошлись друг с другом, и оба слиты в вашу ветку.
+- [ ] Ни один из этих worktrees больше не существует: `git worktree list` их не показывает.
+- [ ] Самопроверка (не тестируется): пока обе сессии работали, ни одна не видела незакоммиченных правок другой.
 
-Run `npm run check -- a-1 --dir <your repo>` from your practice copy.
+Запустите `npm run check -- a-1 --dir <your repo>` из своей учебной копии.
 
-If the first item fails, run `git -c core.excludesFile=/dev/null check-ignore -v .claude/worktrees/x` in your repository (the `-c` part swaps your global excludes file, [`core.excludesFile`](https://git-scm.com/docs/gitignore), for an empty one, as the check does): it should name your `.gitignore` and the line that matches ([git-check-ignore](https://git-scm.com/docs/git-check-ignore#Documentation/git-check-ignore.txt---verbose)). A rule only in `.git/info/exclude` or your global excludes file isn't committed, and a broad rule such as `.claude/` would also hide the settings and skills you commit for your team. If the second item fails, read the hint the check prints: save the file after both sessions commit and before you remove either worktree, and merge each branch with `git merge`. If the third item fails, run `git worktree remove <path>` from your main checkout on each path the check names, with `git worktree unlock <path>` first if git says it's locked. That leaves the worktree's branch: delete it once it's merged, with `git merge-base --is-ancestor worktree-<name> HEAD && git branch -D worktree-<name>`. The first command succeeds only when the branch is part of `HEAD` ([git-merge-base](https://git-scm.com/docs/git-merge-base#Documentation/git-merge-base.txt---is-ancestor)), and `-D` deletes it without git's own merged test, which checks the branch's upstream, when it has one, rather than `HEAD` ([git-branch](https://git-scm.com/docs/git-branch#Documentation/git-branch.txt--D)).
+Если не проходит первый пункт, выполните в своём репозитории `git -c core.excludesFile=/dev/null check-ignore -v .claude/worktrees/x` (часть с `-c` подменяет ваш глобальный файл исключений, [`core.excludesFile`](https://git-scm.com/docs/gitignore), пустым — так делает и проверка): команда должна назвать ваш `.gitignore` и подходящую строку ([git-check-ignore](https://git-scm.com/docs/git-check-ignore#Documentation/git-check-ignore.txt---verbose)). Правило только в `.git/info/exclude` или в глобальном файле исключений не закоммичено, а слишком широкое правило вроде `.claude/` скрыло бы и настройки с skills, которые вы коммитите для команды. Если не проходит второй пункт, прочитайте подсказку, которую печатает проверка: сохраните файл после того, как обе сессии закоммитят, и до удаления любого worktree, а каждую ветку сливайте командой `git merge`. Если не проходит третий пункт, выполните из основного checkout `git worktree remove <path>` для каждого пути, который назвала проверка, предварительно `git worktree unlock <path>`, если git пишет, что worktree заблокирован. Ветка worktree при этом остаётся: удалите её после слияния командой `git merge-base --is-ancestor worktree-<name> HEAD && git branch -D worktree-<name>`. Первая команда завершается успешно, только когда ветка входит в `HEAD` ([git-merge-base](https://git-scm.com/docs/git-merge-base#Documentation/git-merge-base.txt---is-ancestor)), а `-D` удаляет ветку без собственной проверки слияния в git, которая сверяет ветку с её upstream, если он есть, а не с `HEAD` ([git-branch](https://git-scm.com/docs/git-branch#Documentation/git-branch.txt--D)).
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- In most repositories on macOS, Linux and WSL 2, choosing "Yes, and don't ask again" for a Bash command in a worktree session saves the rule to your main checkout's `.claude/settings.local.json`. It then applies in the main checkout and in every worktree of the repository, and it stays after the worktree is removed ([What worktrees share with the main checkout](https://code.claude.com/docs/en/worktrees#what-worktrees-share-with-the-main-checkout)). Approve only commands you'd allow everywhere.
-- Running several sessions at once multiplies token usage ([Run agents in parallel](https://code.claude.com/docs/en/agents)). Give each session one small task, and exit it once its branch is merged.
-- A new worktree branches from the remote's default branch, not from your local `HEAD` ([Choose the base branch](https://code.claude.com/docs/en/worktrees#choose-the-base-branch)). Commits that aren't on that branch yet, such as unpushed commits or your feature branch's work, aren't in it, and merging its branch into a branch that's behind the remote's default branch brings in the commits that branch lacks. With no remote, a new worktree starts from your local `HEAD` instead.
+- В большинстве репозиториев на macOS, Linux и WSL 2 выбор «Yes, and don't ask again» для команды Bash в сессии worktree сохраняет правило в `.claude/settings.local.json` вашего основного checkout. Тогда оно действует и в основном checkout, и во всех worktrees репозитория и остаётся после удаления worktree ([What worktrees share with the main checkout](https://code.claude.com/docs/en/worktrees#what-worktrees-share-with-the-main-checkout)). Одобряйте только те команды, которые разрешили бы везде.
+- Несколько сессий одновременно умножают расход токенов ([Run agents in parallel](https://code.claude.com/docs/en/agents)). Давайте каждой сессии одну небольшую задачу и выходите из неё, как только её ветка слита.
+- Новый worktree ответвляется от ветки по умолчанию на удалённом репозитории, а не от вашего локального `HEAD` ([Choose the base branch](https://code.claude.com/docs/en/worktrees#choose-the-base-branch)). Коммитов, которых в этой ветке ещё нет, например неотправленных или из работы вашей feature-ветки, в нём не будет, а слияние его ветки в ветку, отстающую от ветки по умолчанию на удалённом репозитории, приносит коммиты, которых той ветке не хватает. Если удалённого репозитория нет, новый worktree стартует с вашего локального `HEAD`.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Isolate subagents with worktrees](https://code.claude.com/docs/en/worktrees#isolate-subagents-with-worktrees): `isolation: worktree` in a subagent's frontmatter gives each run a checkout of its own.
-- [Message your other Claude Code sessions](https://code.claude.com/docs/en/cross-session-messaging): let the sessions in your worktrees pass findings to each other.
-- [Run multiple Claude sessions](https://code.claude.com/docs/en/best-practices#run-multiple-claude-sessions): the Writer/Reviewer pattern, where a fresh session reviews what another one wrote.
+- [Isolate subagents with worktrees](https://code.claude.com/docs/en/worktrees#isolate-subagents-with-worktrees): `isolation: worktree` во frontmatter субагента даёт каждому запуску собственный checkout.
+- [Message your other Claude Code sessions](https://code.claude.com/docs/en/cross-session-messaging): пусть сессии в ваших worktrees передают друг другу находки.
+- [Run multiple Claude sessions](https://code.claude.com/docs/en/best-practices#run-multiple-claude-sessions): схема «автор и рецензент», когда свежая сессия проверяет то, что написала другая.
 
 ---
 
-<sub>Sources: [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees) · [All settings](https://code.claude.com/docs/en/settings-reference) · [Settings files and precedence](https://code.claude.com/docs/en/settings) · [Configure the sandboxed Bash tool](https://code.claude.com/docs/en/sandboxing) · [Run agents in parallel](https://code.claude.com/docs/en/agents) · [git-worktree](https://git-scm.com/docs/git-worktree) · [git-merge](https://git-scm.com/docs/git-merge) · [git-check-ignore](https://git-scm.com/docs/git-check-ignore) · [gitignore](https://git-scm.com/docs/gitignore) · [git-merge-base](https://git-scm.com/docs/git-merge-base) · [git-branch](https://git-scm.com/docs/git-branch)</sub>
+<sub>Источники: [Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees) · [All settings](https://code.claude.com/docs/en/settings-reference) · [Settings files and precedence](https://code.claude.com/docs/en/settings) · [Configure the sandboxed Bash tool](https://code.claude.com/docs/en/sandboxing) · [Run agents in parallel](https://code.claude.com/docs/en/agents) · [git-worktree](https://git-scm.com/docs/git-worktree) · [git-merge](https://git-scm.com/docs/git-merge) · [git-check-ignore](https://git-scm.com/docs/git-check-ignore) · [gitignore](https://git-scm.com/docs/gitignore) · [git-merge-base](https://git-scm.com/docs/git-merge-base) · [git-branch](https://git-scm.com/docs/git-branch)</sub>
 
-<sub>← [Advanced index](README.md) · [Choose an orchestration pattern](02-orchestration-patterns.md) → · Topic: [Subagents and parallel work](../topics/subagents-and-parallel-work.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=a-1)</sub>
+<sub>← [Оглавление продвинутого уровня](README.md) · [Выбор схемы оркестрации](02-orchestration-patterns.md) → · Тема: [Субагенты и параллельная работа](../topics/subagents-and-parallel-work.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=a-1)</sub>

@@ -1,72 +1,72 @@
-# Beginner capstone: fix a reported bug, from plan to commit <a id="beginner-capstone-fix-a-reported-bug-from-plan-to-commit"></a>
+# Итоговый проект начального уровня: исправляем найденную ошибку, от плана до коммита <a id="beginner-capstone-fix-a-reported-bug-from-plan-to-commit"></a>
 
-<sub>**Beginner** · Capstone · 30 to 60 minutes · Needs: the five [Beginner lessons](README.md), or their skills · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>**Начальный уровень** · Итоговый проект · от 30 до 60 минут · Нужно: пять [уроков начального уровня](README.md) или соответствующие навыки · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-This task puts the whole Beginner level together. Unlike the lessons, it has no worked example: the steps say what to do, and you choose the prompts. The [Beginner Exit](README.md#by-the-end-of-this-level-you-can) is the list of what you can do by the end of this level. The check reads the files and the commit this task leaves behind, and you tick the rest of the Exit yourself under [What the check can't see](#what-the-check-cant-see). When both are done, you've shown the Beginner Exit, whether you took the lessons or not.
+Эта задача собирает вместе весь начальный уровень: вы учитесь исправить найденную ошибку, от плана до коммита, и прочитать весь дифф перед коммитом. В отличие от уроков, здесь нет разбора на примере: шаги говорят, что делать, а запросы вы выбираете сами. [Итог начального уровня](README.md#by-the-end-of-this-level-you-can) (Beginner Exit) — список того, что вы умеете к концу уровня. Проверка читает файлы и коммит, которые остаются после задачи, а остальные пункты итога вы отмечаете сами в разделе [Что проверка не видит](#what-the-check-cant-see). Когда сделано и то и другое, вы показали итог начального уровня — независимо от того, проходили вы уроки или нет.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Your copy of the practice template, with no uncommitted changes, and Node.js LTS (a Codespace on your copy has it). If `git status --porcelain` lists files, commit them or set them aside with `git stash push --include-untracked`. The capstone runs in the template only.
-- If you skipped the lessons: create the `.practice/` folder in your copy (`mkdir -p .practice`; **Windows:** `New-Item -ItemType Directory -Force .practice`). The template already tells git to ignore it.
-- A committed `CLAUDE.md` in your copy that names the test command, `npm test`: `git show HEAD:CLAUDE.md` shows it. Lesson 5 gives you one; if yours doesn't name `npm test`, add it.
-- If you skipped lesson 5, or did it only in your own repository: start `claude` in your copy and run `/init`. In the new `CLAUDE.md`, delete what it says about the course's own files (`checks/`, `learn/`, `capstone/` and `.github/`) and about `npm run check`, `npm run learn` and `npm run test:checks`, including any rule to keep your work off `main`: that rule is for the template repository, not your copy. Make sure the file names `npm test`.
-- Commit any change to `CLAUDE.md` on its own before you start (`git add CLAUDE.md`, then `git commit -m "Add CLAUDE.md"`): the fix commit may change only the files the plan names.
-- Usage: moderate.
+- Ваша копия шаблона для практики без незакоммиченных изменений и Node.js LTS (в Codespace на вашей копии он есть). Если `git status --porcelain` перечисляет файлы, закоммитьте их или отложите командой `git stash push --include-untracked`. Итоговый проект выполняется только в шаблоне.
+- Если вы пропустили уроки: создайте в своей копии папку `.practice/` (`mkdir -p .practice`; **Windows:** `New-Item -ItemType Directory -Force .practice`). Шаблон уже велит git её игнорировать.
+- Закоммиченный `CLAUDE.md` в вашей копии, где указана команда тестов `npm test`: `git show HEAD:CLAUDE.md` его покажет. Его даёт урок 5; если в вашем `npm test` не указан, добавьте.
+- Если вы пропустили урок 5 или выполнили его только в своём репозитории: запустите `claude` в своей копии и выполните `/init`. В новом `CLAUDE.md` удалите всё, что он пишет о файлах самого курса (`checks/`, `learn/`, `capstone/` и `.github/`) и о `npm run check`, `npm run learn` и `npm run test:checks`, включая любое правило не работать в `main`: оно относится к репозиторию шаблона, а не к вашей копии. Убедитесь, что в файле указан `npm test`.
+- Любое изменение `CLAUDE.md` закоммитьте отдельно до начала (`git add CLAUDE.md`, затем `git commit -m "Add CLAUDE.md"`): коммит с исправлением может менять только файлы, названные в плане.
+- Расход: умеренный.
 
 > [!NOTE]
-> On native Windows, run every command in PowerShell. A command with no **Windows** line works there as written; where a **Windows** line follows a command, use it instead. If `Shift+Tab` does nothing, press `Alt+M` instead ([Interactive mode](https://code.claude.com/docs/en/interactive-mode)).
+> В нативной Windows выполняйте все команды в PowerShell. Команда без строки **Windows** работает там как есть; если после команды идёт строка **Windows**, используйте её. Если `Shift+Tab` ничего не делает, нажмите вместо него `Alt+M` ([Интерактивный режим](https://code.claude.com/docs/en/interactive-mode)).
 
 <a id="the-task"></a>
-## The task
+## Задача
 
-A teammate filed the bug report in `capstone/beginner-bug.md` in your practice copy: when `linkcheck.json` lists a folder that doesn't exist, the tool says every link resolves and exits with code 0.
+Коллега завёл отчёт об ошибке в файле `capstone/beginner-bug.md` в вашей учебной копии: когда `linkcheck.json` перечисляет несуществующую папку, инструмент сообщает, что все ссылки в порядке, и завершается с кодом 0.
 
-To try the bug by hand, make a new folder outside your practice copy and save `{ "files": ["docs"] }` in it as `linkcheck.json`. Then run `npm run linkcheck -- <that folder>` in your copy: until the bug is fixed, it prints `All relative links resolve.` Don't put a `linkcheck.json` in your copy, because the check counts it as a change. **Windows:** save the file with `'{ "files": ["docs"] }' | Set-Content <that folder>\linkcheck.json`, not `>`. In Windows PowerShell 5.1, `>` writes UTF-16 ([about_Character_Encoding](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-5.1)), which the tool rejects as invalid JSON with exit code 2, even before the fix.
+Чтобы воспроизвести ошибку вручную, создайте новую папку вне учебной копии и сохраните в ней `{ "files": ["docs"] }` как `linkcheck.json`. Затем выполните в своей копии `npm run linkcheck -- <that folder>`: пока ошибка не исправлена, он печатает `All relative links resolve.` Не кладите `linkcheck.json` в свою копию: проверка сочтёт его изменением. **Windows:** сохраняйте файл командой `'{ "files": ["docs"] }' | Set-Content <that folder>\linkcheck.json`, а не через `>`. В Windows PowerShell 5.1 `>` пишет в UTF-16 ([about_Character_Encoding](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-5.1)), и инструмент отвергает такой файл как некорректный JSON с кодом завершения 2 — даже до исправления.
 
-Fix it the way the Beginner lessons taught:
+Исправьте ошибку так, как учили уроки начального уровня:
 
-1. Save the output of `claude --version` to `.practice/version.txt`.
-2. Start a session and switch to plan mode before your first prompt. Then have Claude read the bug report and plan the fix. The fix touches two source files and at least one test file. Ask for a plan that adds the test and runs it before changing the code, so you see it fail ([Best practices](https://code.claude.com/docs/en/best-practices#provide-specific-context-in-your-prompts): "write a failing test that reproduces the issue, then fix it").
-3. While the final plan is on screen, open another terminal in the same folder. Save `git status --porcelain` to `.practice/capstone-before.txt`. Save the files the plan will change, every test file included, to `.practice/capstone-plan.txt`: one path per line, relative to the repository root, with forward slashes, such as `src/cli.js`.
-4. Approve the plan. Watch the new test fail, then pass after the fix. To read the test output, not only Claude's summary, press `Ctrl+O` as in [lesson 3](03-first-change.md#worked-example), and `Esc` to go back ([Interactive mode](https://code.claude.com/docs/en/interactive-mode#general-controls)).
-5. Review the whole diff, the test file included, as in [lesson 3](03-first-change.md#worked-example). The diff panel's list leaves test files out until you click the line that counts them ([Interactive mode](https://code.claude.com/docs/en/interactive-mode#diff-panel)). `git diff` leaves out a new file until you run `git add -N <file>` ([git add](https://git-scm.com/docs/git-add#Documentation/git-add.txt--N)). Ask for at least one correction that stays inside the files the plan names, and make sure `npm test` passes.
-6. Commit the fix and its test together, then save the commit with `git rev-parse HEAD > .practice/capstone-commit.txt`. The check reads only that commit, so if you change it later, save it again.
+1. Сохраните вывод `claude --version` в `.practice/version.txt`.
+2. Начните сессию и переключитесь в plan mode до первого запроса. Затем пусть Claude прочитает отчёт об ошибке и составит план исправления. Исправление затрагивает два файла с исходным кодом и хотя бы один тестовый файл. Попросите план, в котором тест добавляется и запускается до изменения кода, чтобы увидеть его падение ([Рекомендации](https://code.claude.com/docs/en/best-practices#provide-specific-context-in-your-prompts): «напиши падающий тест, воспроизводящий проблему, затем исправь её»).
+3. Пока итоговый план на экране, откройте другой терминал в той же папке. Сохраните `git status --porcelain` в `.practice/capstone-before.txt`. Сохраните файлы, которые план изменит, включая все тестовые, в `.practice/capstone-plan.txt`: по одному пути в строке, относительно корня репозитория, с прямыми слэшами, например `src/cli.js`.
+4. Одобрите план. Посмотрите, как новый тест падает, а после исправления проходит. Чтобы прочитать вывод тестов, а не только отчёт Claude, нажмите `Ctrl+O`, как в [уроке 3](03-first-change.md#worked-example), и `Esc`, чтобы вернуться ([Интерактивный режим](https://code.claude.com/docs/en/interactive-mode#general-controls)).
+5. Просмотрите весь дифф, включая тестовый файл, как в [уроке 3](03-first-change.md#worked-example). Список в панели диффа скрывает тестовые файлы, пока вы не нажмёте строку, которая их считает ([Интерактивный режим](https://code.claude.com/docs/en/interactive-mode#diff-panel)). `git diff` не показывает новый файл, пока вы не выполните `git add -N <file>` ([git add](https://git-scm.com/docs/git-add#Documentation/git-add.txt--N)). Попросите хотя бы одну правку, которая остаётся в файлах из плана, и убедитесь, что `npm test` проходит.
+6. Закоммитьте исправление и его тест вместе, затем сохраните коммит командой `git rev-parse HEAD > .practice/capstone-commit.txt`. Проверка читает только этот коммит, поэтому если вы позже его измените, сохраните снова.
 
-Keep the session on track as you go: check `/context`, and compact or rewind when it helps.
+Удерживайте сессию в рабочем русле по ходу работы: смотрите `/context`, сжимайте контекст или откатывайте, когда это помогает.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Работа готова, когда выполнено всё:
 
-- [ ] `.practice/version.txt` holds the output of `claude --version`.
-- [ ] `.practice/capstone-before.txt`, saved while the plan was on screen, lists no changed files.
-- [ ] The commit in `.practice/capstone-commit.txt` changes only files listed in `.practice/capstone-plan.txt`, including a test file.
-- [ ] The bug is fixed: with the bug report's `linkcheck.json` in a folder outside your copy, `npm run linkcheck -- <that folder>` exits with code 2.
-- [ ] `npm test` passes.
-- [ ] A committed `CLAUDE.md` names the test command, `npm test`.
-- [ ] `git status --porcelain` prints nothing.
+- [ ] `.practice/version.txt` содержит вывод `claude --version`.
+- [ ] `.practice/capstone-before.txt`, сохранённый, пока план был на экране, не перечисляет изменённых файлов.
+- [ ] Коммит из `.practice/capstone-commit.txt` меняет только файлы, перечисленные в `.practice/capstone-plan.txt`, в том числе тестовый файл.
+- [ ] Ошибка исправлена: если `linkcheck.json` из отчёта лежит в папке вне вашей копии, `npm run linkcheck -- <that folder>` завершается с кодом 2.
+- [ ] `npm test` проходит.
+- [ ] Закоммиченный `CLAUDE.md` указывает команду тестов `npm test`.
+- [ ] `git status --porcelain` ничего не печатает.
 
-Run `npm run check -- b-capstone` in your practice copy. Each item that fails prints what to fix.
+Запустите `npm run check -- b-capstone` в учебной копии. Каждый невыполненный пункт напечатает, что исправить.
 
 <a id="what-the-check-cant-see"></a>
-## What the check can't see
+## Что проверка не видит
 
-The check doesn't look at these parts of the Beginner Exit. Tick them yourself, honestly:
+Эти части итога начального уровня проверка не просматривает. Отметьте их сами, честно:
 
-- [ ] I can tell which model and account a session uses, with `/status`.
-- [ ] I can switch permission modes with `Shift+Tab` and say which one a task needs.
-- [ ] I read the whole diff before committing and asked Claude for at least one correction.
-- [ ] I can keep a session on track with `/context`, `/clear`, `/compact`, `/rewind` and `/resume`.
-- [ ] I've seen a new session follow a rule from CLAUDE.md that I didn't repeat in the prompt. If you skipped lesson 5, its [Worked example](05-project-memory.md#worked-example) shows you how.
+- [ ] Я могу определить, какую модель и какой аккаунт использует сессия, с помощью `/status`.
+- [ ] Я могу переключать режимы разрешений через `Shift+Tab` и сказать, какой из них нужен для задачи.
+- [ ] Я прочитал весь дифф перед коммитом и попросил Claude хотя бы об одной правке.
+- [ ] Я могу удерживать сессию в рабочем русле с помощью `/context`, `/clear`, `/compact`, `/rewind` и `/resume`.
+- [ ] Я видел, как новая сессия следует правилу из CLAUDE.md, которое я не повторял в запросе. Если вы пропустили урок 5, его [разбор на примере](05-project-memory.md#worked-example) покажет, как это сделать.
 
-When every box on this page is ticked, you're ready for the [Intermediate level](../intermediate/README.md). Its "ready if" list is the Beginner Exit.
+Когда на этой странице отмечены все пункты, вы готовы к [среднему уровню](../intermediate/README.md). Его список «готовы, если» — это итог начального уровня.
 
-If this level helped, a star helps other developers find the guide.
+Если этот уровень вам помог, звёздочка поможет другим разработчикам найти руководство.
 
 ---
 
-<sub>Sources: [Best practices](https://code.claude.com/docs/en/best-practices) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [git add](https://git-scm.com/docs/git-add) · [about_Character_Encoding](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-5.1) · the [Beginner lessons](README.md), which cite the official pages for each step.</sub>
+<sub>Источники: [Best practices](https://code.claude.com/docs/en/best-practices) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [git add](https://git-scm.com/docs/git-add) · [about_Character_Encoding](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding?view=powershell-5.1) · [уроки начального уровня](README.md), которые ссылаются на официальные страницы по каждому шагу.</sub>
 
-<sub>← [Project memory with CLAUDE.md](05-project-memory.md) · [Beginner index](README.md) · [Intermediate index](../intermediate/README.md) → · [Stuck on this capstone?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=b-capstone)</sub>
+<sub>← [Память проекта в CLAUDE.md](05-project-memory.md) · [Оглавление уровня](README.md) · [Оглавление среднего уровня](../intermediate/README.md) → · [Застряли на итоговом проекте?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=b-capstone)</sub>

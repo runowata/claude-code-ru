@@ -1,91 +1,91 @@
-# Learn from Claude Code itself <a id="learn-from-claude-code-itself"></a>
+# Учимся у самого Claude Code <a id="learn-from-claude-code-itself"></a>
 
-<sub>**Beginner** · Elective · about 20 minutes · Needs: [Install, sign in and look around](../01-install-and-look-around.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>**Начальный уровень** · Дополнительный урок · около 20 минут · Нужно: [Установка, вход и первый осмотр](../01-install-and-look-around.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this Elective you can use Claude Code's built-in teaching aids: `/powerup`, the Learning and Explanatory output styles, and its guide to its own features.
+После этого дополнительного урока вы умеете пользоваться встроенными учебными подсказками Claude Code: `/powerup`, стилями вывода Learning и Explanatory и его справочником по собственным возможностям.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Your copy of the practice template with no uncommitted changes.
-- Usage: light.
+- Ваша копия шаблона для практики без незакоммиченных изменений.
+- Расход: небольшой.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-Claude Code can teach you while you work. Three aids are built in:
+Claude Code может учить вас прямо во время работы. Встроены три помощника:
 
-- **`/powerup`** runs quick interactive lessons on Claude Code's features, with animated demos ([Commands](https://code.claude.com/docs/en/commands)).
-- **Output styles** change how Claude answers ([Output styles](https://code.claude.com/docs/en/output-styles)). In the **Explanatory** style, Claude adds short `Insight` blocks that explain the choices behind its code. The **Learning** style adds the same blocks and also leaves a few lines of real decisions for you to write.
-- **The guide to Claude Code**: `claude-code-guide` is a built-in helper for questions about Claude Code's own features ([Create custom subagents](https://code.claude.com/docs/en/sub-agents)). Name it in your prompt, or Claude may answer from its own knowledge instead.
+- **`/powerup`** запускает короткие интерактивные уроки по возможностям Claude Code с анимированными демонстрациями ([Команды](https://code.claude.com/docs/en/commands)).
+- **Стили вывода** (output styles) меняют манеру ответов Claude ([Стили вывода](https://code.claude.com/docs/en/output-styles)). В стиле **Explanatory** Claude добавляет короткие блоки `Insight`, которые объясняют выбор, стоящий за его кодом. Стиль **Learning** добавляет те же блоки и ещё оставляет вам несколько строк с настоящими решениями, которые нужно написать самим.
+- **Справочник по Claude Code**: `claude-code-guide` — встроенный помощник (субагент) для вопросов о собственных возможностях Claude Code ([Создание собственных субагентов](https://code.claude.com/docs/en/sub-agents)). Назовите его в запросе, иначе Claude может ответить по собственным знаниям.
 
-Why write some of the code yourself? In an Anthropic study, developers who learned a new library with an AI assistant scored lower, on average, on a quiz about it than developers who coded by hand. The ones who scored well used the assistant to ask questions and get explanations, not just to produce code ([How AI assistance impacts the formation of coding skills](https://www.anthropic.com/research/AI-assistance-coding-skills)). The Learning style builds that habit in.
+Зачем часть кода писать самому? В исследовании Anthropic разработчики, которые осваивали новую библиотеку с ИИ-помощником, в среднем набрали за тест по ней меньше, чем те, кто писал код вручную. Те, кто набрал много, использовали помощника, чтобы задавать вопросы и получать объяснения, а не только чтобы получать код ([Как помощь ИИ влияет на формирование навыков программирования](https://www.anthropic.com/research/AI-assistance-coding-skills)). Стиль Learning вырабатывает эту привычку.
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. Start `claude` in your practice copy and run `/powerup`. Pick a lesson, try what it shows, and follow the hints on screen. A lesson counts as finished when you press `Enter` on its card (`Enter to mark done`). If a `/powerup` lesson names a `default` mode, that is Manual mode ([Choose a permission mode](https://code.claude.com/docs/en/permission-modes)), which [lesson 2](../02-permission-modes-and-plan-mode.md) covers.
-2. Switch the output style:
+1. Запустите `claude` в своей учебной копии и выполните `/powerup`. Выберите урок, попробуйте то, что он показывает, и следуйте подсказкам на экране. Урок считается пройденным, когда вы нажимаете `Enter` на его карточке (`Enter to mark done`). Если урок `/powerup` называет режим `default`, это режим Manual ([Выбор режима разрешений](https://code.claude.com/docs/en/permission-modes)), который разбирает [урок 2](../02-permission-modes-and-plan-mode.md).
+2. Переключите стиль вывода:
 
    ```text
    /output-style learning
    ```
 
-   Claude Code saves the choice to `.claude/settings.local.json` in this project, so every session you start here keeps this style until you run `/output-style default`. Your turn ends with that step; if you stop before it, run it yourself.
-3. Ask for a small change that leaves a decision to you:
+   Claude Code сохраняет выбор в `.claude/settings.local.json` этого проекта, поэтому каждая сессия, которую вы здесь начнёте, сохранит этот стиль, пока вы не выполните `/output-style default`. Это вы сделаете в конце раздела «Ваша очередь»; если остановитесь раньше, выполните команду сами.
+3. Попросите небольшое изменение, в котором решение остаётся за вами:
 
    ```text
-   Add a function to src/links.js that counts the external links on a page, with a test. Leave the decision about repeated links to me.
+   Добавь в src/links.js функцию, которая считает внешние ссылки на странице, и тест к ней. Решение о повторяющихся ссылках оставь мне.
    ```
 
-   Claude explains its choices in `Insight` blocks, though not in every reply. When it reaches that decision, it adds a `TODO(human)` comment to the file and stops with a `Learn by Doing` request that says what to write ([Output styles](https://code.claude.com/docs/en/output-styles#learning)). Open the file it names in your editor, write your lines at the `TODO(human)` comment, save, and tell Claude you're done. Claude comments on your code and finishes the task; if it doesn't run the tests, ask it to. A style is an instruction, not a guarantee: if Claude writes all the code itself, ask it to leave the repeated-links decision to you.
-4. When the tests pass, set the change aside so later lessons start clean. Open a second terminal in the same folder and run:
+   Claude объясняет свой выбор в блоках `Insight`, хотя и не в каждом ответе. Дойдя до этого решения, он добавляет в файл комментарий `TODO(human)` и останавливается с просьбой `Learn by Doing`, где сказано, что написать ([Стили вывода](https://code.claude.com/docs/en/output-styles#learning)). Откройте названный им файл в редакторе, напишите свои строки у комментария `TODO(human)`, сохраните и скажите Claude, что закончили. Claude прокомментирует ваш код и завершит задачу; если он не запустит тесты, попросите его об этом. Стиль — это инструкция, а не гарантия: если Claude пишет весь код сам, попросите его оставить решение о повторяющихся ссылках вам.
+4. Когда тесты проходят, отложите изменение, чтобы следующие уроки начинались с чистого листа. Откройте второй терминал в той же папке и выполните:
 
    ```bash
    git stash push --include-untracked -m b-teachers
    ```
 
-5. Back in Claude Code, ask about Claude Code itself, and name the helper so Claude hands the question to it ([Invoke subagents explicitly](https://code.claude.com/docs/en/sub-agents#invoke-subagents-explicitly)):
+5. Вернитесь в Claude Code и спросите о самом Claude Code, назвав помощника, чтобы Claude передал вопрос ему ([Явный вызов субагентов](https://code.claude.com/docs/en/sub-agents#invoke-subagents-explicitly)):
 
    ```text
-   Use the claude-code-guide agent: how do I make my own slash command in Claude Code?
+   Используй агента claude-code-guide: как сделать собственную slash-команду в Claude Code?
    ```
 
-   When Claude hands it over, the transcript shows a `claude-code-guide(...)` row with a short task description in the brackets. If no such row appears, Claude answered without the helper: send the prompt again. Your wording will differ, but the answer should point you to skills, a `SKILL.md` file under `.claude/skills/` ([Extend Claude with skills](https://code.claude.com/docs/en/skills)). It may also mention the older `.claude/commands/` folder, which still works.
+   Когда Claude передаёт вопрос, в журнале разговора появляется строка `claude-code-guide(...)` с кратким описанием задачи в скобках. Если такой строки нет, Claude ответил без помощника: отправьте запрос ещё раз. Формулировки будут другими, но ответ должен отправить вас к skills — файлу `SKILL.md` в `.claude/skills/` ([Расширение Claude с помощью skills](https://code.claude.com/docs/en/skills)). Он может также упомянуть более старую папку `.claude/commands/`, которая по-прежнему работает.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-1. Run `/powerup` and finish one more lesson.
-2. Switch to the Explanatory style with `/output-style explanatory`, ask Claude to explain `src/check-links.js`, and read its `Insight` blocks. Then, in your second terminal, save the setting for the check:
+1. Выполните `/powerup` и пройдите ещё один урок.
+2. Переключитесь на стиль Explanatory командой `/output-style explanatory`, попросите Claude объяснить `src/check-links.js` и прочитайте его блоки `Insight`. Затем во втором терминале сохраните настройку для проверки:
 
    ```bash
    cp .claude/settings.local.json .practice/b-teachers-style.json
    ```
 
-3. Ask `claude-code-guide` about a Claude Code feature you haven't used yet: start your prompt with `Use the claude-code-guide agent:`, and look for its row in the transcript. If you asked the helper something earlier in this session, Claude may send the question to that same helper: the transcript then shows `Resuming agent` instead of a new `claude-code-guide(...)` row, and that counts too.
-4. When you're done, switch back with `/output-style default`.
+3. Спросите `claude-code-guide` о возможности Claude Code, которой вы ещё не пользовались: начните запрос со слов `Используй агента claude-code-guide:` и найдите его строку в журнале разговора. Если вы уже спрашивали помощника в этой сессии, Claude может отправить вопрос тому же помощнику: тогда в журнале будет `Resuming agent` вместо новой строки `claude-code-guide(...)`, и это тоже засчитывается.
+4. Закончив, вернитесь к исходному стилю командой `/output-style default`.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-This Elective has no `npm run check`: tick each item yourself. You are done when all of these are true:
+У этого дополнительного урока нет `npm run check`: отметьте каждый пункт сами. Урок пройден, когда выполнено всё:
 
-- [ ] `.practice/b-teachers-style.json`, saved in step 2 of Your turn, has an `outputStyle` entry for the Explanatory style. Check it with `cat .practice/b-teachers-style.json`.
-- [ ] Self-check (not tested): you finished two `/powerup` lessons.
+- [ ] В `.practice/b-teachers-style.json`, сохранённом на шаге 2 раздела «Ваша очередь», есть запись `outputStyle` для стиля Explanatory. Проверьте командой `cat .practice/b-teachers-style.json`.
+- [ ] Самопроверка (не проверяется автоматически): вы прошли два урока `/powerup`.
 
-If the file is missing or names another style, run `/output-style explanatory` in Claude Code, repeat the `cp` command in your second terminal, then run `/output-style default`.
+Если файла нет или в нём назван другой стиль, выполните в Claude Code `/output-style explanatory`, повторите команду `cp` во втором терминале, затем выполните `/output-style default`.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Output styles](https://code.claude.com/docs/en/output-styles): every built-in style, and how to write your own.
+- [Стили вывода](https://code.claude.com/docs/en/output-styles): все встроенные стили и как написать свой.
 
 ---
 
-<sub>Sources: [Commands](https://code.claude.com/docs/en/commands) · [Output styles](https://code.claude.com/docs/en/output-styles) · [Create custom subagents](https://code.claude.com/docs/en/sub-agents) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [Extend Claude with skills](https://code.claude.com/docs/en/skills) · [How AI assistance impacts the formation of coding skills](https://www.anthropic.com/research/AI-assistance-coding-skills)</sub>
+<sub>Источники: [Commands](https://code.claude.com/docs/en/commands) · [Output styles](https://code.claude.com/docs/en/output-styles) · [Create custom subagents](https://code.claude.com/docs/en/sub-agents) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [Extend Claude with skills](https://code.claude.com/docs/en/skills) · [How AI assistance impacts the formation of coding skills](https://www.anthropic.com/research/AI-assistance-coding-skills)</sub>
 
-<sub>Back to the [Beginner index](../README.md) · Topic: [Memory and context](../../topics/memory-and-context.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=b-teachers)</sub>
+<sub>Назад к [оглавлению начального уровня](../README.md) · Тема: [Память и контекст](../../topics/memory-and-context.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=b-teachers)</sub>

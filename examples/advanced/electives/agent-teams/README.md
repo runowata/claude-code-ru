@@ -1,53 +1,53 @@
-# Reviewer subagents for the agent teams Elective <a id="reviewer-subagents-for-the-agent-teams-elective"></a>
+# Субагенты-рецензенты для дополнительного урока про agent teams <a id="reviewer-subagents-for-the-agent-teams-elective"></a>
 
 > [!NOTE]
-> Agent teams are experimental and disabled by default.
+> Agent teams (команды агентов) — экспериментальная функция и по умолчанию выключены.
 
-Two read-only subagents for the Advanced Elective "Agent teams": `security-reviewer`, which looks for injection, unsafe input handling, exposed secrets and missing access checks, and `test-reviewer`, which looks for changed behavior without a test, tests that can't fail and missing edge cases. Each reports findings by severity. Their only tools are Read, Grep and Glob, so they can read and search files but can't edit them or run commands ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#available-tools)). Without a shell they can't run `git diff`, so name the changed files in your prompt, or save the diff to a file first and name that file. Both run on Sonnet (`model: sonnet`).
+Два субагента только для чтения для дополнительного урока Продвинутого уровня «Agent teams»: `security-reviewer` ищет инъекции, небезопасную обработку ввода, раскрытые секреты и отсутствующие проверки доступа, а `test-reviewer` — изменённое поведение без теста, тесты, которые не могут упасть, и пропущенные крайние случаи. Каждый сообщает находки по степени важности. Их инструменты — только Read, Grep и Glob, поэтому они могут читать файлы и искать в них, но не могут ни править их, ни запускать команды ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#available-tools)). Без оболочки они не выполнят `git diff`, поэтому назовите изменённые файлы в промпте или сначала сохраните дифф в файл и назовите этот файл. Оба работают на Sonnet (`model: sonnet`).
 
-Copy them into `.claude/agents/` in your project:
+Скопируйте их в `.claude/agents/` вашего проекта:
 
 ```bash
 mkdir -p .claude/agents
 cp <path-to-this-folder>/dot-claude/agents/*.md .claude/agents/
 ```
 
-If `.claude/agents/` didn't exist when your session started, restart Claude Code so it sees the new folder ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#write-subagent-files)). To confirm both loaded, run `/context`, which lists custom subagents with the source each loaded from ([Debug your configuration](https://code.claude.com/docs/en/debug-your-config)), or type `@` and find them in the typeahead.
+Если `.claude/agents/` не существовала на момент старта сессии, перезапустите Claude Code, чтобы он увидел новую папку ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#write-subagent-files)). Чтобы убедиться, что оба загрузились, выполните `/context`: команда перечисляет собственных субагентов с источником, откуда каждый загружен ([Debug your configuration](https://code.claude.com/docs/en/debug-your-config)), или введите `@` и найдите их в подсказках.
 
-Each file's header block, as comments at the top of its frontmatter, says what it does, when it runs, its side effects, platforms, how to remove it, and its test line. In short:
-- **What:** two project subagents that review code changes, each through one lens, and change no files.
-- **Runs:** when Claude delegates a review to one of them, when you ask for one by name, or as a teammate's role when agent teams are on and a spawn prompt names its agent type.
-- **Side effects:** none. Read, Grep and Glob only.
-- **Requires:** Claude Code; for teammates, agent teams turned on and an interactive session. Platforms: any; `test.sh` needs bash and awk.
-- **Remove:** delete `.claude/agents/security-reviewer.md` and `.claude/agents/test-reviewer.md`.
+Заголовочный блок каждого файла (комментарии в начале frontmatter) говорит, что он делает, когда запускается, его побочные эффекты, платформы, как его удалить и строку проверки. Коротко:
+- **Что:** два проектных субагента, которые проверяют изменения кода, каждый со своей стороны, и не меняют файлы.
+- **Когда запускаются:** когда Claude поручает рецензию одному из них, когда вы просите о нём по имени или как роль коллеги по команде, если agent teams включены и промпт запуска называет его тип агента.
+- **Побочные эффекты:** нет. Только Read, Grep и Glob.
+- **Требуется:** Claude Code; для коллег по команде — включённые agent teams и интерактивная сессия. Платформы: любые; `test.sh` нужны bash и awk.
+- **Как удалить:** удалите `.claude/agents/security-reviewer.md` и `.claude/agents/test-reviewer.md`.
 
 <a id="as-teammates"></a>
-## As teammates
+## В роли коллег по команде
 
-Agent teams need `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` set to `1`, in your shell or under `env` in settings, and an interactive session: with `-p`, Claude doesn't spawn teammates ([Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)). For one session:
+Agent teams требуют, чтобы `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` было равно `1` — в вашей оболочке или в `env` в настройках — и интерактивную сессию: с `-p` Claude не запускает коллег ([Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)). На одну сессию:
 
 ```bash
 CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude
 ```
 
-Then name the agent types in your spawn prompt, as the docs do:
+Затем назовите типы агентов в промпте запуска, как это делает документация:
 
 ```text
-Spawn two teammates using the security-reviewer and test-reviewer agent types to review the changes in <the changed files, or your saved diff>. Have them each report findings.
+Запусти двух коллег по команде, используя типы агентов security-reviewer и test-reviewer, чтобы проверить изменения в <изменённые файлы или ваш сохранённый дифф>. Пусть каждый сообщит свои находки.
 ```
 
-Each teammate is limited to its definition's `tools` (an in-process teammate also gets the message and task tools Claude Code adds) and runs on its definition's `model` unless your spawn prompt names another; the docs list how the body and the other fields apply ([Use subagent definitions for teammates](https://code.claude.com/docs/en/agent-teams#use-subagent-definitions-for-teammates)).
+Каждый коллега ограничен `tools` своего определения (коллега внутри процесса получает ещё инструменты сообщений и задач, которые добавляет Claude Code) и работает на `model` своего определения, если ваш промпт запуска не называет другую; как применяются тело файла и остальные поля, перечислено в документации ([Use subagent definitions for teammates](https://code.claude.com/docs/en/agent-teams#use-subagent-definitions-for-teammates)).
 
 > [!WARNING]
-> While agent teams are on, a subagent that Claude names launches as a teammate, so a team can form when you didn't ask for one ([Enable agent teams](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)). Teammates start with your permission mode, except `dontAsk`, and their permission prompts appear in your session for you to answer. If you run with `--dangerously-skip-permissions`, every teammate does too ([Permissions](https://code.claude.com/docs/en/agent-teams#permissions)).
+> Пока agent teams включены, субагент, которого называет Claude, запускается как коллега по команде, поэтому команда может образоваться, хотя вы её не просили ([Enable agent teams](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)). Коллеги стартуют с вашим режимом разрешений, кроме `dontAsk`, а их запросы разрешений появляются в вашей сессии, чтобы вы ответили. Если вы работаете с `--dangerously-skip-permissions`, то и каждый коллега тоже ([Permissions](https://code.claude.com/docs/en/agent-teams#permissions)).
 
 <a id="as-subagents-the-cheap-variant"></a>
-## As subagents, the cheap variant
+## В роли субагентов, дешёвый вариант
 
-Agent teams use significantly more tokens than a single session ([Token usage](https://code.claude.com/docs/en/agent-teams#token-usage)). The same two files work as ordinary subagents in one session with agent teams off: ask `Use the security-reviewer agent to review <files>`, then the same for `test-reviewer`. Keep the variable unset for this, because with agent teams on, a subagent that Claude names launches as a teammate.
+Agent teams расходуют заметно больше токенов, чем одна сессия ([Token usage](https://code.claude.com/docs/en/agent-teams#token-usage)). Те же два файла работают как обычные субагенты в одной сессии с выключенными agent teams: попросите `Используй агента security-reviewer, чтобы проверить <файлы>`, затем то же для `test-reviewer`. Для этого оставьте переменную незаданной, потому что при включённых agent teams субагент, которого называет Claude, запускается как коллега по команде.
 
-Smoke test, without Claude: `bash test.sh`.
+Смоук-тест без Claude: `bash test.sh`.
 
-Tested in Claude Code v2.1.285 (stable) on macOS, 2026-10-09
+Проверено на Claude Code v2.1.285 (stable) на macOS, 2026-10-09
 
-Sources: [Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams), [Create custom subagents](https://code.claude.com/docs/en/sub-agents), [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)
+Источники: [Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams), [Create custom subagents](https://code.claude.com/docs/en/sub-agents), [Debug your configuration](https://code.claude.com/docs/en/debug-your-config)

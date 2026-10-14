@@ -1,23 +1,23 @@
 ---
-# What: a plugin skill that explains a repository's shared Claude Code setup to a new teammate: what is committed and shared, what stays personal, and what the team-kit plugin adds.
-# Runs: when you type /team-kit:onboard, or when Claude matches your request to the description, in a session where the team-kit plugin is enabled.
-# Side effects: none intended. It tells Claude to read files only and change none; it pre-approves no tools, so each tool call follows your permission settings.
-# Requires: Claude Code. Platforms: any.
-# Remove: delete this skill's folder, skills/onboard/, from the team-kit plugin, or turn the plugin off.
+# What: skill плагина, который объясняет новому коллеге общую настройку Claude Code репозитория: что закоммичено и общее, что остаётся личным и что добавляет плагин team-kit.
+# Runs: когда вы вводите /team-kit:onboard или когда Claude сопоставляет ваш запрос с описанием, в сессии, где плагин team-kit включён.
+# Side effects: не предполагаются. Он велит Claude только читать файлы и ничего не менять; заранее он не одобряет никаких инструментов, поэтому каждый вызов подчиняется вашим настройкам разрешений.
+# Requires: Claude Code. Платформы: любые.
+# Remove: удалите папку этого skill, skills/onboard/, из плагина team-kit или выключите плагин.
 # Tested in Claude Code v2.1.285 (stable) on macOS, 2026-10-09
 name: onboard
-description: Explains this repository's shared Claude Code setup to a new teammate, covering what is committed and shared, what stays personal, and what the team-kit plugin adds. Use when someone asks how the team's Claude Code setup works or what they get by cloning the repository.
+description: Объясняет новому коллеге общую настройку Claude Code этого репозитория, а именно что закоммичено и общее, что остаётся личным и что добавляет плагин team-kit. Используй, когда кто-то спрашивает, как устроена командная настройка Claude Code или что он получает, склонировав репозиторий.
 ---
 
-Explain this repository's shared Claude Code setup to a teammate who has just cloned it. Read files only; don't change any.
+Объясни общую настройку Claude Code этого репозитория коллеге, который только что его склонировал. Только читай файлы; никаких не меняй.
 
-1. Read the shared setup, skipping any file that doesn't exist:
-   - `.claude/settings.json`: permissions, hooks, and the marketplaces and plugins it turns on;
-   - `CLAUDE.md` and the files in `.claude/rules/`: the project's instructions to Claude;
-   - `.claude/skills/` and `.claude/agents/`: project skills and subagents;
-   - `.mcp.json`: project MCP servers;
-   - each marketplace that `.claude/settings.json` declares by a local path, and the skills and agents of the plugins it lists.
-2. Name the personal files, which each teammate keeps out of the repository: `.claude/settings.local.json`, `CLAUDE.local.md` and the user folder `~/.claude/`. Don't open them. Say whether the repository's `.gitignore` lists the first two.
-3. Report in three short sections: Shared with the team, Personal to you, and Added by team-kit. Give each file one line on what it does for the teammate. If a file you expected is missing, say so rather than guess what it would hold.
+1. Прочитай общую настройку, пропуская файлы, которых нет:
+   - `.claude/settings.json`: разрешения, hooks, а также marketplaces и плагины, которые он включает;
+   - `CLAUDE.md` и файлы в `.claude/rules/`: инструкции проекта для Claude;
+   - `.claude/skills/` и `.claude/agents/`: skills и субагенты проекта;
+   - `.mcp.json`: MCP-серверы проекта;
+   - каждый marketplace, который `.claude/settings.json` объявляет по локальному пути, а также skills и агенты плагинов, которые он перечисляет.
+2. Назови личные файлы, которые каждый коллега держит вне репозитория: `.claude/settings.local.json`, `CLAUDE.local.md` и пользовательскую папку `~/.claude/`. Не открывай их. Скажи, перечислены ли первые два в `.gitignore` репозитория.
+3. Сообщи в трёх коротких разделах: «Общее для команды», «Личное для вас» и «Добавлено team-kit». Для каждого файла дай одну строку о том, что он делает для коллеги. Если ожидаемого файла нет, скажи об этом, а не гадай, что в нём было бы.
 
-Keep the report short and concrete: file names and what each one changes, no general advice.
+Отчёт делай коротким и конкретным: имена файлов и что каждый из них меняет, без общих советов.

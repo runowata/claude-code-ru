@@ -1,77 +1,77 @@
-# Use Claude Code in your editor <a id="use-claude-code-in-your-editor"></a>
+# Claude Code в вашем редакторе <a id="use-claude-code-in-your-editor"></a>
 
-<sub>**Beginner** · Elective · about 15 minutes · Needs: [Install, sign in and look around](../01-install-and-look-around.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>**Начальный уровень** · Дополнительный урок · около 15 минут · Нужно: [Установка, вход и первый осмотр](../01-install-and-look-around.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this Elective you can run Claude Code inside VS Code or a JetBrains IDE, point it at the lines you're looking at, and review its edits in the editor's diff view.
+После этого дополнительного урока вы умеете запускать Claude Code внутри VS Code или IDE от JetBrains, указывать ему строки, на которые смотрите, и просматривать его правки в окне диффа редактора.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Your copy of the practice template, with no uncommitted changes, open in VS Code or a JetBrains IDE such as IntelliJ IDEA or PyCharm.
-- For JetBrains, the Claude Code command-line tool from lesson 1: the plugin runs it in the IDE's terminal.
-- Usage: light.
+- Ваша копия шаблона для практики без незакоммиченных изменений, открытая в VS Code или в IDE от JetBrains, например IntelliJ IDEA или PyCharm.
+- Для JetBrains — программа Claude Code для командной строки из урока 1: плагин запускает её в терминале IDE.
+- Расход: небольшой.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-The terminal isn't the only place Claude Code runs. Two editor integrations put it next to your code:
+Терминал — не единственное место, где работает Claude Code. Две интеграции с редакторами ставят его рядом с вашим кодом:
 
-- The **VS Code extension** has its own chat panel and brings its own copy of Claude Code. In Manual mode, it shows each proposed edit side by side with the original and asks before applying it ([VS Code](https://code.claude.com/docs/en/vs-code)).
-- The **JetBrains plugin** runs the `claude` command in the IDE's terminal and opens the edits it proposes in the IDE's diff viewer ([JetBrains IDEs](https://code.claude.com/docs/en/jetbrains)).
+- **Расширение для VS Code** имеет собственную панель чата и приносит свою копию Claude Code. В режиме Manual оно показывает каждую предложенную правку рядом с оригиналом и спрашивает, прежде чем применить её ([VS Code](https://code.claude.com/docs/en/vs-code)).
+- **Плагин для JetBrains** запускает команду `claude` в терминале IDE и открывает предложенные правки в просмотрщике диффов IDE ([IDE от JetBrains](https://code.claude.com/docs/en/jetbrains)).
 
-Either way, it's the same Claude Code: the same account, permission modes and CLAUDE.md.
+В любом случае это тот же Claude Code: тот же аккаунт, те же режимы разрешений и CLAUDE.md.
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-In VS Code:
+В VS Code:
 
-1. Open the Extensions view with `Cmd+Shift+X` (Mac) or `Ctrl+Shift+X` (Windows and Linux), search for "Claude Code", and click **Install**. The extension doesn't work in Restricted Mode, so if VS Code shows a Restricted Mode banner or asks whether to trust the folder, trust it: this copy is your own code ([Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)).
-2. Open `src/config.js`. Click the Spark icon at the top right of the editor to open Claude Code, and sign in if it asks. No icon? Click `✻ Claude Code` in the status bar at the bottom right instead.
-3. Select the body of `parseConfig` and press `Option+K` (Mac) or `Alt+K` (Windows and Linux). The prompt box gets a reference with the file path and line numbers, such as `@src/config.js#7-17`. Ask:
+1. Откройте панель расширений клавишами `Cmd+Shift+X` (Mac) или `Ctrl+Shift+X` (Windows и Linux), найдите «Claude Code» и нажмите **Install** (установить). Расширение не работает в ограниченном режиме (Restricted Mode), поэтому если VS Code показывает его баннер или спрашивает, доверять ли папке, доверьте: эта копия — ваш собственный код ([Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)).
+2. Откройте `src/config.js`. Нажмите значок Spark в правом верхнем углу редактора, чтобы открыть Claude Code, и войдите, если он попросит. Нет значка? Нажмите вместо него `✻ Claude Code` в строке состояния внизу справа.
+3. Выделите тело `parseConfig` и нажмите `Option+K` (Mac) или `Alt+K` (Windows и Linux). В поле запроса появится ссылка с путём к файлу и номерами строк, например `@src/config.js#7-17`. Спросите:
 
    ```text
-   What happens if linkcheck.json holds an array instead of an object?
+   Что произойдёт, если linkcheck.json содержит массив вместо объекта?
    ```
 
-4. Switch the mode at the bottom of the prompt box to Manual, then ask for a small edit, such as a comment above `parseConfig`. The edit opens side by side with the original, and Claude asks for permission in the chat panel. Choose **No** there ([Configure permissions](https://code.claude.com/docs/en/permissions#add-a-comment-when-you-answer-a-permission-prompt)). The **Reject this change** buttons inside the diff only revert one change in the proposal; they don't finish the review.
+4. Переключите режим внизу поля запроса на Manual, затем попросите небольшую правку, например комментарий над `parseConfig`. Правка откроется рядом с оригиналом, а Claude спросит разрешения в панели чата. Выберите там **No** ([Настройка разрешений](https://code.claude.com/docs/en/permissions#add-a-comment-when-you-answer-a-permission-prompt)). Кнопки **Reject this change** (отклонить это изменение) внутри диффа отменяют лишь одно изменение из предложения; просмотр они не завершают.
 
-In a JetBrains IDE:
+В IDE от JetBrains:
 
-1. Install the [Claude Code plugin](https://plugins.jetbrains.com/plugin/27310-claude-code-beta-) from the JetBrains Marketplace and restart the IDE.
-2. Click the Claude Code button in the IDE, or press `Cmd+Esc` (Mac) or `Ctrl+Esc` (Windows and Linux), to start Claude Code in the IDE's terminal. If nothing happens, open the IDE's terminal and run `claude`: started there, it connects to the IDE on its own. If the IDE shows "Cannot launch Claude Code", it can't find `claude` on your `PATH`: set the full path to `claude` under **Settings** > **Tools** > **Claude Code \[Beta]** > **Claude command** ([plugin settings](https://code.claude.com/docs/en/jetbrains#general-settings)).
-3. Open `src/config.js`, select the body of `parseConfig`, and press `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Windows and Linux). The prompt gets a reference such as `@src/config.js#L7-17`. Ask the same question.
-4. Press `Shift+Tab` until the status bar under the prompt reads `⏸ manual mode on` ([Choose a permission mode](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)). On native Windows, if `Shift+Tab` does nothing, press `Alt+M` instead ([Interactive mode](https://code.claude.com/docs/en/interactive-mode)). Then ask for the same small edit: it opens in the IDE's diff viewer, and Claude asks for permission in the terminal. Choose **No**.
+1. Установите [плагин Claude Code](https://plugins.jetbrains.com/plugin/27310-claude-code-beta-) из JetBrains Marketplace и перезапустите IDE.
+2. Нажмите кнопку Claude Code в IDE или `Cmd+Esc` (Mac) либо `Ctrl+Esc` (Windows и Linux), чтобы запустить Claude Code в терминале IDE. Если ничего не происходит, откройте терминал IDE и выполните `claude`: запущенный там, он подключится к IDE сам. Если IDE пишет «Cannot launch Claude Code», она не находит `claude` в вашем `PATH`: укажите полный путь к `claude` в **Settings** > **Tools** > **Claude Code \[Beta]** > **Claude command** ([настройки плагина](https://code.claude.com/docs/en/jetbrains#general-settings)).
+3. Откройте `src/config.js`, выделите тело `parseConfig` и нажмите `Cmd+Option+K` (Mac) или `Alt+Ctrl+K` (Windows и Linux). В запросе появится ссылка вида `@src/config.js#L7-17`. Задайте тот же вопрос.
+4. Нажимайте `Shift+Tab`, пока строка состояния под запросом не покажет `⏸ manual mode on` ([Выбор режима разрешений](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)). В нативной Windows, если `Shift+Tab` ничего не делает, нажмите вместо него `Alt+M` ([Интерактивный режим](https://code.claude.com/docs/en/interactive-mode)). Затем попросите ту же небольшую правку: она откроется в просмотрщике диффов IDE, а Claude спросит разрешения в терминале. Выберите **No**.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-1. Install the extension or the plugin for the editor you use.
-2. Open `src/links.js`, select the whole `findLinks` function, and press the reference shortcut: `Option+K` (Mac) or `Alt+K` (Windows and Linux) in VS Code, `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Windows and Linux) in JetBrains. Then ask what kinds of links it finds.
-3. Switch to Manual mode as in the Worked example, ask for a small edit, and look it over in the diff view. Then choose **No** at Claude's permission prompt: in the chat panel in VS Code, in the terminal in JetBrains.
+1. Установите расширение или плагин для редактора, которым пользуетесь.
+2. Откройте `src/links.js`, выделите всю функцию `findLinks` и нажмите сочетание для ссылки: `Option+K` (Mac) или `Alt+K` (Windows и Linux) в VS Code, `Cmd+Option+K` (Mac) или `Alt+Ctrl+K` (Windows и Linux) в JetBrains. Затем спросите, какие виды ссылок она находит.
+3. Переключитесь в режим Manual, как в разборе на примере, попросите небольшую правку и посмотрите её в окне диффа. Затем выберите **No** на запрос разрешения Claude: в панели чата в VS Code, в терминале в JetBrains.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-This Elective has no `npm run check`: tick each item yourself. You are done when all of these are true:
+У этого дополнительного урока нет `npm run check`: отметьте каждый пункт сами. Урок пройден, когда выполнено всё:
 
-- [ ] The integration is installed. VS Code: the Extensions view (`Cmd+Shift+X` or `Ctrl+Shift+X`) shows Claude Code as installed. JetBrains: the plugin shows under **Settings** > **Plugins** > **Installed**.
-- [ ] `git diff` prints nothing, because you rejected the edit.
-- [ ] Self-check (not tested): you asked a question with a reference to the lines you had selected.
+- [ ] Интеграция установлена. VS Code: панель расширений (`Cmd+Shift+X` или `Ctrl+Shift+X`) показывает Claude Code как установленный. JetBrains: плагин виден в **Settings** > **Plugins** > **Installed**.
+- [ ] `git diff` ничего не печатает, потому что вы отклонили правку.
+- [ ] Самопроверка (не проверяется автоматически): вы задали вопрос со ссылкой на выделенные строки.
 
-If `git diff` shows the edit, it was applied: the session wasn't in Manual mode, or you approved it. Discard it with `git restore <file>`, using the file `git diff` names. Then switch to Manual, ask for the edit again, and choose **No**.
+Если `git diff` показывает правку, она была применена: сессия была не в режиме Manual или вы её одобрили. Отмените её командой `git restore <file>`, подставив файл, который назвал `git diff`. Затем переключитесь на Manual, снова попросите правку и выберите **No**.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Desktop quickstart](https://code.claude.com/docs/en/desktop-quickstart): Claude Code in the Claude desktop app.
-- [VS Code commands and shortcuts](https://code.claude.com/docs/en/vs-code#vs-code-commands-and-shortcuts).
+- [Быстрый старт для десктопа](https://code.claude.com/docs/en/desktop-quickstart): Claude Code в настольном приложении Claude.
+- [Команды и сочетания клавиш VS Code](https://code.claude.com/docs/en/vs-code#vs-code-commands-and-shortcuts).
 
 ---
 
-<sub>Sources: [VS Code](https://code.claude.com/docs/en/vs-code) · [JetBrains IDEs](https://code.claude.com/docs/en/jetbrains) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)</sub>
+<sub>Источники: [VS Code](https://code.claude.com/docs/en/vs-code) · [JetBrains IDEs](https://code.claude.com/docs/en/jetbrains) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Choose a permission mode](https://code.claude.com/docs/en/permission-modes) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)</sub>
 
-<sub>Back to the [Beginner index](../README.md) · Topic: [Memory and context](../../topics/memory-and-context.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=b-ide)</sub>
+<sub>Назад к [оглавлению начального уровня](../README.md) · Тема: [Память и контекст](../../topics/memory-and-context.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=b-ide)</sub>

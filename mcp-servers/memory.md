@@ -1,3 +1,3 @@
-# Memory MCP Server <a id="memory-mcp-server"></a>
+# Сервер Memory MCP <a id="memory-mcp-server"></a>
 
-Removed in edition v2026.10: this walkthrough covered an MCP reference server that no lesson uses. To connect a server, see the Intermediate lesson [Connect a tool with MCP](../docs/intermediate/07-mcp.md). See the [CHANGELOG](../CHANGELOG.md#removed-listings).
+Удалено в выпуске v2026.10: в этом разборе описывался эталонный MCP-сервер, который не используется ни в одном уроке. Как подключить сервер, смотрите в уроке Среднего уровня [Подключаем инструмент через MCP](../docs/intermediate/07-mcp.md). См. [CHANGELOG](../CHANGELOG.md#removed-listings).

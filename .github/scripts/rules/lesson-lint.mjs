@@ -8,9 +8,10 @@ import { outsideFences } from '../lib/markdown.mjs';
 export const id = 'lesson-lint';
 export const modes = ['pr', 'release'];
 
-const LEVELS = { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
-const FIXED = ['Goal', 'You need', 'The idea', 'Worked example', 'Your turn', 'Check'];
-const OPTIONAL = ['Watch out', 'Go further'];
+// Russian translation: slot names, header and footer words follow .translation/GLOSSARY.md.
+const LEVELS = { beginner: 'Начальный уровень', intermediate: 'Средний уровень', advanced: 'Продвинутый уровень' };
+const FIXED = ['Цель', 'Что понадобится', 'Идея', 'Разбор на примере', 'Ваша очередь', 'Проверка'];
+const OPTIONAL = ['Осторожно', 'Дальше'];
 const LESSON = /^docs\/(beginner|intermediate|advanced)\/(\d{2})-[^/]+\.md$/;
 const ELECTIVE = /^docs\/(beginner|intermediate|advanced)\/electives\/[^/]+\.md$/;
 
@@ -39,15 +40,15 @@ export function lint(path, text, kind) {
   } else {
     if (!header.includes(`**${LEVELS[kind.level]}**`)) say(`the header line must name the level as **${LEVELS[kind.level]}**`);
     if (kind.elective) {
-      if (!/\bElective\b/.test(header)) say('an Elective\'s header line must say "Elective"');
+      if (!/Дополнительный урок/.test(header)) say('an Elective\'s header line must say "Дополнительный урок"');
     } else {
-      const pos = header.match(/Lesson (\d+) of (\d+)/);
-      if (!pos) say('the header line must give the position as "Lesson N of M"');
+      const pos = header.match(/Урок (\d+) из (\d+)/);
+      if (!pos) say('the header line must give the position as "Урок N из M"');
       else if (Number(pos[1]) !== kind.number) say(`the header line says Lesson ${pos[1]}, but the file is lesson ${kind.number}`);
     }
-    if (!/about \d+ minutes/.test(header)) say('the header line must give the time as "about N minutes"');
-    if (!/Needs:/.test(header)) say('the header line must list "Needs:"');
-    if (!/Verified against/.test(header)) say('the header line must end with the Stamp');
+    if (!/около \d+ минут/.test(header)) say('the header line must give the time as "около N минут"');
+    if (!/Нужно:/.test(header)) say('the header line must list "Нужно:"');
+    if (!/Проверено на/.test(header)) say('the header line must end with the Stamp');
   }
 
   // Slots.
@@ -74,10 +75,10 @@ export function lint(path, text, kind) {
   }
 
   // Check slot: task list, then the npm run check line, then "if not" diagnoses.
-  const check = section('Check');
+  const check = section('Проверка');
   if (check) {
     const tasks = check.filter(({ line }) => /^- \[[ xX]\] /.test(line));
-    const selfChecks = tasks.filter(({ line }) => /self-check/i.test(line));
+    const selfChecks = tasks.filter(({ line }) => /самопроверка/i.test(line));
     const runs = check.filter(({ line }) => /npm run check --/.test(line));
     if (tasks.length === 0) say('the Check slot must start with a task list (- [ ] items)');
     if (selfChecks.length > 1) say('the Check slot allows one self-check item at most');
@@ -90,7 +91,7 @@ export function lint(path, text, kind) {
       const ids = [...runs[0].line.matchAll(/npm run check -- ([a-z]-\d+)/g)].map((m) => m[1]);
       if (!ids.includes(kind.id)) say(`the npm run check line must name ${kind.id}`);
       const after = check.filter(({ n }) => n > runs[0].n).map(({ line }) => line).join(' ');
-      const diagnoses = (after.match(/(^|[.!?]\s+)If /g) ?? []).length;
+      const diagnoses = (after.match(/(^|[.!?]\s+)Если /g) ?? []).length;
       const tested = tasks.length - selfChecks.length;
       if (diagnoses > tested) say(`the Check slot has ${diagnoses} "if not" diagnoses for ${tested} tested items; one per item at most`);
     }
@@ -102,10 +103,10 @@ export function lint(path, text, kind) {
   } else {
     const footer = lines.filter(({ n }) => n > lastBreak.n).map(({ line }) => line);
     const at = (re) => footer.findIndex((l) => re.test(l));
-    const sources = at(/Sources:/);
-    const index = at(/\[(Beginner|Intermediate|Advanced) index\]/);
-    const stuck = at(/\[Stuck on this lesson\?\]\(([^)]*)\)/);
-    const topics = footer.join(' ').match(/Topic: \[/g) ?? [];
+    const sources = at(/Источники:/);
+    const index = at(/\[[Оо]главлени[^\]]*\]/);
+    const stuck = at(/\[Застряли на уроке\?\]\(([^)]*)\)/);
+    const topics = footer.join(' ').match(/Тема: \[/g) ?? [];
     if (sources === -1) say('the footer must start with a Sources: line');
     if (index === -1) say('the footer must link the level index');
     if (!kind.elective && !/[←→]/.test(footer.join(' '))) say('the footer must link the previous or next lesson');
@@ -113,7 +114,7 @@ export function lint(path, text, kind) {
     if (stuck === -1) {
       say('the footer must end with the "Stuck on this lesson?" link');
     } else {
-      const url = footer[stuck].match(/\[Stuck on this lesson\?\]\(([^)]*)\)/)[1];
+      const url = footer[stuck].match(/\[Застряли на уроке\?\]\(([^)]*)\)/)[1];
       if (!url.includes('template=lesson-feedback.yml')) say('"Stuck on this lesson?" must open the lesson-feedback form');
       if (!kind.elective && !url.includes(`lesson=${kind.id}`)) say(`"Stuck on this lesson?" must prefill lesson=${kind.id}`);
     }

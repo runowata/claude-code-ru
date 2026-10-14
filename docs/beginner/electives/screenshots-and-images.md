@@ -1,91 +1,91 @@
-# Give Claude a screenshot <a id="give-claude-a-screenshot"></a>
+# Покажите Claude скриншот <a id="give-claude-a-screenshot"></a>
 
-<sub>**Beginner** · Elective · about 15 minutes · Needs: [Your first change, from request to commit](../03-first-change.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>**Начальный уровень** · Дополнительный урок · около 15 минут · Нужно: [Первое изменение: от запроса до коммита](../03-first-change.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
 <a id="goal"></a>
-## Goal
+## Цель
 
-By the end of this Elective you can add a screenshot or an image to a conversation and get a change from what it shows.
+После этого дополнительного урока вы умеете добавить в разговор скриншот или изображение и получить изменение по тому, что на нём показано.
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Your copy of the practice template with no uncommitted changes, and your system's screenshot tool.
-- Usage: light.
+- Ваша копия шаблона для практики без незакоммиченных изменений и средство снимков экрана вашей системы.
+- Расход: небольшой.
 
 > [!NOTE]
-> In a Codespace, Claude Code runs inside the codespace, not on your computer ([Development containers](https://code.claude.com/docs/en/devcontainer)), so give it screenshots as files there. Save each screenshot on your computer, rename it to the name this page uses (`shot.png`, then `test-summary.png`), and drag it from your computer's file manager onto the `.practice` folder in the codespace's Explorer ([GitHub Codespaces](https://code.visualstudio.com/docs/remote/codespaces#_known-limitations-and-adaptations)). Where the Worked example says to paste, ask with its path instead, such as `Look at this image: .practice/shot.png`. In Your turn, skip the `mv` line.
+> В Codespace Claude Code работает внутри codespace, а не на вашем компьютере ([Контейнеры разработки](https://code.claude.com/docs/en/devcontainer)), поэтому там передавайте ему скриншоты файлами. Сохраните каждый скриншот на своём компьютере, переименуйте его в имя, которое использует эта страница (`shot.png`, затем `test-summary.png`), и перетащите из файлового менеджера компьютера на папку `.practice` в проводнике (Explorer) codespace ([GitHub Codespaces](https://code.visualstudio.com/docs/remote/codespaces#_known-limitations-and-adaptations)). Там, где в разборе на примере сказано вставить изображение, укажите вместо этого путь к нему, например `Посмотри на это изображение: .practice/shot.png`. В разделе «Ваша очередь» пропустите строку с `mv`.
 
 <a id="the-idea"></a>
-## The idea
+## Идея
 
-Some things are faster to show than to describe: an error on screen, a layout, a diagram. Claude Code reads images, and you can add one to the conversation in three ways ([Common workflows](https://code.claude.com/docs/en/common-workflows#work-with-images)):
+Что-то быстрее показать, чем описать: ошибку на экране, вёрстку, схему. Claude Code читает изображения, и добавить их в разговор можно тремя способами ([Типовые рабочие процессы](https://code.claude.com/docs/en/common-workflows#work-with-images)):
 
-- drag and drop the image into the Claude Code window;
-- copy the image and paste it with `Ctrl+V` (`Cmd+V` also works in iTerm2; `Alt+V` on Windows and WSL) ([Interactive mode](https://code.claude.com/docs/en/interactive-mode#general-controls));
-- give its path in your prompt, such as "Look at this image: /path/to/shot.png".
+- перетащить изображение в окно Claude Code;
+- скопировать изображение и вставить его клавишами `Ctrl+V` (`Cmd+V` тоже работает в iTerm2; `Alt+V` в Windows и WSL) ([Интерактивный режим](https://code.claude.com/docs/en/interactive-mode#general-controls));
+- указать путь к нему в запросе, например «Посмотри на это изображение: /path/to/shot.png».
 
 <a id="worked-example"></a>
-## Worked example
+## Разбор на примере
 
-1. In your practice copy, run the link checker on its samples:
+1. В своей учебной копии запустите проверку ссылок на её образцах:
 
    ```bash
    npm run linkcheck -- samples
    ```
 
-   It prints the broken link in `guide.md`, then `1 broken link(s)`.
-2. Take a screenshot of that output and copy it to the clipboard. On a Mac, press `Ctrl` as well as the usual keys, such as `Ctrl+Shift+Cmd+4`: without it, macOS saves the screenshot as a file, on your desktop by default ([Take a screenshot on Mac](https://support.apple.com/en-us/102646)).
-3. Start `claude` and paste the image. An `[Image #1]` chip appears in the prompt box ([Interactive mode](https://code.claude.com/docs/en/interactive-mode#general-controls)). If no chip appears, no image was added: drag the screenshot file into the Claude Code window, or give its path as in Your turn. Then ask:
+   Она печатает битую ссылку в `guide.md`, затем `1 broken link(s)`.
+2. Сделайте скриншот этого вывода и скопируйте его в буфер обмена. На Mac нажмите ещё и `Ctrl` вместе с обычными клавишами, например `Ctrl+Shift+Cmd+4`: без него macOS сохраняет скриншот файлом, по умолчанию на рабочий стол ([Снимок экрана на Mac](https://support.apple.com/en-us/102646)).
+3. Запустите `claude` и вставьте изображение. В поле запроса появится метка `[Image #1]` ([Интерактивный режим](https://code.claude.com/docs/en/interactive-mode#general-controls)). Если метки нет, изображение не добавлено: перетащите файл скриншота в окно Claude Code или укажите путь, как в разделе «Ваша очередь». Затем попросите:
 
    ```text
-   This is the link checker's output. Change the last line so it also says how many Markdown files were checked, like "1 broken link(s) in 2 files".
+   Это вывод проверки ссылок. Измени последнюю строку так, чтобы она ещё говорила, сколько Markdown-файлов проверено, например "1 broken link(s) in 2 files".
    ```
 
-4. Approve the edit if Claude asks. Then, in a second terminal in the same folder, run `npm run linkcheck -- samples` again. The last line now names the number of files.
-5. In the second terminal, run `git diff` to see the change. Then set the example's change aside so Your turn starts clean:
+4. Одобрите правку, если Claude спросит. Затем во втором терминале в той же папке снова выполните `npm run linkcheck -- samples`. Последняя строка теперь называет число файлов.
+5. Во втором терминале выполните `git diff`, чтобы увидеть изменение. Затем отложите изменение из примера, чтобы «Ваша очередь» началась с чистого листа:
 
    ```bash
    git stash push --include-untracked -m b-images-example
    ```
 
-   `git status` then reads `nothing to commit, working tree clean`.
+   После этого `git status` показывает `nothing to commit, working tree clean`.
 
 <a id="your-turn"></a>
-## Your turn
+## Ваша очередь
 
-1. In the second terminal, run `npm test` and take a screenshot of the end of its output: the last few test names and the summary under them. Save it as a file, then move it into your practice copy's `.practice/` folder. Git ignores that folder, so the image never shows up as a change:
+1. Во втором терминале выполните `npm test` и сделайте скриншот конца его вывода: последние названия тестов и итог под ними. Сохраните его файлом, затем перенесите в папку `.practice/` своей учебной копии. Git игнорирует эту папку, поэтому изображение никогда не окажется среди изменений:
 
    ```bash
    mv "<your screenshot file>" .practice/test-summary.png
    ```
 
-   **WSL:** Windows saves the file on its own drive, which WSL reaches under `/mnt/c` ([Working across file systems](https://learn.microsoft.com/en-us/windows/wsl/filesystems)): `C:\Users\<user name>\shot.png` is `/mnt/c/Users/<user name>/shot.png`.
-2. In Claude Code (start `claude` if it isn't running), ask about it by path: `Look at this image: .practice/test-summary.png. What does each line of this summary mean?`
-3. Ask for a small change based on the image, such as a clearer name for one of the tests it shows, and approve the edit if Claude asks. Check it with `git diff` in the second terminal.
+   **WSL:** Windows сохраняет файл на своём диске, который WSL видит в `/mnt/c` ([Работа с разными файловыми системами](https://learn.microsoft.com/en-us/windows/wsl/filesystems)): `C:\Users\<user name>\shot.png` — это `/mnt/c/Users/<user name>/shot.png`.
+2. В Claude Code (запустите `claude`, если он не запущен) спросите об изображении по пути: `Посмотри на это изображение: .practice/test-summary.png. Что означает каждая строка этого итога?`
+3. Попросите небольшое изменение по изображению, например более понятное имя одного из показанных в нём тестов, и одобрите правку, если Claude спросит. Проверьте её командой `git diff` во втором терминале.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-This Elective has no `npm run check`: tick each item yourself. You are done when all of these are true:
+У этого дополнительного урока нет `npm run check`: отметьте каждый пункт сами. Урок пройден, когда выполнено всё:
 
-- [ ] `git diff` shows the change you asked for from an image.
-- [ ] Self-check (not tested): you added one image by pasting or dragging and another by path (in a Codespace, both by path).
+- [ ] `git diff` показывает изменение, о котором вы попросили по изображению.
+- [ ] Самопроверка (не проверяется автоматически): вы добавили одно изображение вставкой или перетаскиванием, а другое — по пути (в Codespace оба — по пути).
 
-When you're done, set your change aside so the next lesson starts clean: `git stash push --include-untracked -m b-images`. `git status` then reads `nothing to commit, working tree clean`.
+Закончив, отложите своё изменение, чтобы следующий урок начался с чистого листа: `git stash push --include-untracked -m b-images`. После этого `git status` показывает `nothing to commit, working tree clean`.
 
 <a id="watch-out"></a>
-## Watch out
+## Осторожно
 
-- An image goes to Claude with your prompt. Crop out anything private, such as tokens, email addresses or customer data, before you paste it.
+- Изображение уходит к Claude вместе с запросом. Перед вставкой обрежьте всё приватное, например токены, адреса электронной почты или данные клиентов.
 
 <a id="go-further"></a>
-## Go further
+## Дальше
 
-- [Work with images](https://code.claude.com/docs/en/common-workflows#work-with-images): more ways to use images, such as design mockups.
+- [Работа с изображениями](https://code.claude.com/docs/en/common-workflows#work-with-images): другие способы использовать изображения, например макеты дизайна.
 
 ---
 
-<sub>Sources: [Common workflows](https://code.claude.com/docs/en/common-workflows) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [Development containers](https://code.claude.com/docs/en/devcontainer) · [GitHub Codespaces](https://code.visualstudio.com/docs/remote/codespaces) · [Take a screenshot on Mac](https://support.apple.com/en-us/102646) · [Working across file systems](https://learn.microsoft.com/en-us/windows/wsl/filesystems)</sub>
+<sub>Источники: [Common workflows](https://code.claude.com/docs/en/common-workflows) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [Development containers](https://code.claude.com/docs/en/devcontainer) · [GitHub Codespaces](https://code.visualstudio.com/docs/remote/codespaces) · [Take a screenshot on Mac](https://support.apple.com/en-us/102646) · [Working across file systems](https://learn.microsoft.com/en-us/windows/wsl/filesystems)</sub>
 
-<sub>Back to the [Beginner index](../README.md) · Topic: [Memory and context](../../topics/memory-and-context.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=b-images)</sub>
+<sub>Назад к [оглавлению начального уровня](../README.md) · Тема: [Память и контекст](../../topics/memory-and-context.md) · [Застряли на уроке?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=b-images)</sub>

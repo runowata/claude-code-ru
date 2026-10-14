@@ -1,71 +1,71 @@
-# Intermediate capstone: get a repository ready for a new teammate <a id="intermediate-capstone-get-a-repository-ready-for-a-new-teammate"></a>
+# Итоговый проект среднего уровня: готовим репозиторий к приходу нового коллеги <a id="intermediate-capstone-get-a-repository-ready-for-a-new-teammate"></a>
 
-<sub>**Intermediate** · Capstone · 30 to 60 minutes · Needs: the eight [Intermediate lessons](README.md), or their skills · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
+<sub>**Средний уровень** · Итоговый проект · от 30 до 60 минут · Нужно: восемь [уроков Среднего уровня](README.md) или соответствующие навыки · Проверено на Claude Code v2.1.285 (stable) 2026-10-06</sub>
 
-This task puts the whole Intermediate level together. It has no worked example: the brief says what the team needs, and you choose how to build it. The [Intermediate Exit](README.md#by-the-end-of-this-level-you-can) is the list of what you can do by the end of this level. The check reads what you commit, and you tick the rest of the Exit yourself under [What the check can't see](#what-the-check-cant-see).
+Это задание собирает воедино весь Средний уровень. Разбора на примере здесь нет: в задании сказано, что нужно команде, а как это построить, решаете вы. [Итог Среднего уровня](README.md#by-the-end-of-this-level-you-can) — список того, что вы умеете к концу уровня. Проверка читает то, что вы закоммитили, а остальные пункты итога вы отмечаете сами в разделе [Чего проверка не видит](#what-the-check-cant-see).
 
 <a id="you-need"></a>
-## You need
+## Что понадобится
 
-- Your copy of the practice template, with no uncommitted changes, and Node.js LTS. The capstone runs in the template copy only. If `git status --porcelain` lists files, commit them or set them aside with `git stash push --include-untracked`.
-- `jq` and `python3` for hook scripts, and Chrome for the MCP server.
-- macOS, Linux or WSL 2: the sandbox needs one of them ([Set up on Windows](https://code.claude.com/docs/en/setup#set-up-on-windows)), and the lessons' hook scripts are bash.
-- Usage: moderate.
+- Ваша копия шаблона для практики без незакоммиченных изменений и Node.js LTS. Итоговый проект выполняется только в копии шаблона. Если `git status --porcelain` выводит файлы, закоммитьте их или отложите командой `git stash push --include-untracked`.
+- `jq` и `python3` для скриптов hooks и Chrome для MCP-сервера.
+- macOS, Linux или WSL 2: песочнице нужна одна из этих систем ([Set up on Windows](https://code.claude.com/docs/en/setup#set-up-on-windows)), а скрипты hooks из уроков написаны на bash.
+- Расход: умеренный.
 
 <a id="the-task"></a>
-## The task
+## Задание
 
-A teammate starts on Monday. The brief is in `capstone/intermediate-brief.md` in your practice copy: set the repository up so their Claude Code sessions work the way the team's do, and commit all of it, because they get only what's in git.
+В понедельник выходит новый коллега. Описание задачи лежит в файле `capstone/intermediate-brief.md` в вашей учебной копии: настройте репозиторий так, чтобы сессии Claude Code у коллеги работали так же, как у команды, и закоммитьте всё, потому что он получит только то, что есть в git.
 
-Build each part the way its lesson taught:
+Делайте каждую часть так, как научил соответствующий урок:
 
-1. **A skill** that runs the link checker on a folder and explains each broken link. It runs by name and loads on its own when someone asks to check links ([lesson 1](01-first-skill.md)).
-2. **Project memory:** `CLAUDE.md` imports `package.json`, and testing conventions live in a rule in `.claude/rules/` scoped to the files under `test/` ([lesson 2](02-organize-memory.md)).
-3. **Team settings** in the committed `.claude/settings.json`: deny reading `.env` and `.env.*` files, allow `npm test`, and turn the sandbox on ([lesson 4](04-permissions-and-sandbox.md)). `/sandbox` saves to your local file, which teammates don't get, so add `"sandbox": {"enabled": true}` to the shared one.
-4. **A hook** that blocks Claude's Edit and Write tools inside `samples/`, and only there: the tests depend on those exact files ([lesson 5](05-hooks.md)).
-5. **A reviewer subagent** with read-only tools ([lesson 6](06-subagents.md)).
-6. **Chrome DevTools MCP** at project scope, pinned, with its usage statistics, CrUX lookups and update checks off ([lesson 7](07-mcp.md)).
-7. **The `claude-code-setup` plugin**, turned on for everyone at project scope, and installed ([lesson 8](08-plugins.md)).
+1. **Skill**, который запускает проверку ссылок для папки и объясняет каждую битую ссылку. Он запускается по имени и подгружается сам, когда кто-то просит проверить ссылки ([урок 1](01-first-skill.md)).
+2. **Память проекта:** `CLAUDE.md` импортирует `package.json`, а правила тестирования лежат в правиле в `.claude/rules/`, привязанном к файлам в `test/` ([урок 2](02-organize-memory.md)).
+3. **Настройки команды** в закоммиченном `.claude/settings.json`: запретить чтение файлов `.env` и `.env.*`, разрешить `npm test` и включить песочницу ([урок 4](04-permissions-and-sandbox.md)). `/sandbox` сохраняет настройку в ваш локальный файл, которого у коллег нет, поэтому добавьте `"sandbox": {"enabled": true}` в общий файл.
+4. **Hook**, который блокирует инструменты Edit и Write у Claude внутри `samples/` и только там: тесты зависят именно от этих файлов ([урок 5](05-hooks.md)).
+5. **Субагент-рецензент** с инструментами только для чтения ([урок 6](06-subagents.md)).
+6. **Chrome DevTools MCP** на уровне проекта, с зафиксированной версией, с отключёнными статистикой использования, запросами к CrUX и проверкой обновлений ([урок 7](07-mcp.md)).
+7. **Плагин `claude-code-setup`**, включённый для всех на уровне проекта и установленный ([урок 8](08-plugins.md)).
 
-Then, in a session, try each part: run the skill by name, ask Claude to edit a file in `samples/` with its Edit tool, delegate a review, approve the MCP server and use one of its tools. Pick the model and effort for each job as [lesson 3](03-model-and-effort.md) showed. Commit everything, and make sure `npm test` still passes.
+Затем в сессии проверьте каждую часть: запустите skill по имени, попросите Claude изменить файл в `samples/` его инструментом Edit, поручите рецензию, одобрите MCP-сервер и воспользуйтесь одним из его инструментов. Выберите модель и effort для каждой задачи, как показал [урок 3](03-model-and-effort.md). Закоммитьте всё и убедитесь, что `npm test` по-прежнему проходит.
 
 <a id="check"></a>
-## Check
+## Проверка
 
-You are done when all of these are true:
+Вы закончили, когда выполнено всё из этого списка:
 
-- [ ] A committed project skill runs the link checker by name and can load on its own.
-- [ ] A committed, executable `PreToolUse` hook for Edit and Write blocks `samples/` and nothing else.
-- [ ] A committed reviewer subagent has only read-only tools.
-- [ ] The committed `.mcp.json` runs chrome-devtools-mcp at an exact version, with usage statistics, CrUX lookups and update checks off.
-- [ ] The committed `.claude/settings.json` turns on a plugin from one of Anthropic's marketplaces.
-- [ ] The committed `.claude/settings.json` denies reading `.env` files and allows a narrow test command.
-- [ ] The committed `.claude/settings.json` turns the sandbox on, and `.claude/settings.local.json` stays out of git.
-- [ ] A committed `CLAUDE.md` imports a file with `@path`, and the file exists.
-- [ ] A committed rule in `.claude/rules/` is scoped with `paths:`, and every scoped rule matches a file in the repository.
-- [ ] `npm test` passes, and `git status --porcelain` prints nothing.
+- [ ] Закоммиченный skill проекта запускает проверку ссылок по имени и может подгружаться сам.
+- [ ] Закоммиченный исполняемый hook `PreToolUse` для Edit и Write блокирует `samples/` и ничего больше.
+- [ ] У закоммиченного субагента-рецензента только инструменты для чтения.
+- [ ] Закоммиченный `.mcp.json` запускает chrome-devtools-mcp точной версии, со статистикой использования, запросами к CrUX и проверкой обновлений в отключённом состоянии.
+- [ ] Закоммиченный `.claude/settings.json` включает плагин из одного из marketplace Anthropic.
+- [ ] Закоммиченный `.claude/settings.json` запрещает чтение файлов `.env` и разрешает узкую команду запуска тестов.
+- [ ] Закоммиченный `.claude/settings.json` включает песочницу, а `.claude/settings.local.json` не попадает в git.
+- [ ] Закоммиченный `CLAUDE.md` импортирует файл через `@path`, и этот файл существует.
+- [ ] Закоммиченное правило в `.claude/rules/` ограничено через `paths:`, и каждое такое правило соответствует какому-нибудь файлу в репозитории.
+- [ ] `npm test` проходит, а `git status --porcelain` ничего не выводит.
 
-Run `npm run check -- i-capstone` in your practice copy. Each item that fails prints what to fix.
+Выполните `npm run check -- i-capstone` в учебной копии. Для каждого непройденного пункта будет выведено, что исправить.
 
 <a id="what-the-check-cant-see"></a>
-## What the check can't see
+## Чего проверка не видит
 
-The check doesn't look at these parts of the Intermediate Exit. Tick them yourself, honestly:
+Проверка не смотрит на эти части итога Среднего уровня. Отметьте их сами, честно:
 
-- [ ] I ran my skill by name, and Claude loaded it on its own when I asked it to check links.
-- [ ] I saw my hook block an Edit in `samples/` during a session.
-- [ ] I delegated a review to my subagent, and only its summary came back.
-- [ ] I approved the MCP server in a session and used one of its tools.
-- [ ] I installed the plugin with `claude plugin install claude-code-setup@claude-plugins-official --scope project`, as a teammate does after pulling the settings.
-- [ ] I can pick a model and an effort level for a task, and say why.
-- [ ] When Claude didn't follow an instruction, I can find out whether its file loaded.
+- [ ] Я запустил свой skill по имени, и Claude сам подгрузил его, когда я попросил проверить ссылки.
+- [ ] Я видел, как мой hook заблокировал Edit в `samples/` во время сессии.
+- [ ] Я поручил рецензию своему субагенту, и вернулся только его краткий отчёт.
+- [ ] Я одобрил MCP-сервер в сессии и воспользовался одним из его инструментов.
+- [ ] Я установил плагин командой `claude plugin install claude-code-setup@claude-plugins-official --scope project`, как это делает коллега после получения настроек.
+- [ ] Я могу выбрать модель и уровень effort для задачи и объяснить, почему.
+- [ ] Если Claude не выполнил инструкцию, я могу выяснить, загрузился ли её файл.
 
-When every box on this page is ticked, you're ready for the [Advanced level](../advanced/README.md). Its "ready if" list is the Intermediate Exit.
+Когда на этой странице отмечено всё, вы готовы к [Продвинутому уровню](../advanced/README.md). Его список «Вы готовы, если умеете» — это итог Среднего уровня.
 
-If this level helped, a star helps other developers find the guide.
+Если этот уровень помог, звезда на репозитории поможет другим разработчикам найти руководство.
 
 ---
 
-<sub>Sources: [Advanced setup](https://code.claude.com/docs/en/setup) · the [Intermediate lessons](README.md), which cite the official pages for each step.</sub>
+<sub>Источники: [Advanced setup](https://code.claude.com/docs/en/setup) · [уроки Среднего уровня](README.md), в которых для каждого шага указаны официальные страницы.</sub>
 
-<sub>← [Install and manage plugins](08-plugins.md) · [Intermediate index](README.md) · [Advanced index](../advanced/README.md) → · [Stuck on this capstone?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=i-capstone)</sub>
+<sub>← [Устанавливаем плагины и управляем ими](08-plugins.md) · [Оглавление Среднего уровня](README.md) · [Оглавление Продвинутого уровня](../advanced/README.md) → · [Застряли на этом итоговом проекте?](https://github.com/runowata/claude-code-ru/issues/new?template=lesson-feedback.yml&lesson=i-capstone)</sub>

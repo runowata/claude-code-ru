@@ -1,58 +1,58 @@
-name: 🙋 Stuck on a lesson
-description: A lesson's steps or check did not work for you, or part of it was unclear
+name: 🙋 Застрял на уроке
+description: Шаги или проверка урока не сработали, или что-то осталось непонятным
 labels: ["lesson-feedback"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for telling us where a lesson lost you. Every report is read and gets a first answer within 7 days.
+        Напишите, где урок вас потерял. По-русски, своими словами.
 
-        For a problem with Claude Code itself, rather than with this guide, use the [Claude Code issue tracker](https://github.com/anthropics/claude-code/issues).
+        Если проблема в самом Claude Code, а не в уроке, всё равно пишите сюда — разберёмся.
   - type: input
     id: lesson
     attributes:
-      label: Lesson
-      description: The lesson id, such as b-2. The lesson's "Stuck on this lesson?" link fills it in.
+      label: Урок
+      description: Номер урока, например b-2. Ссылка «Застряли на уроке?» подставляет его сама.
       placeholder: "b-2"
     validations:
       required: true
   - type: dropdown
     id: slot
     attributes:
-      label: Where it went wrong
+      label: Где не получилось
       options:
-        - You need (setup)
-        - The idea
-        - Worked example
-        - Your turn
-        - Check
-        - Something else
+        - Что понадобится (подготовка)
+        - Идея
+        - Разбор на примере
+        - Ваша очередь
+        - Проверка
+        - Другое
     validations:
       required: true
   - type: textarea
     id: what-happened
     attributes:
-      label: What happened
-      description: The step you were on, what you did, what you expected and what you saw. If you ran `npm run check`, paste its output.
+      label: Что произошло
+      description: На каком шаге вы были, что сделали, чего ждали и что увидели. Если запускали `npm run check`, вставьте его вывод.
     validations:
       required: true
   - type: input
     id: claude-code-version
     attributes:
-      label: Claude Code version
-      description: The output of `claude --version`.
+      label: Версия Claude Code
+      description: Вывод команды `claude --version`.
       placeholder: "2.1.285 (Claude Code)"
     validations:
       required: false
   - type: dropdown
     id: platform
     attributes:
-      label: Where you practiced
+      label: Где практиковались
       options:
         - macOS
         - Linux
         - WSL2
-        - Windows (native)
+        - Windows (без WSL)
         - Codespaces
     validations:
       required: false

@@ -1,18 +1,18 @@
-# Subagent for Intermediate lesson 6 <a id="subagent-for-intermediate-lesson-6"></a>
+# Субагент для урока 6 Среднего уровня <a id="subagent-for-intermediate-lesson-6"></a>
 
-`code-reviewer`, a read-only subagent for the Intermediate lesson "Delegate to a custom subagent". It reviews code changes in its own context window and reports findings by severity. Its only tools are Read, Grep and Glob, so it can read and search files but can't edit them or run commands ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#available-tools)). Without a shell it can't run `git diff`, so the main conversation gives it the changed files or the diff.
+`code-reviewer` — субагент только для чтения для урока Среднего уровня «Делегирование собственному субагенту». Он проверяет изменения кода в своём окне контекста и сообщает находки по степени важности. Его инструменты — только Read, Grep и Glob, поэтому он может читать файлы и искать в них, но не может ни править их, ни запускать команды ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#available-tools)). Без оболочки он не выполнит `git diff`, поэтому основная беседа передаёт ему изменённые файлы или дифф.
 
-Copy it into `.claude/agents/` in your project:
+Скопируйте его в `.claude/agents/` вашего проекта:
 
 ```bash
 mkdir -p .claude/agents
 cp <path-to-this-folder>/dot-claude/agents/code-reviewer.md .claude/agents/
 ```
 
-If `.claude/agents/` didn't exist when your session started, restart Claude Code so it sees the new folder ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#write-subagent-files)). Then ask for it by name: `Use the code-reviewer agent to review my changes`.
+Если `.claude/agents/` не существовала на момент старта сессии, перезапустите Claude Code, чтобы он увидел новую папку ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#write-subagent-files)). Затем позовите его по имени: `Используй агента code-reviewer, чтобы проверить мои изменения`.
 
-The file's header block, as comments at the top of its frontmatter, says what it does, when it runs, its side effects, platforms, how to remove it, and its test line.
+Заголовочный блок файла (комментарии в начале frontmatter) говорит, что он делает, когда запускается, его побочные эффекты, платформы, как его удалить и строку проверки.
 
-Smoke test, without Claude: `bash test.sh`.
+Смоук-тест без Claude: `bash test.sh`.
 
-Tested in Claude Code v2.1.285 (stable) on macOS, 2026-10-06
+Проверено на Claude Code v2.1.285 (stable) на macOS, 2026-10-06

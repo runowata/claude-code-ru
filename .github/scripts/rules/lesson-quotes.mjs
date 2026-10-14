@@ -23,7 +23,7 @@ export const id = 'lesson-quotes';
 export const modes = ['pr', 'scheduled'];
 
 const LIST = '.github/compat/learn.txt';
-const RAW = 'https://raw.githubusercontent.com/wesammustafa/claude-code-practice/main/learn/lessons';
+const RAW = 'https://raw.githubusercontent.com/runowata/claude-code-practice-ru/main/learn/lessons';
 const flat = (text) => text.replace(/\s+/g, ' ').trim();
 
 // The front matter as the app reads it: a copy of checks/frontmatter.mjs in
@@ -97,11 +97,12 @@ async function lessonFile(root, lesson) {
 }
 
 // The number of top-level numbered steps under a `## <name>` heading.
+const SECTION = { 'Worked example': 'Разбор на примере', 'Your turn': 'Ваша очередь', 'The task': 'Задача' };
 function stepCount(text, name) {
   let inside = false;
   let count = 0;
   for (const { line } of outsideFences(text)) {
-    if (/^## /.test(line)) inside = line.trim() === `## ${name}`;
+    if (/^## /.test(line)) inside = line.trim() === `## ${name}` || line.trim() === `## ${SECTION[name]}`;
     else if (inside && /^\d+\. /.test(line)) count += 1;
   }
   return count;
@@ -120,7 +121,7 @@ function compare(lesson, page, rawPage, rawFile, pages, listed) {
   const theirs = fields.stamp;
   if (theirs !== stamp) say(`is stamped "${theirs}", but the lesson is stamped "${stamp}". Re-verify the lesson file and copy the new Stamp.`);
   const title = fields.title;
-  const h1 = pageText.match(/^# (.+)$/m)?.[1]?.trim();
+  const h1 = pageText.match(/^# (.+)$/m)?.[1]?.replace(/\s*<a (?:id|name)="[^"]*"><\/a>\s*$/, '').trim();
   if (title !== h1) say(`is titled "${title}", but the lesson's heading is "${h1}".`);
   const recounted = new Set();
   let heading = '(front matter)';

@@ -1,23 +1,23 @@
 ---
-# What: a project skill that finds a problem's root cause by asking "why" until the answer is something you can fix.
-# Runs: when you type /five-whys <problem>, or when Claude matches your request to the description.
-# Side effects: none intended. It tells Claude to investigate and change no files; each tool call still follows your permission settings.
-# Requires: Claude Code. Platforms: any.
-# Remove: delete .claude/skills/five-whys/.
+# What: проектный skill, который находит первопричину проблемы, спрашивая «почему», пока ответом не станет то, что можно исправить.
+# Runs: когда вы вводите /five-whys <проблема> или когда Claude сопоставляет ваш запрос с описанием.
+# Side effects: не предполагаются. Он велит Claude исследовать и не менять файлы; каждый вызов инструмента по-прежнему подчиняется вашим настройкам разрешений.
+# Requires: Claude Code. Платформы: любые.
+# Remove: удалите .claude/skills/five-whys/.
 # Tested in Claude Code v2.1.285 (stable) on macOS, 2026-10-06
 name: five-whys
-description: Finds the root cause of a bug, failure or recurring problem by asking "why" until the answer is a cause you can fix. Use when the user asks why something keeps happening, or wants the root cause rather than a quick fix.
+description: Находит первопричину бага, сбоя или повторяющейся проблемы, спрашивая «почему», пока ответом не станет причина, которую можно исправить. Используй, когда пользователь спрашивает, почему что-то повторяется, или хочет получить первопричину, а не быстрое исправление.
 argument-hint: "[problem]"
 ---
 
-Find the root cause of this problem: $ARGUMENTS
+Найди первопричину этой проблемы: $ARGUMENTS
 
-If no problem is given, ask for one in a single sentence, then stop.
+Если проблема не указана, попроси назвать её одной фразой и остановись.
 
-1. Restate the problem as a symptom someone can observe: what happens, where and when.
-2. Ask "Why does this happen?" Answer from evidence: the code, tests, logs and git history. Mark any answer you can't back with evidence as a guess.
-3. Ask "Why?" of that answer, and keep going until the answer is a cause the team can change. That often takes about five rounds; stop sooner if you get there, and say so if you need more.
-4. Check the chain backwards: each cause must explain the step before it.
-5. Report the chain as a numbered list, the root cause in one sentence, then one fix for the root cause and one for the symptom.
+1. Сформулируй проблему как симптом, который можно наблюдать: что происходит, где и когда.
+2. Спроси «Почему это происходит?» Отвечай по доказательствам: коду, тестам, логам и истории git. Любой ответ, который нечем подтвердить, пометь как предположение.
+3. Задай «Почему?» к этому ответу и продолжай, пока ответом не станет причина, которую команда может изменить. Обычно на это уходит около пяти кругов; остановись раньше, если дошёл до неё, и скажи, если нужно больше.
+4. Проверь цепочку в обратную сторону: каждая причина должна объяснять предыдущий шаг.
+5. Выведи цепочку нумерованным списком, первопричину — одним предложением, затем одно исправление для первопричины и одно для симптома.
 
-Don't change any files. Propose the fixes and let the user decide.
+Не меняй никаких файлов. Предложи исправления и оставь решение пользователю.
