@@ -31,7 +31,7 @@
 1. Задайте один вопрос и сохраните JSON:
 
    ```bash
-   claude -p "In one sentence, what does this repository do?" --output-format json --permission-mode dontAsk > .practice/a-4-first.json
+   claude -p "Одним предложением: что делает этот репозиторий?" --output-format json --permission-mode dontAsk > .practice/a-4-first.json
    echo "exit $?"
    jq '{is_error, subtype, num_turns, session_id}' .practice/a-4-first.json
    jq -r .result .practice/a-4-first.json
@@ -41,7 +41,7 @@
 2. Попросите о том, что требует одобрения. `--setting-sources user` не пускает в запуск файлы настроек вашего проекта ([CLI flags](https://code.claude.com/docs/en/cli-reference#cli-flags)), поэтому ни правило allow, ни режим автоодобрения песочницы из [урока 4 среднего уровня](../intermediate/04-permissions-and-sandbox.md) не одобряют команду тестов ([Auto-allow mode](https://code.claude.com/docs/en/sandboxing#auto-allow-mode)). Вместе с тем отпадают и правила deny проекта, например ваши правила для `.env` из того урока, поэтому на шагах 2–4 их передают заново через `--disallowedTools`, который принимает правила deny ([CLI flags](https://code.claude.com/docs/en/cli-reference#cli-flags)):
 
    ```bash
-   claude -p "Run the test suite and say how many tests pass" --output-format json --permission-mode dontAsk --setting-sources user --disallowedTools "Read(./.env)" "Read(./.env.*)" > .practice/a-4-denied.json
+   claude -p "Запусти тесты и скажи, сколько из них проходит" --output-format json --permission-mode dontAsk --setting-sources user --disallowedTools "Read(./.env)" "Read(./.env.*)" > .practice/a-4-denied.json
    jq -c '.permission_denials[] | {tool_name, command: .tool_input.command}' .practice/a-4-denied.json
    jq -r .result .practice/a-4-denied.json
    ```
@@ -50,14 +50,14 @@
 3. Разрешите команду, которую показал шаг 2 (здесь `npm test`), и ограничьте число ходов:
 
    ```bash
-   claude -p "Run the test suite and say how many tests pass" --output-format json --permission-mode dontAsk --setting-sources user --disallowedTools "Read(./.env)" "Read(./.env.*)" --allowedTools "Bash(npm test *)" --max-turns 3 | jq '{subtype, num_turns, denied: (.permission_denials | length)}'
+   claude -p "Запусти тесты и скажи, сколько из них проходит" --output-format json --permission-mode dontAsk --setting-sources user --disallowedTools "Read(./.env)" "Read(./.env.*)" --allowedTools "Bash(npm test *)" --max-turns 3 | jq '{subtype, num_turns, denied: (.permission_denials | length)}'
    ```
 
    Выводится `"subtype": "success"` и `"denied": 0`: на этот раз Claude запустил тесты. Пробел перед `*` важен, а конечный ` *` совпадает и с самой командой без аргументов ([Wildcard patterns](https://code.claude.com/docs/en/permissions#wildcard-patterns)). Правило покрывает и конвейер вроде `npm test 2>&1 | tail -20`: Claude Code проверяет каждую часть конвейера отдельно, а `tail` — одна из команд только для чтения, которые выполняются без одобрения ([Compound commands](https://code.claude.com/docs/en/permissions#compound-commands), [Read-only commands](https://code.claude.com/docs/en/permissions#read-only-commands)).
 4. Дойдите до предела. Эта задача требует двух шагов подряд, а `--max-turns 1` разрешает один ход, вызывающий инструменты. Оставьте `Read` и используйте то же правило Bash, что на шаге 3:
 
    ```bash
-   claude -p "Read the file that defines this project's test command, then run that command, then summarize any failures" --output-format json --permission-mode dontAsk --setting-sources user --disallowedTools "Read(./.env)" "Read(./.env.*)" --allowedTools "Read,Bash(npm test *)" --max-turns 1 > .practice/a-4-capped.json
+   claude -p "Прочитай файл, где задана команда тестов этого проекта, запусти её и кратко опиши все падения" --output-format json --permission-mode dontAsk --setting-sources user --disallowedTools "Read(./.env)" "Read(./.env.*)" --allowedTools "Read,Bash(npm test *)" --max-turns 1 > .practice/a-4-capped.json
    echo "exit $?"
    jq '{subtype, has_result: has("result")}' .practice/a-4-capped.json
    ```

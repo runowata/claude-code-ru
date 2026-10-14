@@ -95,7 +95,7 @@
 4. Посмотрите, как лимит останавливает запуск. Дайте тем же границам крошечный лимит расходов:
 
    ```bash
-   claude -p "Run npm test and summarize the result" \
+   claude -p "Запусти npm test и кратко опиши результат" \
      --setting-sources project --settings .claude/bounded-run.json \
      --permission-mode dontAsk --model sonnet \
      --max-budget-usd 0.01 --output-format json > .practice/a-7-capped.json
