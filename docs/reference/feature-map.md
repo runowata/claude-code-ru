@@ -1,4 +1,4 @@
-# Feature map
+# Feature map <a id="feature-map"></a>
 
 <sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
@@ -10,6 +10,7 @@ How to read it:
 - **Who gets it** comes from [Feature availability](https://code.claude.com/docs/en/feature-availability), or from the feature's own page where that page has no row. "Every provider" means a Claude subscription, the Claude Console, Claude Platform on AWS, Amazon Bedrock, Google Cloud's Agent Platform and Microsoft Foundry alike: the CLI and everything that runs locally work on all of them.
 - The guide carries no prices or usage limits; see [claude.com/pricing](https://claude.com/pricing).
 
+<a id="where-you-run-it"></a>
 ## Where you run it
 
 | Feature | Label | Who gets it |
@@ -28,6 +29,7 @@ How to read it:
 | [Dispatch](https://code.claude.com/docs/en/desktop#sessions-from-dispatch) | – | Pro and Max |
 | [Voice dictation](https://code.claude.com/docs/en/voice-dictation) | – | A Claude subscription |
 
+<a id="in-a-session"></a>
 ## In a session
 
 | Feature | Label | Who gets it |
@@ -45,6 +47,7 @@ How to read it:
 | [Advisor](https://code.claude.com/docs/en/advisor) | "The advisor tool is experimental and requires the Anthropic API." | A Claude subscription and the Console |
 | [Web search](https://code.claude.com/docs/en/tools-reference#websearch-tool-behavior) | – | A Claude subscription, the Console and Claude Platform on AWS; not Bedrock; limited on Agent Platform and Foundry |
 
+<a id="extending-claude-code"></a>
 ## Extending Claude Code
 
 | Feature | Label | Who gets it |
@@ -58,6 +61,7 @@ How to read it:
 | [Channels](https://code.claude.com/docs/en/channels) | "Channels are in research preview." | A Claude subscription (Team and Enterprise once an admin turns them on) and the Console; not Claude Platform on AWS, Bedrock, Agent Platform or Foundry |
 | [Dev containers](https://code.claude.com/docs/en/devcontainer); taught in [Dev containers](../advanced/electives/dev-containers.md) | – | Every provider |
 
+<a id="parallel-and-unattended-work"></a>
 ## Parallel and unattended work
 
 | Feature | Label | Who gets it |
@@ -74,6 +78,7 @@ How to read it:
 | [GitHub Actions](https://code.claude.com/docs/en/github-actions); taught in [GitHub Actions](../advanced/05-github-actions.md) | – | A Claude subscription, the Console, Bedrock, Agent Platform and Foundry; not Claude Platform on AWS |
 | [GitLab CI/CD](https://code.claude.com/docs/en/gitlab-ci-cd) | "Claude Code for GitLab CI/CD is currently in beta." | Every provider except Microsoft Foundry |
 
+<a id="review-and-security"></a>
 ## Review and security
 
 | Feature | Label | Who gets it |
@@ -83,6 +88,7 @@ How to read it:
 | [Security guidance plugin](https://code.claude.com/docs/en/security-guidance) | – | All plans; it needs Python 3.7 or later, and 3.10 or later for the agentic commit review and, on a third-party provider, for every model-backed review |
 | [Claude Security](https://code.claude.com/docs/en/claude-security) | – | A paid plan, Anthropic API access or a third-party provider |
 
+<a id="other"></a>
 ## Other
 
 | Feature | Label | Who gets it |

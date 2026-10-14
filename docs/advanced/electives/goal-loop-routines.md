@@ -1,14 +1,16 @@
-# `/goal`, `/loop` and routines
+# `/goal`, `/loop` and routines <a id="goal-loop-and-routines"></a>
 
 <sub>**Advanced** · Elective · about 20 minutes, plus run time · Needs: [Put bounds on autonomous runs](../07-bounded-runs.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
 > [!NOTE]
 > "Routines are in research preview. Behavior, limits, and the API surface may change." ([Automate work with routines](https://code.claude.com/docs/en/routines))
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can keep Claude working without prompting each step: toward a condition with `/goal`, on an interval with `/loop`, and on a schedule in the cloud with a routine.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template, with Node.js LTS, for the Worked example, and one of your own repositories for Your turn.
@@ -16,6 +18,7 @@ By the end of this Elective you can keep Claude working without prompting each s
 - Also for the routine: GitHub access for cloud sessions to your copy, through the Claude GitHub App or `/web-setup`; with the App, a private copy needs the App installed on it ([GitHub authentication options](https://code.claude.com/docs/en/claude-code-on-the-web#github-authentication-options)). On Team and Enterprise, either way needs an Owner first: the GitHub connector for the App's browser sign-in, or Quick setup for `/web-setup` ([Connect GitHub](https://code.claude.com/docs/en/web-quickstart#connect-github), [Quick setup for Team and Enterprise](https://code.claude.com/docs/en/claude-code-on-the-web#quick-setup-for-team-and-enterprise)).
 - Usage: moderate. A goal runs several turns, each loop run sends the session's whole context again ([Why usage climbs in a long session](https://code.claude.com/docs/en/costs#why-usage-climbs-in-a-long-session)), and a routine run is a full cloud session that draws on your plan ([Usage and limits](https://code.claude.com/docs/en/routines#usage-and-limits)). The steps keep each one small: Sonnet, a turn limit, a short loop and a routine that runs once. Cheap variant: skip the routine (steps 7 to 9).
 
+<a id="the-idea"></a>
 ## The idea
 
 `/goal`, `/loop` and a routine each start Claude's next run without you ([Compare ways to keep a session running](https://code.claude.com/docs/en/goal#compare-ways-to-keep-a-session-running), [Compare scheduling options](https://code.claude.com/docs/en/scheduled-tasks#compare-scheduling-options)):
@@ -31,6 +34,7 @@ The evaluator reads only the conversation, so your condition should name a check
 > [!WARNING]
 > A routine runs as a full cloud session that doesn't stop for approval, apart from some artifact actions, and it acts as you: its commits and pull requests carry your GitHub user ([Create a routine](https://code.claude.com/docs/en/routines#create-a-routine)). It can use every tool of each connector it includes, writes included, without asking, and every connector on your claude.ai account is included by default ([Create from the web](https://code.claude.com/docs/en/routines#create-from-the-web), [Connectors](https://code.claude.com/docs/en/routines#connectors)). Remove the connectors a routine doesn't need, and keep its prompt to read-only work while you learn.
 
+<a id="worked-example"></a>
 ## Worked example
 
 Work in your practice copy, on a new branch.
@@ -76,6 +80,7 @@ Work in your practice copy, on a new branch.
    If you connected GitHub only for the routine, disconnect it at `claude.ai/customize/connectors`, which deletes the credential whether it came from the browser or from `/web-setup`; the `gh` token itself stays valid on GitHub ([Remove the `/web-setup` token](https://code.claude.com/docs/en/web-quickstart#remove-the-web-setup-token)). If you installed the Claude GitHub App only for the routine, also take your copy out of its repository access, and uninstall it only if nothing else of yours uses it ([Reviewing and modifying installed GitHub Apps](https://docs.github.com/en/apps/using-github-apps/reviewing-and-modifying-installed-github-apps)).
 10. `git switch -` takes your copy back to the branch you started on; `keep-working` keeps the fix.
 
+<a id="your-turn"></a>
 ## Your turn
 
 In one of your own repositories, pick a chore whose end state a command can prove, such as a failing test or a lint error. Finish it with a goal. Then commit a `.claude/loop.md` that keeps watching it: the file replaces the built-in prompt of a `/loop` you start without a prompt of your own ([Customize the default prompt with loop.md](https://code.claude.com/docs/en/scheduled-tasks#customize-the-default-prompt-with-loop-md)). With a subscription, you can also have a one-off routine run the command in the cloud once your work is on the default branch, or name your branch in the routine's prompt ([Repositories and branch permissions](https://code.claude.com/docs/en/routines#repositories-and-branch-permissions)).
@@ -87,6 +92,7 @@ It's done when:
 - `.claude/loop.md` is committed. It says what to check, and to report in one line without changing any file. `/loop 10m` (an interval and no prompt) ran it at least twice, then you cancelled it ([Run the built-in maintenance prompt](https://code.claude.com/docs/en/scheduled-tasks#run-the-built-in-maintenance-prompt)).
 - No scheduled task or routine is left: `what scheduled tasks do I have?` lists none, and any routine you made is deleted.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -98,12 +104,14 @@ You are done when all of these are true:
 
 If the command still fails, the goal ended before the work did, for example at its turn limit or judged impossible: press `Ctrl+O` to read the last verdict's reason ([How evaluation works](https://code.claude.com/docs/en/goal#how-evaluation-works)), then fix the cause or set a new goal; if `/goal` won't start, it says why, usually an untrusted folder or `disableAllHooks` ([Requirements](https://code.claude.com/docs/en/goal#requirements)). If no log line shows a failure, the loop didn't run while the test was broken: start the loop again as in step 4, break the test as in step 5, wait for a failing line, restore the file, then cancel the loop as in step 6. If `git ls-files` prints nothing, `git check-ignore -v .claude/loop.md` names the rule that hides the file: add it with `git add -f`, then commit.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - A loop fires even while you're away, sending the session's whole context each time, and keeps going until you cancel it or it expires ([Stop a loop](https://code.claude.com/docs/en/scheduled-tasks#stop-a-loop)). On a Pro, Max, Team or Enterprise plan, `/usage` lists your heaviest loops ([Plan usage breakdown](https://code.claude.com/docs/en/costs#plan-usage-breakdown)).
 - The evaluator can't confirm a condition that Claude's output can't show, such as "the code is clean". Name a command and its result ([How evaluation works](https://code.claude.com/docs/en/goal#how-evaluation-works)).
 - A green status in a routine's run list only means the session started and exited without an infrastructure error. Open the run and read the transcript to see whether the task worked ([View and interact with runs](https://code.claude.com/docs/en/routines#view-and-interact-with-runs)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Loop engineering: Getting started with loops](https://claude.com/resources/articles/getting-started-with-loops): Anthropic's Claude Code team on turn-based, goal-based, time-based and proactive loops, and when to use each.

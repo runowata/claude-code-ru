@@ -1,9 +1,10 @@
-# Advanced
+# Advanced <a id="advanced"></a>
 
 <sub>**Advanced** · about 3 hours 20 minutes, plus run time · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 Beyond one session: parallel sessions, orchestration, unattended runs in scripts and CI, a setup your team shares, and limits that keep an autonomous run safe.
 
+<a id="youre-ready-for-this-level-if-you-can"></a>
 ## You're ready for this level if you can
 
 - [ ] Write a project skill that runs by name and loads on its own when it applies.
@@ -13,6 +14,7 @@ Beyond one session: parallel sessions, orchestration, unattended runs in scripts
 - [ ] Put permission rules in the right scope, turn on the sandbox, and pick the model and effort for a task.
 - [ ] Organize project memory, and find out what loaded when an instruction isn't followed.
 
+<a id="practice"></a>
 ## Practice
 
 Practice in your own repository, and run each check from your copy of the [practice template](https://github.com/wesammustafa/claude-code-practice) as `npm run check -- <lesson-id> --dir <your repo>`. The GitHub Actions lesson and the capstone are the exceptions: they run in a separate template copy, which you tear down afterwards so no workflow or secret is left behind.
@@ -25,6 +27,7 @@ git checkout FETCH_HEAD -- checks capstone
 git commit -m "Add the Advanced checks"
 ```
 
+<a id="lessons"></a>
 ## Lessons
 
 1. [Parallel sessions with worktrees](01-parallel-sessions.md)
@@ -37,10 +40,12 @@ git commit -m "Add the Advanced checks"
 
 Each lesson takes 10 to 20 minutes, plus the time an agent run takes.
 
+<a id="capstone"></a>
 ## Capstone
 
 [Add CI review your team can share](capstone.md): in a new template copy, two parallel worktree sessions, a bounded `claude -p` review script, a team marketplace, a saved dynamic workflow and a pull request review workflow with limits. Then tear down the workflow, the secret and, with an API key, the key.
 
+<a id="by-the-end-of-this-level-you-can"></a>
 ## By the end of this level you can
 
 - [ ] Run parallel sessions in worktrees and merge their work.
@@ -49,6 +54,7 @@ Each lesson takes 10 to 20 minutes, plus the time an agent run takes.
 - [ ] Share a setup as committed config and a team marketplace plugin.
 - [ ] Bound an autonomous run with least privilege, the sandbox, turn or spend limits, a review gate and a cost estimate.
 
+<a id="electives"></a>
 ## Electives
 
 Optional lessons beside the core path:
@@ -59,11 +65,13 @@ Optional lessons beside the core path:
 - [Testing and publishing a plugin](electives/publish-a-plugin.md): check a plugin's files and behavior, then publish it in your own marketplace.
 - [Dev containers](electives/dev-containers.md): run Claude Code in a container with a firewall, keep your sign-in, and let it work unattended.
 
+<a id="official-companions"></a>
 ## Official companions
 
 - [Run agents in parallel](https://code.claude.com/docs/en/agents): Anthropic's comparison of the ways Claude Code takes on several tasks at once.
 - [The AI-native SDLC playbook](https://academy.claude.com/courses/ai-native-sdlc-playbook): Claude Academy's course on reshaping a team's development lifecycle around AI.
 
+<a id="beyond-this-guide"></a>
 ## Beyond this guide
 
 [Beyond this guide](beyond-this-guide.md): building your own agents and MCP servers, and running and rolling out Claude Code for an organization.

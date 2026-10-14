@@ -1,16 +1,19 @@
-# Keep a session on track
+# Keep a session on track <a id="keep-a-session-on-track"></a>
 
 <sub>**Beginner** · Lesson 4 of 5 · about 20 minutes · Needs: [Your first change, from request to commit](03-first-change.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can keep a session on track: see how full its context is, clear or compact it, rewind a change, and resume an earlier conversation.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template with no uncommitted changes, and Node.js LTS (a Codespace on your copy has it). To practice in one of your own repositories instead, keep the template copy as well: the check runs from it. Set up the repository's `.practice/` folder as [lesson 1](01-install-and-look-around.md#you-need) describes, if you haven't yet. Start that repository with no uncommitted changes too: commit them, or set them aside with `git stash push --include-untracked`.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 Everything in a conversation, your prompts, Claude's replies and every file it read, sits in the session's context window. The window is large but not endless, and a long, wandering conversation leaves Claude less room for the work that matters now ([Explore the context window](https://code.claude.com/docs/en/context-window)). Five commands keep it in hand ([Commands](https://code.claude.com/docs/en/commands)):
@@ -25,6 +28,7 @@ Everything in a conversation, your prompts, Claude's replies and every file it r
 
 Compact when you want to keep going on the same task; clear when you start a different one. Rewind when a change went the wrong way ([Checkpointing](https://code.claude.com/docs/en/checkpointing)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Start `claude` in your practice copy and type `/context`. The grid shows how much of the window is used, broken down by category, including your messages and any memory files, such as `CLAUDE.md`, that loaded ([Explore the context window](https://code.claude.com/docs/en/context-window)). Your practice copy has no `CLAUDE.md` yet, so you may see no memory files; [lesson 5](05-project-memory.md) adds one.
@@ -73,6 +77,7 @@ Compact when you want to keep going on the same task; clear when you start a dif
 
    If it opens the empty conversation from step 6, run `/resume` and pick the earlier one. Inside a session, `/resume` with no argument opens a picker of earlier conversations. The conversation you pick may still show the edit you rewound, because it was saved before the rewind. Your files stay as the rewind left them (`git status --porcelain` prints nothing), so don't ask Claude to make the edit again. If Claude offers to redo the rewound edit, say no.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Repeat the example in your practice copy, or your own repository:
@@ -83,6 +88,7 @@ Repeat the example in your practice copy, or your own repository:
 4. Rewind that prompt with **Restore code and conversation**, and save `git status --porcelain > .practice/b-4-after-rewind.txt`.
 5. Press `Esc` twice quickly to clear the restored prompt, then run `/clear`, then `/exit`, then `claude --continue`.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -95,10 +101,12 @@ Run `npm run check -- b-4` in your practice copy. In your own repository, run `n
 
 If the first file lists nothing, you saved it before the edit was made; make the edit again, save the file after it, then rewind again. If the second file still lists the file Claude changed, rewind that prompt with an option that restores code, then save the second file again. When the menu no longer lists that prompt (after **Restore conversation**) or offers no option that restores code (Claude used a command), run `git restore <file>` and repeat Your turn steps 3 and 4 instead. Files you changed before the lesson also stay listed, because rewind can't undo them: commit them or set them aside with `git stash push --include-untracked`, then save the second file again.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - Rewind undoes only the edits Claude made with its file editing tools. Changes made by commands it ran, such as deleting a file with `rm`, stay ([Checkpointing](https://code.claude.com/docs/en/checkpointing#bash-command-changes-not-tracked)); commit your work so git can bring it back.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Explore the context window](https://code.claude.com/docs/en/context-window): an interactive view of what fills a session.

@@ -1,11 +1,12 @@
 <a id="models--specifications--pricing"></a>
-# Models and effort
+# Models and effort <a id="models-and-effort"></a>
 
 <sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 Which model a session runs and how hard it thinks are two separate choices. This page is the lookup for both: the model aliases, the effort levels and the ways to set them. Which model and effort a task needs is taught in the Intermediate lesson [Pick the model and effort](../intermediate/03-model-and-effort.md). To compare the current models and find their IDs, see Anthropic's [models overview](https://platform.claude.com/docs/en/about-claude/models/overview).
 
 <a id="the-current-lineup-july-2026"></a><a id="the-current-lineup-as-of-october-4-2026"></a><a id="the-headliners"></a><a id="claude-sonnet-5--the-new-default"></a><a id="claude-sonnet-5-legacy"></a><a id="claude-opus-48--the-opus-flagship"></a><a id="claude-opus-48-legacy"></a><a id="claude-fable-5--the-mythos-class"></a><a id="claude-fable-5-legacy"></a>
+<a id="aliases"></a>
 ## Aliases
 
 An alias picks the recommended model of a family, so you never need a version number. Pick one with `/model <alias>`, `claude --model <alias>` or the `model` setting ([Model configuration](https://code.claude.com/docs/en/model-config#model-aliases)).
@@ -27,6 +28,7 @@ An alias picks the recommended model of a family, so you never need a version nu
 
 The default model differs by account type and provider. Check yours with `/model` or `/status`, and see [Default model setting](https://code.claude.com/docs/en/model-config#default-model-setting) for the rules.
 
+<a id="effort-levels"></a>
 ## Effort levels
 
 Effort controls how much the model reasons on each step. Lower effort answers sooner and spends fewer tokens; higher effort checks more of its own work ([Adjust effort level](https://code.claude.com/docs/en/model-config#adjust-effort-level)).
@@ -43,6 +45,7 @@ Effort controls how much the model reasons on each step. Lower effort answers so
 - Set a level the model doesn't offer and Claude Code uses the highest level it does offer below that.
 - The scale is calibrated per model, so `high` on one model is not the same amount of reasoning as `high` on another.
 
+<a id="setting-effort"></a>
 ## Setting effort
 
 | Where | How long it lasts |
@@ -56,6 +59,7 @@ Effort controls how much the model reasons on each step. Lower effort answers so
 
 `/effort auto` clears the level you saved for the current model; the model then uses an `effortLevel` from your settings if one applies, otherwise its own default ([Set the effort level](https://code.claude.com/docs/en/model-config#set-the-effort-level)).
 
+<a id="gotchas"></a>
 ## Gotchas
 
 - `max` applies to the current session only, unless you set it with `CLAUDE_CODE_EFFORT_LEVEL`. The `effortLevel` and `modelSettings` settings don't accept it.
@@ -64,6 +68,7 @@ Effort controls how much the model reasons on each step. Lower effort answers so
 - Switching models in the middle of a session recomputes the whole request, and on most models so does changing effort, so Claude Code may ask you to confirm first ([Prompt caching](https://code.claude.com/docs/en/prompt-caching)).
 
 <a id="fast-mode"></a>
+<a id="related-pages"></a>
 ## Related pages
 
 - Fast mode, which the docs mark "in research preview": a faster configuration of supported Opus models that subscription plans pay for with usage credits only. See [Fast mode](https://code.claude.com/docs/en/fast-mode), and the [Fast mode](../intermediate/electives/fast-mode.md) Elective.

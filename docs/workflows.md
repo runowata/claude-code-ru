@@ -1,5 +1,5 @@
 <a id="dynamic-workflows--orchestrating-agents-at-scale"></a>
-# Dynamic workflows
+# Dynamic workflows <a id="dynamic-workflows"></a>
 
 This page moved. Running and saving a dynamic workflow is taught in the Advanced lesson [Run and save a dynamic workflow](advanced/03-dynamic-workflows.md), and choosing between subagents, a workflow and an agent team in [Choose an orchestration pattern](advanced/02-orchestration-patterns.md). The [Subagents and parallel work topic index](topics/subagents-and-parallel-work.md) lists every page on the topic.
 

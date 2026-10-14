@@ -1,9 +1,10 @@
-# Beginner
+# Beginner <a id="beginner"></a>
 
 <sub>**Beginner** · about 2½ hours · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 One session, one change. You install Claude Code, decide what it may do without asking, take one change from request to commit, keep a long session on track, and give it a project memory.
 
+<a id="youre-ready-for-this-level-if-you-can"></a>
 ## You're ready for this level if you can
 
 - [ ] Work in a terminal: change folders, run commands and read their output.
@@ -12,6 +13,7 @@ One session, one change. You install Claude Code, decide what it may do without 
 
 New to the terminal? The official [Terminal guide for new users](https://code.claude.com/docs/en/terminal-guide) walks you through opening one and installing Claude Code.
 
+<a id="practice"></a>
 ## Practice
 
 Before lesson 1, make your own copy of the [practice template](https://github.com/wesammustafa/claude-code-practice): select **Use this template**, then **Create a new repository**, and clone your copy. Every Beginner exercise and the capstone run there.
@@ -22,6 +24,7 @@ Each core lesson and the capstone end with a check you run in your copy as `npm 
 
 On native Windows, if PowerShell refuses to run `npm` with `running scripts is disabled on this system` ([Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install#running-scripts-is-disabled-on-this-system)), follow the Windows note in [lesson 1](01-install-and-look-around.md#you-need).
 
+<a id="lessons"></a>
 ## Lessons
 
 1. [Install, sign in and look around](01-install-and-look-around.md)
@@ -32,10 +35,12 @@ On native Windows, if PowerShell refuses to run `npm` with `running scripts is d
 
 Each lesson takes about 20 minutes, and the capstone 30 to 60.
 
+<a id="capstone"></a>
 ## Capstone
 
 [Fix a reported bug, from plan to commit](capstone.md): record your Claude Code version, then fix a reported bug in the practice template: plan the fix, change two source files, add a test that fails before the fix and passes after it, and commit. Its check covers what it can see in files and git, and the capstone page lists the rest of the [Beginner Exit](#by-the-end-of-this-level-you-can) for you to tick yourself.
 
+<a id="by-the-end-of-this-level-you-can"></a>
 ## By the end of this level you can
 
 This list is the Beginner Exit ([Glossary](../reference/glossary.md)), which the capstone puts together in one task.
@@ -46,6 +51,7 @@ This list is the Beginner Exit ([Glossary](../reference/glossary.md)), which the
 - [ ] Keep a session on track with context, clear, compact, rewind and resume.
 - [ ] Create a project CLAUDE.md and show that a new session follows it.
 
+<a id="electives"></a>
 ## Electives
 
 Optional lessons beside the core path:
@@ -54,12 +60,14 @@ Optional lessons beside the core path:
 - [Screenshots and images](electives/screenshots-and-images.md)
 - [The built-in teachers](electives/built-in-teachers.md): `/powerup`, the Learning and Explanatory output styles, and the `claude-code-guide` subagent
 
+<a id="official-companions"></a>
 ## Official companions
 
 - [Quickstart](https://code.claude.com/docs/en/quickstart): Anthropic's walkthrough from install to a first change.
 - [Claude Code 101](https://academy.claude.com/courses/claude-code-101): Claude Academy's beginner course.
 - `/powerup`: interactive lessons inside Claude Code ([Commands](https://code.claude.com/docs/en/commands)).
 
+<a id="next-level"></a>
 ## Next level
 
 [Intermediate](../intermediate/README.md): one developer's setup.

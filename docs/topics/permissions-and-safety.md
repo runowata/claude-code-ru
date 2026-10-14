@@ -1,9 +1,10 @@
-# Permissions and safety
+# Permissions and safety <a id="permissions-and-safety"></a>
 
 <sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 What Claude Code may do without asking, and how to keep it away from what it shouldn't touch.
 
+<a id="lessons"></a>
 ## Lessons
 
 - Beginner: [Permission modes and plan mode](../beginner/02-permission-modes-and-plan-mode.md)
@@ -12,6 +13,7 @@ What Claude Code may do without asking, and how to keep it away from what it sho
 - Advanced: [Put bounds on autonomous runs](../advanced/07-bounded-runs.md)
 - Advanced Elective: [Dev containers](../advanced/electives/dev-containers.md)
 
+<a id="official-docs"></a>
 ## Official docs
 
 - [Choose a permission mode](https://code.claude.com/docs/en/permission-modes)

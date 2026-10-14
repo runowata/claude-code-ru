@@ -1,9 +1,10 @@
-# Advanced capstone: add CI review your team can share
+# Advanced capstone: add CI review your team can share <a id="advanced-capstone-add-ci-review-your-team-can-share"></a>
 
 <sub>**Advanced** · Capstone · 30 to 60 minutes, plus run time · Needs: the seven [Advanced lessons](README.md), or their skills · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
 This task puts the whole Advanced level together, in a new copy of the practice template that you tear down at the end. It has no worked example: the brief says what the team needs, and you choose how to build it. The [Advanced Exit](README.md#by-the-end-of-this-level-you-can) is the list of what you can do by the end of this level. The check reads what you commit and two files you save under `.practice/`, and you tick the rest of the Exit yourself under [What the check can't see](#what-the-check-cant-see).
 
+<a id="you-need"></a>
 ## You need
 
 - Node.js LTS, git, `jq`, and the GitHub CLI signed in with `gh auth login`.
@@ -21,6 +22,7 @@ This task puts the whole Advanced level together, in a new copy of the practice 
 - macOS, Linux or WSL 2: the review script is bash.
 - Usage: heavy. Two sessions at once, a dynamic workflow, a scripted run and a CI run. Each CI run uses your GitHub Actions minutes, and tokens, which an API key bills to your Console account and a subscription token draws from your plan ([Manage costs](https://code.claude.com/docs/en/github-actions#manage-costs)). Cheap variant: start every session with `--model sonnet` ([Model aliases](https://code.claude.com/docs/en/model-config#model-aliases)), put `--model sonnet` in the script and in `claude_args` ([Pass CLI arguments](https://code.claude.com/docs/en/github-actions#pass-cli-arguments)), and have the dynamic workflow in part 4 review only two of the files in `src/`.
 
+<a id="the-task"></a>
 ## The task
 
 The team wants Claude to review every pull request in CI, the same way on everyone's machine, with nothing it runs left unbounded. The brief is in `capstone/advanced-brief.md` in your copy.
@@ -62,6 +64,7 @@ Finish on `main`, with the merged pull request pulled, everything committed and 
 
 Listings checked against the listing bar on 2026-10-09.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -81,6 +84,7 @@ You are done when all of these are true:
 
 Run `npm run check -- a-capstone` in this copy. Each item that fails prints what to fix. The check runs your script with a stand-in for `claude`, so it uses none of your usage, and it reads the workflow from your history, so it passes before and after the teardown.
 
+<a id="what-the-check-cant-see"></a>
 ## What the check can't see
 
 The check doesn't look at these parts of the Advanced Exit. Tick them yourself, honestly:
@@ -96,6 +100,7 @@ When every box on this page is ticked, you've shown the Advanced Exit and finish
 
 If this level helped, a star helps other developers find the guide.
 
+<a id="tear-down"></a>
 ## Tear down
 
 When the check passes, tear down: this is required.

@@ -1,17 +1,20 @@
-# Put bounds on autonomous runs
+# Put bounds on autonomous runs <a id="put-bounds-on-autonomous-runs"></a>
 
 <sub>**Advanced** · Lesson 7 of 7 · about 20 minutes, plus run time · Needs: [Script Claude Code with `claude -p`](04-headless.md), [Share your setup with a team](06-share-your-setup.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can bound an unattended `claude -p` run with least privilege, the sandbox, turn and spend limits, a review gate and a cost estimate.
 
+<a id="you-need"></a>
 ## You need
 
 - The repository you scripted in [lesson 4](04-headless.md) and shared in [lesson 6](06-share-your-setup.md), with a test command, and your copy of the practice template with Node.js LTS and the Advanced checks ([Practice](README.md#practice)): the check runs from the copy. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
 - bash and `jq`, on macOS, Linux or WSL 2. On Linux and WSL 2, the sandbox needs `bubblewrap` and `socat` ([Set up Linux and WSL2](https://code.claude.com/docs/en/sandboxing#set-up-linux-and-wsl2)).
 - Usage: moderate. Each run stops at its limits. Cheap variant: in Your turn, set the limits from your slice run, and run the script on one more slice instead of the whole task.
 
+<a id="the-idea"></a>
 ## The idea
 
 A run nobody watches does whatever you allowed in advance, so allow little and cap the rest:
@@ -22,6 +25,7 @@ A run nobody watches does whatever you allowed in advance, so allow little and c
 - **A review gate.** Deny `git commit` and `git push`: deny rules hold in every mode ([Available modes](https://code.claude.com/docs/en/permission-modes#available-modes)). `dontAsk` refuses the forms a rule misses, such as `git -C . push`, while nothing allows them ([What a Bash rule doesn't match](https://code.claude.com/docs/en/permissions#bash-rule-limits)). You read the diff and commit what you accept.
 - **A cost estimate.** Run one slice first, and set the spend limit from what it cost.
 
+<a id="worked-example"></a>
 ## Worked example
 
 Work in your repository. The folders `src/` and `test/` and the command `npm test` stand for your own: swap yours in everywhere below.
@@ -109,6 +113,7 @@ Work in your repository. The folders `src/` and `test/` and the command `npm tes
    The summary shows `"subtype": "success"`, the turns used, `total_cost_usd`, and under `denied` each call your bounds refused, such as the `git commit`; your list will differ. HEAD is the same before and after, and `git status` lists the new test, uncommitted. Your output will differ. `total_cost_usd` is a client-side estimate, not your bill ([Track cost and usage](https://code.claude.com/docs/en/agent-sdk/cost-tracking#estimates-not-billing)); on a Claude plan, `/usage` in a session shows your plan's usage limits ([Commands](https://code.claude.com/docs/en/commands#all-commands)). To bound the whole task, scale the slice's figure up and set the spend limit above it, with room to spare.
 6. Be the review gate. Read every change with `git status` and `git diff`, the bounds file included, run `npm test` yourself, and commit only what you accept. For a second opinion, start `claude` and have a subagent review the diff in a fresh context and report gaps ([Add an adversarial review step](https://code.claude.com/docs/en/best-practices#add-an-adversarial-review-step)).
 
+<a id="your-turn"></a>
 ## Your turn
 
 Bound a real task in your repository that is bigger than one slice, such as tests for every untested function in one folder.
@@ -124,6 +129,7 @@ Acceptance criteria:
 - The script is executable, and the script and the bounds file are committed.
 - You run it, then read the diff and run the tests yourself before you commit any of it.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -140,12 +146,14 @@ Run `npm run check -- a-7 --dir <your repo>` from your practice copy, or `npm ru
 
 If the first item fails, make sure the committed script is executable (`git ls-files -s scripts/bounded-run.sh` starts with `100755`) and calls `claude` by name, not by a path or through `npx`, and doesn't set `PATH`: the check reads the committed script, so commit each fix. If an allow rule fails, narrow it to the one folder or command the task needs. If the sandbox item names a key, add it to the settings file: without `failIfUnavailable`, a run whose sandbox can't start runs unsandboxed ([`sandbox.enabled`](https://code.claude.com/docs/en/settings-reference#sandbox-enabled)). If the slice item fails, make sure your script sends only `claude`'s JSON output (stdout) to the result path, then run step 5 again; a slice that ended in `error_max_budget_usd` means your spend limit is below one slice, so raise it.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - Your bounds don't cover everything the run loads. Hooks and local MCP servers run outside the sandbox with your full access ([What runs outside the sandbox](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)). As [lesson 4](04-headless.md#watch-out) warned, a `-p` run uses a repository's hooks and `.mcp.json` servers without asking, and it applies the `allowed-tools` of the repository's skills too ([What runs before you trust a folder](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)). Read those hooks, servers and skills before a bounded run, or add `"disableAllHooks": true` to the bounds file to turn hooks off for it.
 - A deny rule matches the command Claude writes, not what a program does ([What a Bash rule doesn't match](https://code.claude.com/docs/en/permissions#bash-rule-limits)). The allowed `npm test` runs test files the run can edit. In the sandbox, that code can write anywhere in your working directory except protected paths, and inside `.git` only `hooks` and `config` are protected ([Protected paths](https://code.claude.com/docs/en/sandboxing#protected-paths)). So it could even make a commit. A push from it can't reach a remote: in `dontAsk` mode the sandbox refuses hosts you haven't allowed ([Hosts outside your allowed domains](https://code.claude.com/docs/en/sandboxing#hosts-outside-your-allowed-domains), [Turn off permission prompts in unattended runs](https://code.claude.com/docs/en/headless#turn-off-permission-prompts-in-unattended-runs)). That's why the script prints HEAD before and after, and why your review covers every changed file.
 - A dynamic workflow starts through its own tool, `Workflow`. In a run like this one, it starts only if an allow rule or a `PreToolUse` hook approves it: `Workflow` approves any workflow, and `Workflow(<name>)` approves one saved workflow ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs)). The workflow's agents follow your permission rules, and their permission mode follows the subagent rules, so an agent type whose definition sets `permissionMode` can run in that mode ([Permission modes](https://code.claude.com/docs/en/sub-agents#permission-modes)). They're subagents, so their spend counts toward `--max-budget-usd`. If you allow one, also add `"workflowSizeGuideline": "small"` to the bounds file, which asks Claude for fewer agents but caps nothing ([`workflowSizeGuideline`](https://code.claude.com/docs/en/settings-reference#workflowsizeguideline)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Choose a sandbox environment](https://code.claude.com/docs/en/sandbox-environments): containers and VMs for runs the Bash sandbox can't cover.

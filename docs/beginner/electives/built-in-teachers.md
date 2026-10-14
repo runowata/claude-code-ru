@@ -1,16 +1,19 @@
-# Learn from Claude Code itself
+# Learn from Claude Code itself <a id="learn-from-claude-code-itself"></a>
 
 <sub>**Beginner** · Elective · about 20 minutes · Needs: [Install, sign in and look around](../01-install-and-look-around.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can use Claude Code's built-in teaching aids: `/powerup`, the Learning and Explanatory output styles, and its guide to its own features.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template with no uncommitted changes.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 Claude Code can teach you while you work. Three aids are built in:
@@ -21,6 +24,7 @@ Claude Code can teach you while you work. Three aids are built in:
 
 Why write some of the code yourself? In an Anthropic study, developers who learned a new library with an AI assistant scored lower, on average, on a quiz about it than developers who coded by hand. The ones who scored well used the assistant to ask questions and get explanations, not just to produce code ([How AI assistance impacts the formation of coding skills](https://www.anthropic.com/research/AI-assistance-coding-skills)). The Learning style builds that habit in.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Start `claude` in your practice copy and run `/powerup`. Pick a lesson, try what it shows, and follow the hints on screen. A lesson counts as finished when you press `Enter` on its card (`Enter to mark done`). If a `/powerup` lesson names a `default` mode, that is Manual mode ([Choose a permission mode](https://code.claude.com/docs/en/permission-modes)), which [lesson 2](../02-permission-modes-and-plan-mode.md) covers.
@@ -52,6 +56,7 @@ Why write some of the code yourself? In an Anthropic study, developers who learn
 
    When Claude hands it over, the transcript shows a `claude-code-guide(...)` row with a short task description in the brackets. If no such row appears, Claude answered without the helper: send the prompt again. Your wording will differ, but the answer should point you to skills, a `SKILL.md` file under `.claude/skills/` ([Extend Claude with skills](https://code.claude.com/docs/en/skills)). It may also mention the older `.claude/commands/` folder, which still works.
 
+<a id="your-turn"></a>
 ## Your turn
 
 1. Run `/powerup` and finish one more lesson.
@@ -64,6 +69,7 @@ Why write some of the code yourself? In an Anthropic study, developers who learn
 3. Ask `claude-code-guide` about a Claude Code feature you haven't used yet: start your prompt with `Use the claude-code-guide agent:`, and look for its row in the transcript. If you asked the helper something earlier in this session, Claude may send the question to that same helper: the transcript then shows `Resuming agent` instead of a new `claude-code-guide(...)` row, and that counts too.
 4. When you're done, switch back with `/output-style default`.
 
+<a id="check"></a>
 ## Check
 
 This Elective has no `npm run check`: tick each item yourself. You are done when all of these are true:
@@ -73,6 +79,7 @@ This Elective has no `npm run check`: tick each item yourself. You are done when
 
 If the file is missing or names another style, run `/output-style explanatory` in Claude Code, repeat the `cp` command in your second terminal, then run `/output-style default`.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Output styles](https://code.claude.com/docs/en/output-styles): every built-in style, and how to write your own.

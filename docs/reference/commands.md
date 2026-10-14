@@ -1,11 +1,12 @@
 <a id="slash-commands--cheatsheet"></a>
-# Commands by level
+# Commands by level <a id="commands-by-level"></a>
 
 <sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 The built-in commands, bundled skills and workflows, and `claude` command-line forms the lessons use, grouped by the level that teaches them. It is not the full list: the official [commands reference](https://code.claude.com/docs/en/commands#all-commands) has every command and its options, the [CLI reference](https://code.claude.com/docs/en/cli-reference#cli-flags) has the command-line flags, and typing `/` in a session shows the commands available to you.
 
 <a id="common-built-in-slash-commands"></a>
+<a id="beginner"></a>
 ## Beginner
 
 - `/status`: your version, model, account and connectivity. [Install, sign in and look around](../beginner/01-install-and-look-around.md)
@@ -22,6 +23,7 @@ The built-in commands, bundled skills and workflows, and `claude` command-line f
 
 Electives: `/powerup` and `/output-style` ([the built-in teachers](../beginner/electives/built-in-teachers.md)).
 
+<a id="intermediate"></a>
 ## Intermediate
 
 - `/skills`: list the skills available in this session. [Turn a repeated workflow into a skill](../intermediate/01-first-skill.md)
@@ -37,6 +39,7 @@ Electives: `/powerup` and `/output-style` ([the built-in teachers](../beginner/e
 
 Electives: `/statusline` ([The status line](../intermediate/electives/status-line.md)); `/chrome` ([Claude in Chrome](../intermediate/electives/claude-in-chrome.md)); `/fast` ([Fast mode](../intermediate/electives/fast-mode.md)).
 
+<a id="advanced"></a>
 ## Advanced
 
 - `claude --worktree <name>` (`-w`): start a session in an isolated git worktree at `.claude/worktrees/<name>` ([CLI reference](https://code.claude.com/docs/en/cli-reference#cli-flags)). [Parallel sessions with worktrees](../advanced/01-parallel-sessions.md)
@@ -51,10 +54,12 @@ Electives: `/statusline` ([The status line](../intermediate/electives/status-lin
 Electives: `claude agents` and `/background` ([Agent view](../advanced/electives/agent-view.md)); `/goal`, `/loop` and `/schedule` ([`/goal`, `/loop` and routines](../advanced/electives/goal-loop-routines.md)); `claude plugin eval` ([Testing and publishing a plugin](../advanced/electives/publish-a-plugin.md)).
 
 <a id="custom-slash-commands-skills"></a>
+<a id="your-own-commands"></a>
 ## Your own commands
 
 A command you write yourself is a skill: a `SKILL.md` file in `.claude/skills/<name>/`, or a Markdown file in `.claude/commands/`, the older format ([Extend Claude with skills](https://code.claude.com/docs/en/skills)). The Intermediate lesson [Turn a repeated workflow into a skill](../intermediate/01-first-skill.md) teaches them.
 
+<a id="shortcuts-and-cheat-sheets"></a>
 ## Shortcuts and cheat sheets
 
 - [Interactive mode](https://code.claude.com/docs/en/interactive-mode): keyboard shortcuts, input modes and interactive features.

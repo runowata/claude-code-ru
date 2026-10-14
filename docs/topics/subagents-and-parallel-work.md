@@ -1,9 +1,10 @@
-# Subagents and parallel work
+# Subagents and parallel work <a id="subagents-and-parallel-work"></a>
 
 <sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 Ways to split work across contexts and sessions: subagents, worktrees, dynamic workflows and agent teams.
 
+<a id="lessons"></a>
 ## Lessons
 
 - Intermediate: [Delegate to a custom subagent](../intermediate/06-subagents.md)
@@ -12,6 +13,7 @@ Ways to split work across contexts and sessions: subagents, worktrees, dynamic w
 - Advanced: [Run and save a dynamic workflow](../advanced/03-dynamic-workflows.md)
 - Advanced Electives: [Agent teams](../advanced/electives/agent-teams.md), [Agent view](../advanced/electives/agent-view.md)
 
+<a id="official-docs"></a>
 ## Official docs
 
 - [Create custom subagents](https://code.claude.com/docs/en/sub-agents)

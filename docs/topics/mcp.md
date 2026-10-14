@@ -1,14 +1,16 @@
-# MCP
+# MCP <a id="mcp"></a>
 
 <sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 Connecting Claude Code to outside tools and data with the Model Context Protocol.
 
+<a id="lessons"></a>
 ## Lessons
 
 - Intermediate: [Connect a tool with MCP](../intermediate/07-mcp.md)
 - Intermediate Elective: [Claude in Chrome](../intermediate/electives/claude-in-chrome.md)
 
+<a id="official-docs"></a>
 ## Official docs
 
 - [Connect to MCP servers](https://code.claude.com/docs/en/mcp-quickstart)

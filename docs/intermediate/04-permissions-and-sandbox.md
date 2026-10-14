@@ -1,17 +1,20 @@
-# Permissions, settings scopes and the sandbox
+# Permissions, settings scopes and the sandbox <a id="permissions-settings-scopes-and-the-sandbox"></a>
 
 <sub>**Intermediate** · Lesson 4 of 8 · about 20 minutes · Needs: [Organize project memory and see what loaded](02-organize-memory.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can put a permission rule in the settings file whose scope fits it, see which rules are in force, and turn on the sandbox so the shell commands Claude runs can't write outside your project, a temporary folder and any folders you've added.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template, for the Worked example, with Node.js LTS: the check runs from it. One of your own repositories with a test command, for Your turn; or use the template copy for both.
 - macOS, Linux or WSL 2. On Linux and WSL 2, the sandbox needs `bubblewrap` and `socat` ([Set up Linux and WSL2](https://code.claude.com/docs/en/sandboxing#set-up-linux-and-wsl2)); a Codespace on your template copy has both.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 Claude Code reads settings from four files, and the file a rule goes in decides who it affects ([Settings](https://code.claude.com/docs/en/settings#settings-files-and-who-they-affect)):
@@ -27,6 +30,7 @@ When the same key is set in more than one place, the higher level wins: managed,
 
 Permission rules govern Claude's tools. The [sandbox](https://code.claude.com/docs/en/sandboxing) adds a boundary that the operating system enforces around the shell commands Claude runs: by default they can write only in the project, a per-user temporary folder and any folders you've added with `--add-dir` or `/add-dir`, and reach the network only through a proxy that checks each host against the hosts you allow. It's off until you turn it on. In its auto-allow mode, a command that runs inside it needs no permission prompt.
 
+<a id="worked-example"></a>
 ## Worked example
 
 In your practice copy:
@@ -54,6 +58,7 @@ In your practice copy:
 
    It runs without a prompt and fails: `Operation not permitted` on macOS, `Read-only file system` on Linux and WSL 2 ([Confirm commands run inside the sandbox](https://code.claude.com/docs/en/sandboxing#confirm-commands-run-inside-the-sandbox)). If Claude offers to retry outside the sandbox, decline.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Set up the same split in your own repository.
@@ -73,6 +78,7 @@ Set up the same split in your own repository.
 3. In a session there, turn on the sandbox with `/sandbox` in auto-allow mode, and repeat the Worked example's step 5.
 4. Run `git status`. `.claude/settings.local.json` isn't listed: Claude Code keeps it out of git when it creates it ([Keep personal settings out of a repository](https://code.claude.com/docs/en/settings#keep-personal-settings-out-of-a-repository)).
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -85,12 +91,14 @@ Run `npm run check -- i-4 --dir <your repo>` from your practice copy, or `npm ru
 
 If the first item fails on a broad rule, replace it with the one command: `Bash(npm *)` would let Claude run any npm command without asking. If `/sandbox` shows only a Dependencies tab, install `bubblewrap` and `socat`, restart Claude Code and run `/sandbox` again.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - The sandbox wraps shell commands only. Claude's file and web tools run outside it and follow your permission rules; hooks and local MCP servers run outside it with your full access ([What runs outside the sandbox](https://code.claude.com/docs/en/sandboxing#what-runs-outside-the-sandbox)). If the sandbox can't start, Claude Code runs commands unsandboxed unless `sandbox.failIfUnavailable` is `true`.
 - On its own, a `Read` deny rule covers Claude's file tools and the file commands Claude Code recognizes in Bash, such as `cat`, but not a script that opens files itself ([Read and Edit](https://code.claude.com/docs/en/permissions#read-and-edit)). With the sandbox on, Claude Code also adds your `Read` deny paths to the sandbox's [`filesystem.denyRead`](https://code.claude.com/docs/en/settings-reference#sandbox-filesystem-denyread), so sandboxed commands and the processes they start can't read those files either.
 - In a Codespace or another container, if sandboxed commands fail with `Can't mount proc on /newroot/proc`, see [Bubblewrap fails to start inside a container](https://code.claude.com/docs/en/sandboxing#bubblewrap-fails-to-start-inside-a-container).
 
+<a id="go-further"></a>
 ## Go further
 
 - [How we built Claude Code auto mode](https://www.anthropic.com/engineering/claude-code-auto-mode): Anthropic on what auto mode's classifier catches and what it misses.

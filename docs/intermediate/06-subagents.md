@@ -1,17 +1,20 @@
-# Delegate to a custom subagent
+# Delegate to a custom subagent <a id="delegate-to-a-custom-subagent"></a>
 
 <sub>**Intermediate** · Lesson 6 of 8 · about 20 minutes · Needs: [Permissions, settings scopes and the sandbox](04-permissions-and-sandbox.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can write a subagent that has only the tools its task needs, and delegate work to it.
 
+<a id="you-need"></a>
 ## You need
 
 - One of your own repositories, and your copy of the practice template with Node.js LTS: the check runs from the copy. To practice in the template copy instead, use it for both.
 - `jq`, for the delegation log in Your turn.
 - Usage: light to moderate. Each delegation starts a second context window.
 
+<a id="the-idea"></a>
 ## The idea
 
 A [subagent](https://code.claude.com/docs/en/sub-agents) is a separate Claude that your session hands a task to. It works in its own context window, with its own instructions and only the tools you give it, and returns a summary. Its file reads and search results stay out of your conversation:
@@ -29,6 +32,7 @@ A project subagent is a Markdown file in `.claude/agents/`: frontmatter with a `
 
 Delegate a task whose output you don't need in full, or that should run with restricted tools. Keep it in the main conversation when it needs back-and-forth, or when it's a quick, targeted change ([Choose between subagents and main conversation](https://code.claude.com/docs/en/sub-agents#choose-between-subagents-and-main-conversation)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. In your repository, download this guide's example [`code-reviewer`](../../examples/intermediate/06-subagents/dot-claude/agents/code-reviewer.md) and read it:
@@ -54,6 +58,7 @@ Delegate a task whose output you don't need in full, or that should run with res
 
    The transcript shows a row such as `code-reviewer(Review uncommitted changes)` while it works. The reviewer can't run `git diff`, so it starts from the task message your session writes for it and a git status snapshot ([What loads at startup](https://code.claude.com/docs/en/sub-agents#what-loads-at-startup)); then you get its findings as a summary, grouped by severity. Your wording will differ.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Finish a read-only subagent that finds code no test calls, then delegate to it.
@@ -89,6 +94,7 @@ Finish a read-only subagent that finds code no test calls, then delegate to it.
 
 4. Start `claude --settings .practice/i-6-hook.json` and ask `Use the test-gaps agent to list the functions no test calls.`
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -102,12 +108,14 @@ Run `npm run check -- i-6 --dir <your repo>` from your practice copy, or `npm ru
 
 If the first item fails, check the frontmatter: Claude Code skips an agent file without a `name`, and one with a `name` but no `description`. If the tools item fails, remove each tool that can change files or run commands; without a `tools` line, a subagent gets every tool. If the log has no `test-gaps` line, start the session with the hook file and name the subagent in your request.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - A subagent that lists `Bash` can still change files through shell commands, such as a `sed` edit or a [`> file` redirect](https://code.claude.com/docs/en/permissions#redirections), even without `Edit` or `Write`. Leave `Bash` out, and let your session pass it what a command would have shown.
 - On macOS, Linux and WSL, where Glob and Grep are absent by default, a subagent whose `tools` list names `Glob` or `Grep` and leaves out `Bash` gets the ones it names ([Glob tool behavior](https://code.claude.com/docs/en/tools-reference#glob-tool-behavior)).
 - A custom subagent reads your `CLAUDE.md` as the main conversation does, but the built-in Explore and Plan subagents skip it: restate a rule in your request when Claude hands them work ([Check common causes](https://code.claude.com/docs/en/debug-your-config#check-common-causes)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Introduction to subagents](https://academy.claude.com/courses/introduction-to-subagents): Claude Academy's course on designing and using subagents.

@@ -1,11 +1,13 @@
-# Testing and publishing a plugin
+# Testing and publishing a plugin <a id="testing-and-publishing-a-plugin"></a>
 
 <sub>**Advanced** · Elective · about 20 minutes, plus run time · Needs: [Share your setup with a team](../06-share-your-setup.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can check a plugin's files with `claude plugin validate`, measure what it changes with `claude plugin eval`, and publish it in a marketplace that other people install and update from.
 
+<a id="you-need"></a>
 ## You need
 
 - The marketplace layout from [lesson 6](../06-share-your-setup.md): a marketplace that lists a plugin by a relative path.
@@ -14,6 +16,7 @@ By the end of this Elective you can check a plugin's files with `claude plugin v
 - The GitHub CLI, signed in with `gh auth login`. Claude Code clones a private marketplace with the git credentials your machine already holds, SSH or HTTPS, and never prompts for one; for HTTPS, `gh auth setup-git` after that sign-in stores one it can use ([Grant access to a private marketplace](https://code.claude.com/docs/en/plugins/host-marketplace#grant-access-to-a-private-marketplace)).
 - Usage: moderate. Every eval run is a real model call on your account ([Test plugins with evals](https://code.claude.com/docs/en/plugin-evals)). The Worked example makes one run. Your turn's full run runs each case three times with the plugin and three times without it; its cheap variant runs each case once.
 
+<a id="the-idea"></a>
 ## The idea
 
 Check a plugin two ways before you share it. `claude plugin validate` reads files: manifests and frontmatter; with `--strict`, a warning fails the run too ([Test and debug](https://code.claude.com/docs/en/plugins/create#test-and-debug)). `claude plugin eval` measures behavior: each case, a prompt plus graders (checks that score each run), runs in a fresh, isolated session with only your plugin loaded, three times by default (the with-arm), and as many times with no plugin (the without-arm). The difference between their scores, `WITH` and `W/OUT`, is `Δ`: what the plugin contributed ([How an eval run works](https://code.claude.com/docs/en/plugin-evals#how-an-eval-run-works)).
@@ -25,6 +28,7 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
 > [!WARNING]
 > Before you make a marketplace repository public, read every file in it: everyone can read a public repository ([About repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/about-repositories#about-repository-visibility)), and anyone who can clone it can install from it ([Control who can install](https://code.claude.com/docs/en/plugins/publish#control-who-can-install)). A hook or a stdio MCP server you add in a later version runs on the machine of everyone who updates to it, with their rights ([Plugin security and trust](https://code.claude.com/docs/en/plugins/security#understand-what-a-plugin-can-do)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Create a repository with one plugin, `commit-helper`, under `plugins/`, the layout [Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace#create-a-marketplace) uses. Its one skill drafts commit messages. In every file and command, replace `<you>` with your GitHub user name and `Your Name` with your name:
@@ -100,6 +104,7 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
 
    The add prints `✔ Successfully added marketplace: <you>-plugins (declared in user settings)`, the install prints `✔ Successfully installed plugin: commit-helper@<you>-plugins (scope: user)`, and the details' `Component inventory` reads `Skills (1)  commit-message` ([Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace#create-a-marketplace)). The marketplace's name comes from your `marketplace.json`, not from the repository ([Host your marketplace](https://code.claude.com/docs/en/plugins/host-marketplace#host-your-marketplace)). The plugin stays installed for you until the end of Your turn.
 
+<a id="your-turn"></a>
 ## Your turn
 
 **Brief:** release `commit-helper` 1.0.1, gated by its evals, and update your installed copy.
@@ -114,6 +119,7 @@ Publishing is a `.claude-plugin/marketplace.json` in a git repository: once it's
 
 Then, from the repository's root, save the plugin list with `claude plugin list --json > .practice/a-publish-list.json` ([JSON output](https://code.claude.com/docs/en/plugins/cli-reference#json-output)), and only then run `claude plugin marketplace remove <you>-plugins --scope user`. Removing a marketplace from its last scope also uninstalls its plugins ([plugin marketplace remove](https://code.claude.com/docs/en/plugins/cli-reference#plugin-marketplace-remove)), so the saved list is what the Check below reads. Deleting the repository is optional: `gh repo delete <you>/claude-plugins --yes` needs the `delete_repo` scope, which `gh auth refresh -s delete_repo` adds ([gh repo delete](https://cli.github.com/manual/gh_repo_delete)).
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true, from the repository's root:
@@ -126,12 +132,14 @@ You are done when all of these are true, from the repository's root:
 
 If a validation fails only with `--strict`, the lines above the verdict name a warning to fix, such as a missing `description` or `version` ([Output and exit codes](https://code.claude.com/docs/en/plugins/cli-reference#output-and-exit-codes)). If `results/` is listed, run `git rm -r --cached plugins/commit-helper/evals/results`, check the `.gitignore` line and commit. If the result prints `false`, run both cases again when the newest run had only one, or open its `report.html` to see which grader failed: without `--threshold`, any case below a perfect score fails ([The run exits 1 but the results look fine](https://code.claude.com/docs/en/plugin-evals#the-run-exits-1-but-the-results-look-fine)). If the version check prints nothing or `1.0.0`, check that `<you>` is replaced, push the new `version` if needed, add the marketplace, install the plugin again, and save the list before you remove the marketplace.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - `claude plugin eval` runs the plugin's skills, hooks and agents on your machine, as you, and a suite that passes says nothing about whether the plugin is safe. Pass `--allow-tools`, `--scaffold` or `--allow-real-servers` only for a plugin and suite you've read ([What a run can access](https://code.claude.com/docs/en/plugin-evals#security)).
 - Judge graders add model calls to every run, so keep them for what a free grader can't check. `--max-cost-usd` caps the run's list-price estimate, not your plan usage, and once you reach a usage limit mid-suite, later runs usually score 0 while the suite isn't marked `partial` ([Command options](https://code.claude.com/docs/en/plugin-evals#command-options), [Troubleshooting](https://code.claude.com/docs/en/plugin-evals#runs-fail-with-a-usage-limit-or-rate-limit-error-partway-through)).
 - Treat a plugin's `name` as permanent: users install, enable and configure it by `name@marketplace`, so a renamed plugin is a different plugin to every existing install. Change `displayName` for a new label ([Prepare your plugin for release](https://code.claude.com/docs/en/plugins/publish#prepare-your-plugin-for-release)). Some marketplace names are reserved, such as any starting with `claudeai-`; if the add refuses yours, pick another ([Reserved names](https://code.claude.com/docs/en/plugins/marketplace-reference#reserved-names)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Run evals in CI](https://code.claude.com/docs/en/plugin-evals#run-evals-in-ci): `--trust-plugin`, pinned models, `--json` and a cost ceiling, for a job like the one in [GitHub Actions](../05-github-actions.md).

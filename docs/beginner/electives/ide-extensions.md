@@ -1,17 +1,20 @@
-# Use Claude Code in your editor
+# Use Claude Code in your editor <a id="use-claude-code-in-your-editor"></a>
 
 <sub>**Beginner** · Elective · about 15 minutes · Needs: [Install, sign in and look around](../01-install-and-look-around.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can run Claude Code inside VS Code or a JetBrains IDE, point it at the lines you're looking at, and review its edits in the editor's diff view.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template, with no uncommitted changes, open in VS Code or a JetBrains IDE such as IntelliJ IDEA or PyCharm.
 - For JetBrains, the Claude Code command-line tool from lesson 1: the plugin runs it in the IDE's terminal.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 The terminal isn't the only place Claude Code runs. Two editor integrations put it next to your code:
@@ -21,6 +24,7 @@ The terminal isn't the only place Claude Code runs. Two editor integrations put 
 
 Either way, it's the same Claude Code: the same account, permission modes and CLAUDE.md.
 
+<a id="worked-example"></a>
 ## Worked example
 
 In VS Code:
@@ -42,12 +46,14 @@ In a JetBrains IDE:
 3. Open `src/config.js`, select the body of `parseConfig`, and press `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Windows and Linux). The prompt gets a reference such as `@src/config.js#L7-17`. Ask the same question.
 4. Press `Shift+Tab` until the status bar under the prompt reads `⏸ manual mode on` ([Choose a permission mode](https://code.claude.com/docs/en/permission-modes#switch-permission-modes)). On native Windows, if `Shift+Tab` does nothing, press `Alt+M` instead ([Interactive mode](https://code.claude.com/docs/en/interactive-mode)). Then ask for the same small edit: it opens in the IDE's diff viewer, and Claude asks for permission in the terminal. Choose **No**.
 
+<a id="your-turn"></a>
 ## Your turn
 
 1. Install the extension or the plugin for the editor you use.
 2. Open `src/links.js`, select the whole `findLinks` function, and press the reference shortcut: `Option+K` (Mac) or `Alt+K` (Windows and Linux) in VS Code, `Cmd+Option+K` (Mac) or `Alt+Ctrl+K` (Windows and Linux) in JetBrains. Then ask what kinds of links it finds.
 3. Switch to Manual mode as in the Worked example, ask for a small edit, and look it over in the diff view. Then choose **No** at Claude's permission prompt: in the chat panel in VS Code, in the terminal in JetBrains.
 
+<a id="check"></a>
 ## Check
 
 This Elective has no `npm run check`: tick each item yourself. You are done when all of these are true:
@@ -58,6 +64,7 @@ This Elective has no `npm run check`: tick each item yourself. You are done when
 
 If `git diff` shows the edit, it was applied: the session wasn't in Manual mode, or you approved it. Discard it with `git restore <file>`, using the file `git diff` names. Then switch to Manual, ask for the edit again, and choose **No**.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Desktop quickstart](https://code.claude.com/docs/en/desktop-quickstart): Claude Code in the Claude desktop app.

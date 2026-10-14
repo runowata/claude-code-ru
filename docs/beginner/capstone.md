@@ -1,9 +1,10 @@
-# Beginner capstone: fix a reported bug, from plan to commit
+# Beginner capstone: fix a reported bug, from plan to commit <a id="beginner-capstone-fix-a-reported-bug-from-plan-to-commit"></a>
 
 <sub>**Beginner** · Capstone · 30 to 60 minutes · Needs: the five [Beginner lessons](README.md), or their skills · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 This task puts the whole Beginner level together. Unlike the lessons, it has no worked example: the steps say what to do, and you choose the prompts. The [Beginner Exit](README.md#by-the-end-of-this-level-you-can) is the list of what you can do by the end of this level. The check reads the files and the commit this task leaves behind, and you tick the rest of the Exit yourself under [What the check can't see](#what-the-check-cant-see). When both are done, you've shown the Beginner Exit, whether you took the lessons or not.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template, with no uncommitted changes, and Node.js LTS (a Codespace on your copy has it). If `git status --porcelain` lists files, commit them or set them aside with `git stash push --include-untracked`. The capstone runs in the template only.
@@ -16,6 +17,7 @@ This task puts the whole Beginner level together. Unlike the lessons, it has no 
 > [!NOTE]
 > On native Windows, run every command in PowerShell. A command with no **Windows** line works there as written; where a **Windows** line follows a command, use it instead. If `Shift+Tab` does nothing, press `Alt+M` instead ([Interactive mode](https://code.claude.com/docs/en/interactive-mode)).
 
+<a id="the-task"></a>
 ## The task
 
 A teammate filed the bug report in `capstone/beginner-bug.md` in your practice copy: when `linkcheck.json` lists a folder that doesn't exist, the tool says every link resolves and exits with code 0.
@@ -33,6 +35,7 @@ Fix it the way the Beginner lessons taught:
 
 Keep the session on track as you go: check `/context`, and compact or rewind when it helps.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -47,6 +50,7 @@ You are done when all of these are true:
 
 Run `npm run check -- b-capstone` in your practice copy. Each item that fails prints what to fix.
 
+<a id="what-the-check-cant-see"></a>
 ## What the check can't see
 
 The check doesn't look at these parts of the Beginner Exit. Tick them yourself, honestly:

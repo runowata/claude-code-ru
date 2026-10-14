@@ -1,11 +1,13 @@
-# Verify UI changes in the browser with Claude in Chrome
+# Verify UI changes in the browser with Claude in Chrome <a id="verify-ui-changes-in-the-browser-with-claude-in-chrome"></a>
 
 <sub>**Intermediate** · Elective · about 15 minutes · Needs: [Connect a tool with MCP](../07-mcp.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can connect Claude Code to your own browser, and have Claude check a page you changed: its console, what it shows, and a screenshot.
 
+<a id="you-need"></a>
 ## You need
 
 - Google Chrome or Microsoft Edge with the [Claude in Chrome extension](https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn), version 1.0.36 or later ([Prerequisites](https://code.claude.com/docs/en/chrome#prerequisites)).
@@ -14,6 +16,7 @@ By the end of this Elective you can connect Claude Code to your own browser, and
 - One of your own repositories with its `.practice/` folder, and `python3` to serve a page locally.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 [Claude in Chrome](https://code.claude.com/docs/en/chrome) connects Claude Code to the browser you use every day, through its extension. Claude opens its own tabs in a visible window, so you watch it work, and it stops to let you handle a login page or a CAPTCHA.
@@ -23,6 +26,7 @@ Unlike [lesson 7](../07-mcp.md)'s Chrome DevTools MCP server, which you ran with
 > [!WARNING]
 > Claude acts with your logins. Keep it to the sites the task needs, and read each `Claude in Chrome wants to` prompt before you allow a site.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Save a page with a bug in it, then serve the folder to this computer only:
@@ -48,6 +52,7 @@ Unlike [lesson 7](../07-mcp.md)'s Chrome DevTools MCP server, which you ran with
 
    Approve each prompt that starts with `Claude in Chrome wants to`; for the site, you can allow all its actions for the session. Claude opens a tab, tells you the page still says `Loading...` and what the console shows, and gives the screenshot's path. Your wording will differ.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Fix the bug, and have Claude prove the fix in the browser.
@@ -55,6 +60,7 @@ Fix the bug, and have Claude prove the fix in the browser.
 1. Ask Claude to fix the script in `.practice/ui-demo.html` so the page says `Ready`.
 2. Ask it to reload the page in Chrome, read the console again, and save a new screenshot.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -65,6 +71,7 @@ You are done when all of these are true:
 
 If Claude doesn't use the browser, start the session with `--chrome`, or run `/chrome` and select **Enabled by default**. That keeps the browser tools loaded in every session, which uses more context.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Use Claude Code with Chrome](https://code.claude.com/docs/en/chrome): more workflows, from filling forms to recording a GIF, and troubleshooting.

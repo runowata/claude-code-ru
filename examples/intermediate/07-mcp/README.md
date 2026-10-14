@@ -1,4 +1,4 @@
-# MCP server for Intermediate lesson 7
+# MCP server for Intermediate lesson 7 <a id="mcp-server-for-intermediate-lesson-7"></a>
 
 `dot-mcp.json` adds [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) (Vendor: Google, Apache-2.0) to a project, for the Intermediate lesson "Connect a tool with MCP". It lets Claude open pages in Chrome, read console messages and network requests, take screenshots and record performance traces.
 

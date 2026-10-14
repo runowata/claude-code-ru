@@ -1,17 +1,20 @@
-# Connect a tool with MCP
+# Connect a tool with MCP <a id="connect-a-tool-with-mcp"></a>
 
 <sub>**Intermediate** · Lesson 7 of 8 · about 20 minutes · Needs: [Permissions, settings scopes and the sandbox](04-permissions-and-sandbox.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can connect an MCP server for yourself, then share it with everyone in a project at project scope, pinned to one version.
 
+<a id="you-need"></a>
 ## You need
 
 - One of your own repositories, and your copy of the practice template with Node.js LTS: the check runs from the copy. To practice in the template copy instead, use it for both. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
 - Chrome, and npm, which comes with Node.js: the server runs through `npx` ([upstream requirements](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md#requirements)).
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 [MCP](https://code.claude.com/docs/en/mcp) (the Model Context Protocol) lets Claude Code use tools that another program provides: an MCP server. This lesson's server is [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp) (Vendor: Google), which runs on your machine and gives Claude tools to open pages in Chrome, read the console and take screenshots:
@@ -38,6 +41,7 @@ In an interactive session, Claude Code asks you to approve a project's servers b
 > [!WARNING]
 > Data that leaves your machine. By default, Chrome DevTools MCP sends usage statistics to Google, may send the URLs of performance traces to Google's CrUX API, and checks npm for updates ([upstream README](https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/chrome-devtools-mcp-v1.10.1/README.md)). This lesson always runs it with all three turned off. The pages Claude opens still load from the web, and the server shows Claude everything in that browser.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Save a page to look at, in your repository:
@@ -66,6 +70,7 @@ In an interactive session, Claude Code asks you to approve a project's servers b
 
    A Chrome window opens, and Claude reports the title, `Linkcheck demo`, and the console warning. In Manual mode, Claude Code asks for permission the first time Claude uses each tool ([Configure permissions](https://code.claude.com/docs/en/permissions#permission-modes)).
 
+<a id="your-turn"></a>
 ## Your turn
 
 Share the server with your team at project scope.
@@ -90,6 +95,7 @@ Share the server with your team at project scope.
 4. Start `claude`. When it asks about the new MCP server found in this project, choose to use it. `/mcp` now shows it as connected ([Edit .mcp.json directly](https://code.claude.com/docs/en/mcp-quickstart#edit-mcp-json-directly)).
 5. Ask Claude to use the chrome-devtools tools to open `.practice/demo.html` and save a screenshot of it to `.practice/i-7-page.png`.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -102,6 +108,7 @@ Run `npm run check -- i-7 --dir <your repo>` from your practice copy, or `npm ru
 
 If the first item fails, compare each argument with the Worked example's command: `@latest` isn't pinned. If there's no screenshot, run `/mcp` to see whether the server connected. If you missed the approval prompt, approve the server there; if you declined it, run `claude mcp reset-project-choices` and start `claude` again ([Project scope](https://code.claude.com/docs/en/mcp#project-scope)).
 
+<a id="watch-out"></a>
 ## Watch out
 
 - A `claude -p` run loads a project's servers without asking ([Project scope](https://code.claude.com/docs/en/mcp#project-scope)). Read a repository's `.mcp.json` before you script Claude Code in it.
@@ -111,6 +118,7 @@ Third-party: it can run code on your machine or give Claude new tools. Review it
 
 Listings checked against the listing bar on 2026-10-06.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Connect to MCP servers](https://code.claude.com/docs/en/mcp-quickstart): adding remote servers, signing in to them, and other ways to add one.

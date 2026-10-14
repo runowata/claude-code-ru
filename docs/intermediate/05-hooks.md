@@ -1,17 +1,20 @@
-# Enforce a rule with a hook
+# Enforce a rule with a hook <a id="enforce-a-rule-with-a-hook"></a>
 
 <sub>**Intermediate** · Lesson 5 of 8 · about 20 minutes · Needs: [Permissions, settings scopes and the sandbox](04-permissions-and-sandbox.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can add a hook that enforces a rule every time Claude edits a file, and show it firing.
 
+<a id="you-need"></a>
 ## You need
 
 - The repository from [lesson 4](04-permissions-and-sandbox.md), with its `.claude/settings.json`, and your copy of the practice template with Node.js LTS: the check runs from the copy.
 - `jq`, which the hook scripts use, and `python3`, which `format-after-edit.sh` uses.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 A `CLAUDE.md` rule is advice that Claude can miss. A [hook](https://code.claude.com/docs/en/hooks-guide) is your own command that Claude Code runs at a fixed point in a session, every time, whatever Claude decides. Claude Code passes the hook JSON about the event on stdin. A `PreToolUse` hook runs before a tool call; if it exits with code 2, the call is blocked, and what it printed to stderr goes to Claude as the reason ([Hooks reference](https://code.claude.com/docs/en/hooks#exit-code-2-behavior-per-event), [Block edits to protected files](https://code.claude.com/docs/en/hooks-guide#block-edits-to-protected-files)).
@@ -34,6 +37,7 @@ flowchart LR
 
 A matcher picks the tools a hook watches: `Edit|Write` runs it for those two tools only ([Filter hooks with matchers](https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers)). `PreToolUse` hooks fire before the permission-mode check, so a block holds in every mode ([Hooks and permission modes](https://code.claude.com/docs/en/hooks-guide#hooks-and-permission-modes)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. In your repository, download two of this guide's [example hooks](../../examples/intermediate/05-hooks/README.md) and make them executable. Read them before you use them:
@@ -77,6 +81,7 @@ A matcher picks the tools a hook watches: `Edit|Write` runs it for those two too
 
    The Edit is blocked: Claude Code passes your script's `Blocked:` message to Claude as feedback ([Exit code output](https://code.claude.com/docs/en/hooks#exit-code-output)). Ask for the Edit tool by name here: Claude can also edit a file through a shell command, which an `Edit|Write` hook doesn't see.
 
+<a id="your-turn"></a>
 ## Your turn
 
 The guide's script matches substrings. `*".env"*` also blocks `.env.example`, which teams commit on purpose, and a file such as `src/config.envelope.ts`; and nothing blocks a `secrets/` folder. Replace `.claude/hooks/protect-files.sh` with this skeleton, which keeps the guide's `package-lock.json` and `.git/` blocks, and finish it:
@@ -106,6 +111,7 @@ exit 0
 3. In a session, ask Claude to use its Write tool to create `secrets/test.key`. Your hook blocks it.
 4. Commit the script and `.claude/settings.json`. Keep the script executable: `git ls-files -s .claude/hooks/protect-files.sh` starts with `100755`.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -125,12 +131,14 @@ Run `npm run check -- i-5 --dir <your repo>` from your practice copy, or `npm ru
 
 If a row is wrong, test that path alone and print the name the script sees: `basename` of `.env.local` is `.env.local`, so a `case` pattern `.env.*` matches it. The check runs the committed script, so commit each fix before you run it. If the second item fails on the file mode, run `chmod +x .claude/hooks/protect-files.sh`, then `git add` it and commit again.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - Hooks run with your user's rights: in an interactive session once you trust the folder, and in a `claude -p` run without asking ([Workspace trust](https://code.claude.com/docs/en/hooks#workspace-trust)). Read a repository's hooks before you trust it or script Claude Code in it.
 - An `Edit|Write` hook doesn't see shell commands: `echo X >> .env` goes through Bash. Lesson 4's `Read` rules stop commands such as `cat .env` from reading those files, but a write such as that `>>` is checked against `Edit` rules, which lesson 4 doesn't add ([Redirections](https://code.claude.com/docs/en/permissions#redirections)). For a hook that sees every change, the hooks guide adds a `Bash|PowerShell` matcher or a `Stop` hook that scans the working tree ([Filter hooks with matchers](https://code.claude.com/docs/en/hooks-guide#filter-hooks-with-matchers)).
 - A Notification hook, such as the example [`desktop-notify.sh`](../../examples/intermediate/05-hooks/dot-claude/hooks/desktop-notify.sh), is about you, not the project: the hooks guide registers its notification examples in `~/.claude/settings.json`. Do the same, with the path to wherever you keep the script.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Automate actions with hooks](https://code.claude.com/docs/en/hooks-guide): more ready-made hooks, including notifications and re-injecting context after compaction.

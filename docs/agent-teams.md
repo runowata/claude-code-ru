@@ -1,5 +1,5 @@
 <a id="agent-teams--the-complete-guide"></a>
-# Agent teams
+# Agent teams <a id="agent-teams"></a>
 
 This page moved. Running an agent team is taught in the Advanced Elective [Agent teams](advanced/electives/agent-teams.md), and choosing between subagents, a dynamic workflow and a team in the Advanced lesson [Choose an orchestration pattern](advanced/02-orchestration-patterns.md).
 

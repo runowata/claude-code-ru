@@ -1,16 +1,19 @@
-# Install and manage plugins
+# Install and manage plugins <a id="install-and-manage-plugins"></a>
 
 <sub>**Intermediate** · Lesson 8 of 8 · about 20 minutes · Needs: [Turn a repeated workflow into a skill](01-first-skill.md), [Enforce a rule with a hook](05-hooks.md), [Delegate to a custom subagent](06-subagents.md), [Connect a tool with MCP](07-mcp.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can install a plugin from one of Anthropic's marketplaces at the scope that fits, see what it adds, and turn it off, update it or remove it.
 
+<a id="you-need"></a>
 ## You need
 
 - The repository from [lesson 4](04-permissions-and-sandbox.md), with its `.claude/settings.json`, and your copy of the practice template with Node.js LTS: the check runs from the copy.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 A [plugin](https://code.claude.com/docs/en/plugins/overview) packages the pieces of the last lessons, skills, subagents, hooks and MCP servers, so they install as one unit from a marketplace. Anthropic publishes three general-purpose marketplaces ([Anthropic's marketplaces](https://code.claude.com/docs/en/plugins/anthropic-marketplaces)):
@@ -29,6 +32,7 @@ You install a plugin as `<plugin>@<marketplace>`, at a scope that decides which 
 
 Committing a project-scope entry turns the plugin on for your collaborators, but it may not be installed on their machines yet, so each of them runs `claude plugin install <plugin>@<marketplace> --scope project` once. An enabled plugin is part of every session: its skill descriptions sit in Claude's context, and its hooks and MCP servers run, as you.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. In a session in your repository, open the official marketplace's `commit-commands` plugin (Anthropic):
@@ -50,6 +54,7 @@ Committing a project-scope entry turns the plugin on for your collaborators, but
 
    `claude plugin list` shows the plugin's version, `Scope: local` and its status. `disable` turns it off and keeps it installed; `uninstall` removes it.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Turn on the `claude-code-setup` plugin (Anthropic) for everyone who works in your repository, then install it the way a teammate would.
@@ -73,6 +78,7 @@ Turn on the `claude-code-setup` plugin (Anthropic) for everyone who works in you
 4. Start `claude` and ask `Recommend Claude Code automations for this project.` Claude uses the plugin's read-only skill ([its README](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/claude-code-setup/README.md)) and suggests hooks, skills, subagents and MCP servers. Your wording will differ.
 5. Save the plugin list for the check, in the repository's root: `claude plugin list --json > .practice/i-8-plugins.json`.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -85,6 +91,7 @@ Run `npm run check -- i-8 --dir <your repo>` from your practice copy, or `npm ru
 
 If the first item fails, check the name after `@`: it's the marketplace's name, `claude-plugins-official`, not its repository. If the second fails, run the install command in the repository itself, then save the list again from there.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - A plugin's hooks and MCP servers run with your user's rights, and Anthropic doesn't review third-party marketplaces. Read the **Will install** list first ([Plugin security and trust](https://code.claude.com/docs/en/plugins/security)).
@@ -95,6 +102,7 @@ Third-party: it can run code on your machine or give Claude new tools. Review it
 
 Listings checked against the listing bar on 2026-10-06.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Anthropic's marketplaces](https://code.claude.com/docs/en/plugins/anthropic-marketplaces): the three marketplaces, and where to browse the official one. This is where to look for more plugins.

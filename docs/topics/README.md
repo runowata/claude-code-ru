@@ -1,4 +1,4 @@
-# Topics
+# Topics <a id="topics"></a>
 
 <sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 

@@ -1,16 +1,19 @@
-# Project memory with CLAUDE.md
+# Project memory with CLAUDE.md <a id="project-memory-with-claudemd"></a>
 
 <sub>**Beginner** · Lesson 5 of 5 · about 20 minutes · Needs: [Your first change, from request to commit](03-first-change.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can create a project CLAUDE.md and show that a new session follows it.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template with no uncommitted changes, and Node.js LTS (a Codespace on your copy has it). To practice in one of your own repositories instead, keep the template copy as well: the check runs from it. Set up the repository's `.practice/` folder as [lesson 1](01-install-and-look-around.md#you-need) describes, if you haven't yet.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 Each session starts with a fresh context window, so you can end up repeating your project's habits. A `CLAUDE.md` file at the project root fixes that: Claude Code reads it at the start of every session ([How Claude remembers your project](https://code.claude.com/docs/en/memory)).
@@ -22,6 +25,7 @@ Each session starts with a fresh context window, so you can end up repeating you
 
 A session reads CLAUDE.md when it starts, so after you change the file, start a new session to be sure it uses the change.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Start `claude` in your practice copy and run:
@@ -75,6 +79,7 @@ A session reads CLAUDE.md when it starts, so after you change the file, start a 
 
    The first line should read `// Part of linkcheck.`, though you never asked for it in this session. `git status` should read `nothing to commit, working tree clean`. If it lists `src/stats.js`, Claude hasn't committed yet: ask it to commit, then save the commit again.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Repeat the example in your practice copy, or your own repository, with a new rule and a new file. Your practice copy already has a `CLAUDE.md`, so skip `/init` there:
@@ -98,6 +103,7 @@ Repeat the example in your practice copy, or your own repository, with a new rul
 
 In your own repository, start with `/init`; if the repository already has a `CLAUDE.md`, `/init` suggests improvements rather than overwriting it. Write the rule in your language's comment style, such as `# Part of my-project.`, save that exact line to `.practice/b-5-rule.txt` in step 2, and ask for a small new file. If the repository has an `AGENTS.md`, put `@AGENTS.md` on the first line of `CLAUDE.md`: by default, once a `CLAUDE.md` exists, Claude reads it instead of `AGENTS.md` ([AGENTS.md](https://code.claude.com/docs/en/memory#agents-md)).
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -110,6 +116,7 @@ Run `npm run check -- b-5` in your practice copy. In your own repository, run `n
 
 If CLAUDE.md isn't committed, run `git add CLAUDE.md` and commit it. If a new file doesn't start with the rule, start a new session and run `/context all`. When `CLAUDE.md` is missing under **Memory files**, the session can't see it: start `claude` in the folder that holds `CLAUDE.md`. When it is listed, Claude read the rule but didn't follow it. Either way, ask the session for a different new file, such as `src/summary.js` with a test, and to commit it. Then save that commit with `git rev-parse HEAD > .practice/b-5-commit.txt` and run the check again. Fixing the old file in place won't pass, because the check reads only the files that commit adds.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Write an effective CLAUDE.md](https://code.claude.com/docs/en/best-practices#write-an-effective-claude-md): what to put in it and what to leave out.

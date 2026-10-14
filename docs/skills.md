@@ -1,5 +1,5 @@
 <a id="claude-skills--the-complete-guide"></a>
-# Skills
+# Skills <a id="skills"></a>
 
 This page moved. Skills are taught in the Intermediate lesson [Turn a repeated workflow into a skill](intermediate/01-first-skill.md) and the [Skill patterns](intermediate/electives/skill-patterns.md) Elective, and the [Skills topic index](topics/skills.md) lists every page about them.
 

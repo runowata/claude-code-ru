@@ -1,22 +1,26 @@
-# Customize the status line
+# Customize the status line <a id="customize-the-status-line"></a>
 
 <sub>**Intermediate** · Elective · about 15 minutes · Needs: [Pick the model and effort](../03-model-and-effort.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can give Claude Code a status line of your own, from a script that shows the model, the folder and how full the context window is.
 
+<a id="you-need"></a>
 ## You need
 
 - `jq`, and macOS or Linux: the script is bash. On Windows, [Windows configuration](https://code.claude.com/docs/en/statusline#windows-configuration) has PowerShell and Git Bash versions.
 - Usage: none. The status line runs on your machine and uses no API tokens.
 
+<a id="the-idea"></a>
 ## The idea
 
 The [status line](https://code.claude.com/docs/en/statusline) is a bar at the bottom of Claude Code that shows whatever your script prints. Claude Code runs the script with JSON about the session on stdin, such as the model's name and how full the context window is. It runs when the session starts, and again on events such as each new message from Claude.
 
 There are two ways to set one up. `/statusline` followed by a description asks Claude Code to write the script and the setting for you. Or you write the script yourself and add a `statusLine` setting that runs it, which is what this Elective does, so you know what each part does.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Save this script as `~/.claude/statusline.sh`, then run `chmod +x ~/.claude/statusline.sh`:
@@ -48,6 +52,7 @@ There are two ways to set one up. `/statusline` followed by a description asks C
 
 4. Start `claude` and send a prompt. The bar shows your line, and the percentage grows as the conversation does. Claude Code runs it only in a folder whose trust dialog you accepted.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Add the current git branch to the line. In the script, before the `echo`, add:
@@ -58,6 +63,7 @@ BRANCH=$(git -C "$DIR" branch --show-current 2>/dev/null)
 
 Then add ` | $BRANCH` to the `echo`, test the script again with the JSON from step 2, using a `current_dir` that is a git repository, and watch the bar in a session.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -68,6 +74,7 @@ You are done when all of these are true:
 
 If the bar stays empty, run the script with the JSON from step 2: a script that exits with an error or prints nothing leaves the bar blank ([Troubleshooting](https://code.claude.com/docs/en/statusline#troubleshooting)). Then check that it is executable, with `chmod +x`, and that you accepted the folder's trust dialog.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Available data](https://code.claude.com/docs/en/statusline#available-data): every field your script receives, such as cost, rate limits and the session's name.

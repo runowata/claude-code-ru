@@ -1,7 +1,8 @@
-# Changelog
+# Changelog <a id="changelog"></a>
 
 Editions of this guide, newest first. An edition is tagged `vYYYY.MM`, and a correction between editions `vYYYY.MM.N`. Each edition stays readable at its tag.
 
+<a id="unreleased"></a>
 ## Unreleased
 
 Baseline: Claude Code v2.1.285 (stable), frozen on 2026-10-05.
@@ -10,6 +11,7 @@ Every change in the next edition is verified against this version, the `stable` 
 
 Editions 2 and 3: the Intermediate and Advanced paths, with checked exercises. Every level is now rebuilt, and no page from the previous edition remains.
 
+<a id="added"></a>
 ### Added
 
 - The [Intermediate level](docs/intermediate/README.md): eight lessons, from a first skill to plugins, by way of project memory, model and effort, permissions and the sandbox, hooks, subagents and MCP, and a capstone that sets a repository up for a new teammate. Every lesson and the capstone has a check in the [practice template](https://github.com/wesammustafa/claude-code-practice). You can run the lesson checks against your own repository with `--dir`; the capstone runs in the template copy.
@@ -20,6 +22,7 @@ Editions 2 and 3: the Intermediate and Advanced paths, with checked exercises. E
 - [Beyond this guide](docs/advanced/beyond-this-guide.md): where to go next for building your own agents and MCP servers, and for running and rolling out Claude Code in an organization.
 - [Examples](examples/README.md) for the Advanced level: the `team-tools` marketplace with its `team-kit` plugin (the `onboard` skill and the read-only `config-reviewer` subagent) and the settings that share it, and the read-only `security-reviewer` and `test-reviewer` subagents for the agent teams Elective. Each one is inert until you copy it into a project, and has a smoke test.
 
+<a id="changed"></a>
 ### Changed
 
 - The animated Claude mascot is back beside README's title, and the social card shows it in place of the trail blazes. It comes from [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice) under the MIT License.
@@ -28,6 +31,7 @@ Editions 2 and 3: the Intermediate and Advanced paths, with checked exercises. E
 - docs/agent-teams.md, docs/workflows.md and docs/reference/faq.md are now stubs that point to the lessons, Electives and reference pages that replace them.
 - The `inertness` check also fails on an example marketplace manifest that is not renamed to `dot-claude-plugin/`, and on a `.claude-plugin/` folder at the repository root. The `static-validation` check also covers the skills and agents of the plugins in an example marketplace.
 
+<a id="removed"></a>
 ### Removed
 
 <a id="removed-legacy-intermediate"></a>
@@ -36,12 +40,14 @@ Editions 2 and 3: the Intermediate and Advanced paths, with checked exercises. E
 <a id="removed-legacy-advanced"></a>
 - The previous edition's last page under `docs/legacy/`, on subagents and parallel work, and README's index row of previous-edition pages: the Advanced lessons and Electives replace them, and `docs/legacy/` is gone. Links to the previous edition's README sections land on a line that points to the new page.
 
+<a id="v202610---2026-10-05"></a>
 ## v2026.10 - 2026-10-05
 
 Verified against Claude Code v2.1.285 (stable).
 
 Edition 1: the Beginner path, with checked exercises, and the structure the next two levels build on. Intermediate and Advanced are being rebuilt; copies of the previous edition's README sections on skills, hooks, subagents and parallel work, MCP and fast mode stay readable under `docs/legacy/`, labelled as not yet re-verified.
 
+<a id="added-1"></a>
 ### Added
 
 - The [Beginner level](docs/beginner/README.md): five lessons, from installing Claude Code to giving a project its memory, a capstone and three Electives. Every lesson and the capstone has a check you run in the [practice template](https://github.com/wesammustafa/claude-code-practice), whose `solutions` branch passes every check.
@@ -53,12 +59,14 @@ Edition 1: the Beginner path, with checked exercises, and the structure the next
 - Agent rules in [AGENTS.md](AGENTS.md), which a new [CLAUDE.md](CLAUDE.md) imports.
 - A rewritten [CONTRIBUTING.md](CONTRIBUTING.md), a pull request template with a claim table and a dry-run section, and a CODEOWNERS file.
 
+<a id="changed-1"></a>
 ### Changed
 
 - The listing freeze has ended: resource suggestions are reviewed against the [listing bar](CONTRIBUTING.md#the-listing-bar) again.
 - The guide has its own mark, three trail blazes climbing a post, in place of the mascot image, so it no longer uses a likeness of an Anthropic character. A new social card goes with it, carrying nothing that can go stale.
 - The reference pages are rewritten for lookup: [Models and effort](docs/reference/models.md), [Commands by level](docs/reference/commands.md) and [Further learning](docs/reference/further-reading.md). They carry no prices, plan limits or model specifications, and link the official pages for those.
 
+<a id="removed-1"></a>
 ### Removed
 
 <a id="removed-changelog-mirror"></a>

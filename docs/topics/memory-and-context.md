@@ -1,9 +1,10 @@
-# Memory and context
+# Memory and context <a id="memory-and-context"></a>
 
 <sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 What Claude Code knows at the start of a session and what fills its context as you work.
 
+<a id="lessons"></a>
 ## Lessons
 
 - Beginner: [Keep a session on track](../beginner/04-keep-a-session-on-track.md)
@@ -11,6 +12,7 @@ What Claude Code knows at the start of a session and what fills its context as y
 - Beginner Electives: [IDE extensions](../beginner/electives/ide-extensions.md), [Screenshots and images](../beginner/electives/screenshots-and-images.md), [The built-in teachers](../beginner/electives/built-in-teachers.md)
 - Intermediate: [Organize project memory and see what loaded](../intermediate/02-organize-memory.md)
 
+<a id="official-docs"></a>
 ## Official docs
 
 - [How Claude remembers your project](https://code.claude.com/docs/en/memory)

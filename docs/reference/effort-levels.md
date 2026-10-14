@@ -1,5 +1,5 @@
 <a id="reasoning-effort-levels"></a>
-# Effort levels
+# Effort levels <a id="effort-levels"></a>
 
 This page moved. The effort levels and how to set them are on [Models and effort](models.md). Choosing a model and an effort level for a task is taught in the Intermediate lesson [Pick the model and effort](../intermediate/03-model-and-effort.md).
 

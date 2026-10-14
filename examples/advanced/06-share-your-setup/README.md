@@ -1,7 +1,8 @@
-# Team marketplace for Advanced lesson 6
+# Team marketplace for Advanced lesson 6 <a id="team-marketplace-for-advanced-lesson-6"></a>
 
 `team-tools`, a demo team marketplace for the Advanced lesson "Share your setup with a team". It lists one plugin, `team-kit`, made of a skill, `onboard`, that tells Claude to read files only, and a read-only subagent, `config-reviewer`. Committed to your repository with the settings below, it loads for each teammate who clones the repository and trusts the folder, with no install command ([Manage Claude Code plugins for your organization](https://code.claude.com/docs/en/plugins/org#require-plugins-per-repository)).
 
+<a id="copy-it"></a>
 ## Copy it
 
 From your repository's root, copy this folder as `team-marketplace/`, then give the marketplace file its real folder name. Claude Code reads a marketplace from `.claude-plugin/marketplace.json` ([Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace)); this guide ships the file in `dot-claude-plugin/`, so neither this folder nor the guide's repository can be added as a marketplace by its folder path or as `owner/repo`.
@@ -13,6 +14,7 @@ mv team-marketplace/dot-claude-plugin team-marketplace/.claude-plugin
 
 Register only your copy as a marketplace: never this folder, the path to its `dot-claude-plugin/marketplace.json`, the guide's repository or a raw file URL from it.
 
+<a id="validate-it"></a>
 ## Validate it
 
 ```bash
@@ -22,6 +24,7 @@ claude plugin validate ./team-marketplace/plugins/team-kit --strict
 
 The first run checks the marketplace file and its entries. The second checks the plugin's manifest and opens its skill and agent files, which a marketplace run doesn't; `--strict` fails on warnings too ([Plugin commands reference](https://code.claude.com/docs/en/plugins/cli-reference#validate-a-directory)). Each run ends with `Validation passed` and exits 0.
 
+<a id="share-it-with-the-team"></a>
 ## Share it with the team
 
 Merge `settings.snippet.json` into your repository's `.claude/settings.json`, beside the keys already there. If the file already has a `permissions` deny list, add the rule to it instead of replacing it. Write the marketplace path relative to the repository root, as here:
@@ -55,6 +58,7 @@ To try the plugin yourself before you commit anything, load it for one session w
 > [!WARNING]
 > A team plugin runs with each teammate's own rights. A plugin can execute arbitrary code on your machine with your user privileges, and its hooks and MCP servers run outside the sandbox ([Plugin security and trust](https://code.claude.com/docs/en/plugins/security)). This one carries neither, but anyone who can change `team-marketplace/` can add them, so review changes to that folder as you review code.
 
+<a id="remove-it"></a>
 ## Remove it
 
 1. At the repository root, run `claude plugin marketplace remove team-tools --scope project`. It removes the marketplace from `.claude/settings.json`, and when no other settings scope declares it, Claude Code also deletes its cache and uninstalls any plugin you installed from it ([Plugin commands reference](https://code.claude.com/docs/en/plugins/cli-reference#plugin-marketplace-remove)).

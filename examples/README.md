@@ -1,4 +1,4 @@
-# Examples
+# Examples <a id="examples"></a>
 
 Copy-ready files for the lessons: skills, hooks, subagents and settings snippets. Each sits in the folder of the lesson that uses it, under `examples/<level>/<NN-lesson>/`.
 
@@ -11,6 +11,7 @@ Nothing here runs on its own. Files that Claude Code would load from a project c
 
 Every executable example follows the guide's [safety contract](../CONTRIBUTING.md#adding-a-skill). Its header says what it does, when it runs, how to remove it, and whether it was tested in a Claude Code session at this edition's version. Review each file before you copy it into a project.
 
+<a id="index"></a>
 ## Index
 
 Each example is listed here, with its lesson, platforms and test line.

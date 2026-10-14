@@ -1,5 +1,5 @@
 <a id="further-reading"></a>
-# Further learning
+# Further learning <a id="further-learning"></a>
 
 <sub>Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
@@ -8,6 +8,7 @@ Courses, docs and posts that go deeper than the guide, grouped by the level wher
 Listings checked against the listing bar on 2026-10-05.
 
 <a id="official-claude--anthropic-resources"></a><a id="official"></a><a id="claude-code-documentation"></a><a id="claude-models--api"></a><a id="model-announcements-2026"></a>
+<a id="start-anywhere"></a>
 ## Start anywhere
 
 - [Claude Code overview](https://code.claude.com/docs/en/overview): what it is and where it runs.
@@ -17,12 +18,14 @@ Listings checked against the listing bar on 2026-10-05.
 - [Claude Code user FAQ](https://support.claude.com/en/articles/14554922-claude-code-user-faq): answers from Anthropic's Help Center.
 - [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) and [plans and pricing](https://claude.com/pricing). The guide's own [Models and effort](models.md) page covers the aliases and effort levels.
 
+<a id="beginner"></a>
 ## Beginner
 
 - [Quickstart](https://code.claude.com/docs/en/quickstart): from install to a first change.
 - [Commands](https://code.claude.com/docs/en/commands): every built-in command. The guide's [Commands by level](commands.md) lists the ones the lessons use.
 
 <a id="hooks--automation"></a><a id="workflows--tutorials"></a><a id="model-context-protocol-mcp"></a><a id="mcp-server-examples"></a>
+<a id="intermediate"></a>
 ## Intermediate
 
 - [Hooks reference](https://code.claude.com/docs/en/hooks): every hook event and its input and output.
@@ -35,6 +38,7 @@ Listings checked against the listing bar on 2026-10-05.
 - For MCP, the [MCP topic page](../topics/mcp.md) lists the official docs.
 
 <a id="agent-development"></a>
+<a id="advanced"></a>
 ## Advanced
 
 - [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents): Anthropic's patterns for agent systems.

@@ -1,11 +1,13 @@
-# Parallel sessions with worktrees
+# Parallel sessions with worktrees <a id="parallel-sessions-with-worktrees"></a>
 
 <sub>**Advanced** · Lesson 1 of 7 · about 20 minutes · Needs: [Advanced index](README.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can run two Claude Code sessions at once, each in its own git worktree, and merge their work into one branch.
 
+<a id="you-need"></a>
 ## You need
 
 - One of your own repositories with a test command and no uncommitted changes, checked out on its default branch and up to date with a remote you can push to (Watch out says why), and your copy of the practice template with Node.js LTS and the Advanced checks ([Practice](README.md#practice)): the check runs from the copy. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
@@ -13,6 +15,7 @@ By the end of this lesson you can run two Claude Code sessions at once, each in 
 - macOS, Linux or WSL 2, and three terminals open at the repository's root: two for the sessions, one for git.
 - Usage: moderate. Two sessions work at the same time.
 
+<a id="the-idea"></a>
 ## The idea
 
 A [git worktree](https://git-scm.com/docs/git-worktree) is a second working folder, on its own branch, that shares the repository's history. `claude --worktree <name>` (or `-w <name>`) creates one under `.claude/worktrees/<name>/` on a new branch, `worktree-<name>`, and starts the session in it ([Start Claude in a worktree](https://code.claude.com/docs/en/worktrees#start-claude-in-a-worktree)). Each session edits its own copy of the files. Claude Code also stops a worktree session's file-editing tools from changing your main checkout, and its commands from running there or pointing git at it ([How Claude Code enforces isolation](https://code.claude.com/docs/en/worktrees#how-claude-code-enforces-isolation)).
@@ -21,6 +24,7 @@ Commits and branches are shared. Uncommitted edits, installed dependencies and g
 
 The work comes back through git: each session commits on its branch, you merge the branches from your main checkout, then remove the worktrees.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. In your main checkout, ignore the folder the worktrees live in, then commit and push the rule. Without it, worktree contents show up as untracked files in your main checkout. The push puts it on the remote's default branch, where new worktrees start (Watch out says more):
@@ -77,6 +81,7 @@ The work comes back through git: each session commits on its branch, you merge t
 > [!CAUTION]
 > Removing a worktree deletes its folder and its branch, along with any work in them you haven't merged. Merge first, or choose keep.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Pick two small changes in your repository that touch different files, such as a fix in one module and a missing test for another. Make each one in its own worktree session, with both sessions running at the same time, and bring both into your branch.
@@ -98,6 +103,7 @@ Acceptance criteria:
 - Both worktrees are removed, and any branch you kept is deleted only after it's merged.
 - Optional, not checked: if your project needs a gitignored file to run, such as a local config, list it in a `.worktreeinclude` file at your repository root.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -111,12 +117,14 @@ Run `npm run check -- a-1 --dir <your repo>` from your practice copy.
 
 If the first item fails, run `git -c core.excludesFile=/dev/null check-ignore -v .claude/worktrees/x` in your repository (the `-c` part swaps your global excludes file, [`core.excludesFile`](https://git-scm.com/docs/gitignore), for an empty one, as the check does): it should name your `.gitignore` and the line that matches ([git-check-ignore](https://git-scm.com/docs/git-check-ignore#Documentation/git-check-ignore.txt---verbose)). A rule only in `.git/info/exclude` or your global excludes file isn't committed, and a broad rule such as `.claude/` would also hide the settings and skills you commit for your team. If the second item fails, read the hint the check prints: save the file after both sessions commit and before you remove either worktree, and merge each branch with `git merge`. If the third item fails, run `git worktree remove <path>` from your main checkout on each path the check names, with `git worktree unlock <path>` first if git says it's locked. That leaves the worktree's branch: delete it once it's merged, with `git merge-base --is-ancestor worktree-<name> HEAD && git branch -D worktree-<name>`. The first command succeeds only when the branch is part of `HEAD` ([git-merge-base](https://git-scm.com/docs/git-merge-base#Documentation/git-merge-base.txt---is-ancestor)), and `-D` deletes it without git's own merged test, which checks the branch's upstream, when it has one, rather than `HEAD` ([git-branch](https://git-scm.com/docs/git-branch#Documentation/git-branch.txt--D)).
 
+<a id="watch-out"></a>
 ## Watch out
 
 - In most repositories on macOS, Linux and WSL 2, choosing "Yes, and don't ask again" for a Bash command in a worktree session saves the rule to your main checkout's `.claude/settings.local.json`. It then applies in the main checkout and in every worktree of the repository, and it stays after the worktree is removed ([What worktrees share with the main checkout](https://code.claude.com/docs/en/worktrees#what-worktrees-share-with-the-main-checkout)). Approve only commands you'd allow everywhere.
 - Running several sessions at once multiplies token usage ([Run agents in parallel](https://code.claude.com/docs/en/agents)). Give each session one small task, and exit it once its branch is merged.
 - A new worktree branches from the remote's default branch, not from your local `HEAD` ([Choose the base branch](https://code.claude.com/docs/en/worktrees#choose-the-base-branch)). Commits that aren't on that branch yet, such as unpushed commits or your feature branch's work, aren't in it, and merging its branch into a branch that's behind the remote's default branch brings in the commits that branch lacks. With no remote, a new worktree starts from your local `HEAD` instead.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Isolate subagents with worktrees](https://code.claude.com/docs/en/worktrees#isolate-subagents-with-worktrees): `isolation: worktree` in a subagent's frontmatter gives each run a checkout of its own.

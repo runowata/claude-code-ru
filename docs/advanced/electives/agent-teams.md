@@ -1,14 +1,16 @@
-# Agent teams
+# Agent teams <a id="agent-teams"></a>
 
 <sub>**Advanced** · Elective · about 20 minutes, plus run time · Needs: [Choose an orchestration pattern](../02-orchestration-patterns.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
 > [!NOTE]
 > "Agent teams are experimental and disabled by default." ([Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams))
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can staff an agent team from your own subagent definitions, show that a team formed, and shut its teammates down by name.
 
+<a id="you-need"></a>
 ## You need
 
 - [Choose an orchestration pattern](../02-orchestration-patterns.md), and the subagent definitions you wrote in [Delegate to a custom subagent](../../intermediate/06-subagents.md).
@@ -17,6 +19,7 @@ By the end of this Elective you can staff an agent team from your own subagent d
 - An interactive session: in a `-p` run, Claude doesn't spawn teammates ([Enable agent teams](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)). The default in-process display, where teammates run inside your terminal, works in any terminal ([Choose a display mode](https://code.claude.com/docs/en/agent-teams#choose-a-display-mode)).
 - Usage: heavy. Each teammate is a separate Claude instance with its own context window, and token usage scales with the number of active teammates ([Token usage](https://code.claude.com/docs/en/agent-teams#token-usage)). Cheap variant: change one small file in the Worked example, run two teammates in Your turn, and shut the teammates down as soon as they report.
 
+<a id="the-idea"></a>
 ## The idea
 
 An agent team is several Claude Code sessions working together. Your session is the lead: it spawns teammates, each in its own context window. Teammates message each other directly, and you can message any of them, while subagents mainly return a result to the caller ([Compare with subagents](https://code.claude.com/docs/en/agent-teams#compare-with-subagents)).
@@ -25,6 +28,7 @@ A teammate loads your CLAUDE.md, MCP servers and skills plus the lead's spawn pr
 
 Teams "use significantly more tokens than a single session" ([Token usage](https://code.claude.com/docs/en/agent-teams#token-usage)), and teammates share your working tree ([Choose an approach](https://code.claude.com/docs/en/agents#choose-an-approach)). Use them where independent views pay off: a review through distinct lenses, or rival hypotheses argued out.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. In your repository, download the two read-only reviewers from this guide's [agent teams example](../../../examples/advanced/electives/agent-teams/README.md). Read them before you use them:
@@ -91,6 +95,7 @@ Teams "use significantly more tokens than a single session" ([Token usage](https
 
    It lists `security` and `tests`, so a team formed.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Debug with competing hypotheses, as the docs' [Investigate with competing hypotheses](https://code.claude.com/docs/en/agent-teams#investigate-with-competing-hypotheses) example does. Pick a real bug or puzzling behavior in your repository whose cause you don't know and that reading the code could explain. Write a read-only investigator definition, for example by copying `test-reviewer.md` to `.claude/agents/hypothesis-tester.md` and rewriting it. Start a new session the same way, so the lead starts clean, and have it spawn three teammates from your definition, each owning one hypothesis and messaging the others to challenge their theories. Cheap variant: two teammates.
@@ -103,6 +108,7 @@ Acceptance criteria:
 - No tracked file changes beyond your change from the Worked example.
 - You ask every teammate, by name, to shut down.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -122,12 +128,14 @@ You are done when all of these are true:
 
 If the teammates log is missing, no team formed: start the lead with the step 4 command and ask explicitly for an agent team. If `git diff` differs from your saved change, the lead or a teammate edited a tracked file: read the difference, undo that edit, and check each definition's `tools:` line. When you're done, keep the change, or undo a throwaway one with `git restore <file>`.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - Teammates start with your permission mode, except `dontAsk`, and if you run with `--dangerously-skip-permissions`, every teammate does too. Their permission prompts appear in your session for you to answer ([Permissions](https://code.claude.com/docs/en/agent-teams#permissions)). While teams are on, a subagent that Claude names launches as a teammate, so a team can form when you didn't ask for one: this Elective turns teams on only for sessions started with `--settings`, not in your user or project settings ([Enable agent teams](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)).
 - Each active teammate keeps using tokens until it exits or the session ends. Keep teams small, put Sonnet in the definitions, keep spawn prompts focused, and shut teammates down when their work is done ([Agent team token costs](https://code.claude.com/docs/en/costs#agent-team-token-costs)).
 - Two teammates editing the same file overwrite each other's work, so give each its own files ([Avoid file conflicts](https://code.claude.com/docs/en/agent-teams#avoid-file-conflicts)). And `/resume` and `/rewind` don't bring in-process teammates back: after a resume, ask the lead to spawn new ones ([Limitations](https://code.claude.com/docs/en/agent-teams#limitations)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Enforce quality gates with hooks](https://code.claude.com/docs/en/agent-teams#enforce-quality-gates-with-hooks): `TeammateIdle`, `TaskCreated` and `TaskCompleted` hooks that exit with code 2 keep a teammate working, or stop a task from being created or completed, until your rule passes.

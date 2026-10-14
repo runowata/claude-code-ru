@@ -1,15 +1,17 @@
-# Plugins
+# Plugins <a id="plugins"></a>
 
 <sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 Bundles of skills, agents, hooks and MCP servers that you install from a marketplace.
 
+<a id="lessons"></a>
 ## Lessons
 
 - Intermediate: [Install and manage plugins](../intermediate/08-plugins.md)
 - Advanced: [Share your setup with a team](../advanced/06-share-your-setup.md)
 - Advanced Elective: [Testing and publishing a plugin](../advanced/electives/publish-a-plugin.md)
 
+<a id="official-docs"></a>
 ## Official docs
 
 - [Plugins overview](https://code.claude.com/docs/en/plugins/overview)

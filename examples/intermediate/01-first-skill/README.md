@@ -1,4 +1,4 @@
-# Skills for Intermediate lesson 1
+# Skills for Intermediate lesson 1 <a id="skills-for-intermediate-lesson-1"></a>
 
 Two project skills for the Intermediate lesson "Turn a repeated workflow into a skill". Copy a skill's folder from `dot-claude/skills/` into `.claude/skills/` in your project, where Claude Code loads project skills ([Extend Claude with skills](https://code.claude.com/docs/en/skills#where-skills-live)):
 

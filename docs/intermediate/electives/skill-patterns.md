@@ -1,16 +1,19 @@
-# Skill patterns: live data, supporting files and a context of its own
+# Skill patterns: live data, supporting files and a context of its own <a id="skill-patterns-live-data-supporting-files-and-a-context-of-its-own"></a>
 
 <sub>**Intermediate** · Elective · about 20 minutes · Needs: [Turn a repeated workflow into a skill](../01-first-skill.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can write a skill that pulls live data into its prompt, keeps long reference material in a separate file, and runs in its own subagent.
 
+<a id="you-need"></a>
 ## You need
 
 - A repository with some uncommitted changes to review, and the skills from [lesson 1](../01-first-skill.md).
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 Lesson 1's skills were instructions and `$ARGUMENTS`. A few more patterns make a skill do more with less context ([Extend Claude with skills](https://code.claude.com/docs/en/skills)):
@@ -25,6 +28,7 @@ Lesson 1's skills were instructions and `$ARGUMENTS`. A few more patterns make a
 
 Keep `SKILL.md` short: once a skill runs, its whole text stays in the conversation. The docs suggest under 500 lines, with detail moved to supporting files.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Save this as `.claude/skills/changes-review/SKILL.md`:
@@ -57,6 +61,7 @@ Keep `SKILL.md` short: once a skill runs, its whole text stays in the conversati
 3. Make a small change in a source file, start `claude` and run `/changes-review`. Claude Code runs `git diff HEAD` and puts its output in the skill, then starts a subagent with it. The subagent reads the checklist, and its report arrives in your conversation when it finishes. The `allowed-tools` rule pre-approves `git diff` commands. `git diff HEAD` is read-only and would run without it, but outside auto mode an injected command your permission rules don't allow stops the skill.
 4. For another skill that pre-approves tools, read this guide's [`claude-md-review`](../../../.claude/skills/claude-md-review/SKILL.md). Its `allowed-tools: Read, Glob, Grep` lets it read files without prompts; it doesn't stop Claude from using other tools ([Pre-approve tools for a skill](https://code.claude.com/docs/en/skills#pre-approve-tools-for-a-skill)).
 
+<a id="your-turn"></a>
 ## Your turn
 
 Make the review take a focus:
@@ -65,6 +70,7 @@ Make the review take a focus:
 2. Change the task to put the review's focus first: `Review the changes above against checklist.md, looking hardest at $focus.`
 3. Run `/changes-review tests`, then `/changes-review secrets`, and compare the two reports.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -75,6 +81,7 @@ You are done when all of these are true:
 
 If `/changes-review` stops with `Shell command failed` or `Shell command permission check failed`, run `git diff HEAD` yourself, and check the `allowed-tools` line: an injected command that fails, or that your permission rules don't allow, aborts the whole skill ([Inject dynamic context](https://code.claude.com/docs/en/skills#inject-dynamic-context)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices): how to write descriptions, structure supporting files and test a skill.

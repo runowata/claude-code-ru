@@ -1,16 +1,19 @@
-# Pick the model and effort
+# Pick the model and effort <a id="pick-the-model-and-effort"></a>
 
 <sub>**Intermediate** · Lesson 3 of 8 · about 15 minutes · Needs: [Turn a repeated workflow into a skill](01-first-skill.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can pick a model and an effort level for a task, set them for a session or for one skill, and tell from a wrong result whether to raise the effort or pick a larger model.
 
+<a id="you-need"></a>
 ## You need
 
 - The repository where you did [lesson 1](01-first-skill.md), with its skills, and your copy of the practice template with Node.js LTS: the check runs from the copy.
 - Usage: light. A larger model costs more per token, and a higher effort usually produces more tokens, so either tends to use more of your plan's usage.
 
+<a id="the-idea"></a>
 ## The idea
 
 Two separate choices shape an answer ([Choosing a Claude model and effort level in Claude Code](https://claude.com/blog/claude-model-and-effort-level-in-claude-code)):
@@ -37,6 +40,7 @@ Where a choice applies decides how you set it. The [Models and effort](../refere
 | One turn | – | `ultrathink` in the prompt asks for deeper reasoning; the level stays |
 | One skill or subagent | `model:` in its frontmatter | `effort:` in its frontmatter |
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Start `claude` in your repository. Run `/status`: it shows the model. Run `/effort status`: it prints the effort level in force ([Commands](https://code.claude.com/docs/en/commands)).
@@ -56,6 +60,7 @@ Where a choice applies decides how you set it. The [Models and effort](../refere
 
    From now on the skill runs at `high` while it's active, over the session's level. An effort set with the `CLAUDE_CODE_EFFORT_LEVEL` variable, and any effort cap, still come first ([Set the effort level](https://code.claude.com/docs/en/model-config#set-the-effort-level)).
 
+<a id="your-turn"></a>
 ## Your turn
 
 Give a routine task the smallest model and effort that do the job.
@@ -78,6 +83,7 @@ Give a routine task the smallest model and effort that do the job.
 3. Stage a small change of your own, run `/changelog`, and approve the edit. If Claude Code says the command is unknown, run `/reload-skills` first.
 4. Commit the change, `CHANGELOG.md` and the skill together.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -90,12 +96,14 @@ Run `npm run check -- i-3 --dir <your repo>` from your practice copy, or `npm ru
 
 If the skill check says the model is larger than the task needs, set `model: sonnet`: a change you can describe precisely is routine work. If there's no entry, stage a change before you run `/changelog`, because the skill reads only staged changes.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - `/model <alias>` and `/effort <level>` save your choice as the default for new sessions. To change only the current session, press `s` in the picker or the slider.
 - Switching the model mid-session, and on most models changing the effort, makes the next request read the whole conversation with no cache hits; while the cache is warm, Claude Code asks you to confirm ([How Claude Code uses prompt caching](https://code.claude.com/docs/en/prompt-caching#switching-models)).
 - Set with `/effort`, `max` lasts for the current session only, and it can overthink: test it before you rely on it ([Choose an effort level](https://code.claude.com/docs/en/model-config#choose-an-effort-level)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Choosing a Claude model and effort level in Claude Code](https://claude.com/blog/claude-model-and-effort-level-in-claude-code): Anthropic's guide to the two settings, with the "try or know" test this lesson uses.

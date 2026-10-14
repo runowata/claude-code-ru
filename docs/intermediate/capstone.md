@@ -1,9 +1,10 @@
-# Intermediate capstone: get a repository ready for a new teammate
+# Intermediate capstone: get a repository ready for a new teammate <a id="intermediate-capstone-get-a-repository-ready-for-a-new-teammate"></a>
 
 <sub>**Intermediate** · Capstone · 30 to 60 minutes · Needs: the eight [Intermediate lessons](README.md), or their skills · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
 This task puts the whole Intermediate level together. It has no worked example: the brief says what the team needs, and you choose how to build it. The [Intermediate Exit](README.md#by-the-end-of-this-level-you-can) is the list of what you can do by the end of this level. The check reads what you commit, and you tick the rest of the Exit yourself under [What the check can't see](#what-the-check-cant-see).
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template, with no uncommitted changes, and Node.js LTS. The capstone runs in the template copy only. If `git status --porcelain` lists files, commit them or set them aside with `git stash push --include-untracked`.
@@ -11,6 +12,7 @@ This task puts the whole Intermediate level together. It has no worked example: 
 - macOS, Linux or WSL 2: the sandbox needs one of them ([Set up on Windows](https://code.claude.com/docs/en/setup#set-up-on-windows)), and the lessons' hook scripts are bash.
 - Usage: moderate.
 
+<a id="the-task"></a>
 ## The task
 
 A teammate starts on Monday. The brief is in `capstone/intermediate-brief.md` in your practice copy: set the repository up so their Claude Code sessions work the way the team's do, and commit all of it, because they get only what's in git.
@@ -27,6 +29,7 @@ Build each part the way its lesson taught:
 
 Then, in a session, try each part: run the skill by name, ask Claude to edit a file in `samples/` with its Edit tool, delegate a review, approve the MCP server and use one of its tools. Pick the model and effort for each job as [lesson 3](03-model-and-effort.md) showed. Commit everything, and make sure `npm test` still passes.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -44,6 +47,7 @@ You are done when all of these are true:
 
 Run `npm run check -- i-capstone` in your practice copy. Each item that fails prints what to fix.
 
+<a id="what-the-check-cant-see"></a>
 ## What the check can't see
 
 The check doesn't look at these parts of the Intermediate Exit. Tick them yourself, honestly:

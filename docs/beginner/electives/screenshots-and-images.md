@@ -1,11 +1,13 @@
-# Give Claude a screenshot
+# Give Claude a screenshot <a id="give-claude-a-screenshot"></a>
 
 <sub>**Beginner** · Elective · about 15 minutes · Needs: [Your first change, from request to commit](../03-first-change.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can add a screenshot or an image to a conversation and get a change from what it shows.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template with no uncommitted changes, and your system's screenshot tool.
@@ -14,6 +16,7 @@ By the end of this Elective you can add a screenshot or an image to a conversati
 > [!NOTE]
 > In a Codespace, Claude Code runs inside the codespace, not on your computer ([Development containers](https://code.claude.com/docs/en/devcontainer)), so give it screenshots as files there. Save each screenshot on your computer, rename it to the name this page uses (`shot.png`, then `test-summary.png`), and drag it from your computer's file manager onto the `.practice` folder in the codespace's Explorer ([GitHub Codespaces](https://code.visualstudio.com/docs/remote/codespaces#_known-limitations-and-adaptations)). Where the Worked example says to paste, ask with its path instead, such as `Look at this image: .practice/shot.png`. In Your turn, skip the `mv` line.
 
+<a id="the-idea"></a>
 ## The idea
 
 Some things are faster to show than to describe: an error on screen, a layout, a diagram. Claude Code reads images, and you can add one to the conversation in three ways ([Common workflows](https://code.claude.com/docs/en/common-workflows#work-with-images)):
@@ -22,6 +25,7 @@ Some things are faster to show than to describe: an error on screen, a layout, a
 - copy the image and paste it with `Ctrl+V` (`Cmd+V` also works in iTerm2; `Alt+V` on Windows and WSL) ([Interactive mode](https://code.claude.com/docs/en/interactive-mode#general-controls));
 - give its path in your prompt, such as "Look at this image: /path/to/shot.png".
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. In your practice copy, run the link checker on its samples:
@@ -47,6 +51,7 @@ Some things are faster to show than to describe: an error on screen, a layout, a
 
    `git status` then reads `nothing to commit, working tree clean`.
 
+<a id="your-turn"></a>
 ## Your turn
 
 1. In the second terminal, run `npm test` and take a screenshot of the end of its output: the last few test names and the summary under them. Save it as a file, then move it into your practice copy's `.practice/` folder. Git ignores that folder, so the image never shows up as a change:
@@ -59,6 +64,7 @@ Some things are faster to show than to describe: an error on screen, a layout, a
 2. In Claude Code (start `claude` if it isn't running), ask about it by path: `Look at this image: .practice/test-summary.png. What does each line of this summary mean?`
 3. Ask for a small change based on the image, such as a clearer name for one of the tests it shows, and approve the edit if Claude asks. Check it with `git diff` in the second terminal.
 
+<a id="check"></a>
 ## Check
 
 This Elective has no `npm run check`: tick each item yourself. You are done when all of these are true:
@@ -68,10 +74,12 @@ This Elective has no `npm run check`: tick each item yourself. You are done when
 
 When you're done, set your change aside so the next lesson starts clean: `git stash push --include-untracked -m b-images`. `git status` then reads `nothing to commit, working tree clean`.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - An image goes to Claude with your prompt. Crop out anything private, such as tokens, email addresses or customer data, before you paste it.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Work with images](https://code.claude.com/docs/en/common-workflows#work-with-images): more ways to use images, such as design mockups.

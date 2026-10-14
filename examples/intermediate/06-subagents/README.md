@@ -1,4 +1,4 @@
-# Subagent for Intermediate lesson 6
+# Subagent for Intermediate lesson 6 <a id="subagent-for-intermediate-lesson-6"></a>
 
 `code-reviewer`, a read-only subagent for the Intermediate lesson "Delegate to a custom subagent". It reviews code changes in its own context window and reports findings by severity. Its only tools are Read, Grep and Glob, so it can read and search files but can't edit them or run commands ([Create custom subagents](https://code.claude.com/docs/en/sub-agents#available-tools)). Without a shell it can't run `git diff`, so the main conversation gives it the changed files or the diff.
 

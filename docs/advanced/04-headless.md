@@ -1,17 +1,20 @@
-# Script Claude Code with `claude -p`
+# Script Claude Code with `claude -p` <a id="script-claude-code-with-claude--p"></a>
 
 <sub>**Advanced** · Lesson 4 of 7 · about 20 minutes · Needs: [Run and save a dynamic workflow](03-dynamic-workflows.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can write a script that runs Claude Code with no one at the keyboard, reads its JSON result and exit code, and limits it to the tools and turns the job needs.
 
+<a id="you-need"></a>
 ## You need
 
 - One of your own repositories with a test command, and your copy of the practice template with Node.js LTS: the check runs from the copy. To practice in the template copy instead, use it for both. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
 - bash and `jq`, on macOS, Linux or WSL 2.
 - Usage: light. Each `claude -p` run is one short session.
 
+<a id="the-idea"></a>
 ## The idea
 
 `claude -p "<prompt>"` runs one prompt without the interactive interface, prints the answer and exits with 0, or non-zero when the run fails ([Run Claude Code programmatically](https://code.claude.com/docs/en/headless)). It reads stdin, so a script can pipe a diff in.
@@ -20,6 +23,7 @@ With [`--output-format json`](https://code.claude.com/docs/en/headless#get-struc
 
 Nobody can answer a permission prompt, so pass a mode every time: a run where nothing sets one can start in auto mode ([Auto-approve tools](https://code.claude.com/docs/en/headless#auto-approve-tools)). Three flags set the limits: `--permission-mode dontAsk` denies every call that would otherwise prompt, `--allowedTools` names what may run anyway, and `--max-turns` caps the turns ([CLI flags](https://code.claude.com/docs/en/cli-reference#cli-flags)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 In your repository:
@@ -60,6 +64,7 @@ In your repository:
 
    It prints a non-zero exit code, then `"subtype": "error_max_turns"` and `"has_result": false`: a run that stops at the cap has no `result`. `--max-turns` counts only the turns that call tools ([Turns and messages](https://code.claude.com/docs/en/agent-sdk/agent-loop#turns-and-messages)), so if the run finished, give it a task with more steps.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Write a review you can run before every commit: `scripts/review-staged.sh` sends your staged changes to Claude, prints Claude's review and saves the JSON result. The Advanced capstone reuses it.
@@ -76,6 +81,7 @@ Acceptance criteria:
 
 Commit the script. Then stage a small change, such as a one-line fix, and run `scripts/review-staged.sh` once: it saves `.practice/a-4-result.json`. Read the review before you commit that change.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -90,12 +96,14 @@ Run `npm run check -- a-4 --dir <your repo>` from your practice copy, or `npm ru
 
 If the first item fails, run `chmod +x scripts/review-staged.sh`, then `git add` it and commit again. If the second item fails, read its hint: it names the flag it didn't find, or says your script calls `claude` by a path or through `npx`, or changes `PATH`. Compare your `claude -p` line with the criteria in Your turn, starting with where the prompt sits. If the third item fails, run the script by hand with nothing staged and again with a staged change, and run `echo $?` after each; the check runs the committed script, so commit each fix before you run the check again. If the fourth item fails, stage a change and run the script again: a run that stopped at your cap doesn't count, so raise the cap or narrow the prompt.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - A `-p` run shows no trust dialog: it runs the hooks in a project's `.claude/settings.json` and connects the servers in its `.mcp.json`, even in a folder you've never trusted ([Start faster with bare mode](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode)). Before you script Claude Code in a repository you didn't write, pass `--setting-sources user`, so Claude Code reads neither the project's settings files nor its `.mcp.json` ([What runs before you trust a folder](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder)).
 - When `ANTHROPIC_API_KEY` is set, a `-p` run always uses that key instead of your plan ([Authentication precedence](https://code.claude.com/docs/en/authentication#authentication-precedence)). The JSON's `total_cost_usd` is a client-side estimate, not your bill ([Track cost and usage](https://code.claude.com/docs/en/agent-sdk/cost-tracking#estimates-not-billing)).
 - In a folder you've never trusted, a `-p` run ignores the `permissions.allow` rules in the project's `.claude/settings.json` and prints a `this workspace has not been trusted` warning on stderr; trusting a parent folder doesn't count ([Project allow rules and workspace trust](https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust), [Error reference](https://code.claude.com/docs/en/errors#workspace-has-not-been-trusted)). Pass the rules a script needs on its command line, with `--allowedTools`.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Run Claude Code programmatically](https://code.claude.com/docs/en/headless): structured output with `--json-schema`, streaming JSON, and continuing a run with `--resume` and its `session_id`.

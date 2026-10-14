@@ -1,11 +1,13 @@
-# Your first change, from request to commit
+# Your first change, from request to commit <a id="your-first-change-from-request-to-commit"></a>
 
 <sub>**Beginner** · Lesson 3 of 5 · about 20 minutes · Needs: [Permission modes and plan mode](02-permission-modes-and-plan-mode.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can take one change from request to commit: explore, plan, implement, test, review the diff, correct, and commit.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template, and Node.js LTS (a Codespace on your copy has it).
@@ -13,6 +15,7 @@ By the end of this lesson you can take one change from request to commit: explor
 - No uncommitted changes where you practice. If lesson 2's change is still there, set it aside with `git stash push --include-untracked -m b-2`; in your own repository, commit it instead if you want to keep it. Later lessons don't use what you set aside, and `git stash list` shows it.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 Asking for a change and accepting whatever comes back is how sessions go wrong. Anthropic's [best practices](https://code.claude.com/docs/en/best-practices#explore-first-then-plan-then-code) recommend four phases: explore, plan, implement and commit. This lesson adds a check at each step:
@@ -25,6 +28,7 @@ Asking for a change and accepting whatever comes back is how sessions go wrong. 
 6. **Correct** anything you don't want, in plain words.
 7. **Commit**, so the change is saved and easy to undo.
 
+<a id="worked-example"></a>
 ## Worked example
 
 The practice app checks Markdown links, but it skips any link with a title, such as `[setup](setup.md "Setup guide")`. You'll fix that.
@@ -77,6 +81,7 @@ The practice app checks Markdown links, but it skips any link with a title, such
 
    `git status` ends with `nothing to commit, working tree clean`.
 
+<a id="your-turn"></a>
 ## Your turn
 
 Repeat the example with a second gap: links whose target sits in angle brackets, such as `[my notes](<my notes.md>)`.
@@ -90,6 +95,7 @@ Repeat the example with a second gap: links whose target sits in angle brackets,
 
 In your own repository, pick a small change of your own that comes with a test.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -103,6 +109,7 @@ In the second terminal, run `npm run check -- b-3` in your practice copy. In you
 
 If the commit changes no test file, or only tests, the code and its test didn't land in one commit: ask Claude to amend the commit with the missing test (`git commit --amend`), or to combine the last two commits into one, as long as you haven't pushed them. Then save the commit again with `git rev-parse HEAD > .practice/b-3-commit.txt`. If the tests fail, read the first failure and ask Claude to fix the code, not the test. If `git status --porcelain` lists files, commit them or set them aside with `git stash push --include-untracked`.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Common workflows](https://code.claude.com/docs/en/common-workflows): step-by-step guides for fixing bugs, refactoring and testing.

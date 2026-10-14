@@ -1,11 +1,13 @@
-# Turn a repeated workflow into a skill
+# Turn a repeated workflow into a skill <a id="turn-a-repeated-workflow-into-a-skill"></a>
 
 <sub>**Intermediate** · Lesson 1 of 8 · about 20 minutes · Needs: [Intermediate index](README.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-06</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can turn a workflow you keep repeating into a project skill that runs when you type its name and loads on its own when a request matches it.
 
+<a id="you-need"></a>
 ## You need
 
 - One of your own repositories with a test command and no uncommitted changes, and your copy of the practice template with Node.js LTS: the check runs from the copy. To practice in the template copy instead, use it for both. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
@@ -14,6 +16,7 @@ By the end of this lesson you can turn a workflow you keep repeating into a proj
 > [!NOTE]
 > From this level on, the lessons are written for macOS, Linux and WSL 2. On Windows, run Claude Code inside WSL 2 ([Set up on Windows](https://code.claude.com/docs/en/setup#set-up-on-windows)): native Windows has no sandbox, which lesson 4 uses, and the hooks in lesson 5 are bash scripts.
 
+<a id="the-idea"></a>
 ## The idea
 
 A [skill](https://code.claude.com/docs/en/skills) is a folder holding a `SKILL.md` file: YAML frontmatter that says what the skill is for, then the instructions Claude follows. A project skill lives in `.claude/skills/<name>/SKILL.md`. Commit it, and everyone who works in the repository gets it.
@@ -33,6 +36,7 @@ flowchart LR
 - `$ARGUMENTS` in the body receives whatever you type after the skill's name.
 - A Markdown file in `.claude/commands/` is the older format and still runs as `/name`. Prefer a skill for new work.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. In your repository, create the skill's folder and download this guide's example skill, [`five-whys`](../../examples/intermediate/01-first-skill/dot-claude/skills/five-whys/SKILL.md). Read it before you use it:
@@ -71,6 +75,7 @@ flowchart LR
 
    Before Claude answers, the transcript shows a call to the `Skill` tool for `five-whys`: Claude loaded the skill on its own ([Tools reference](https://code.claude.com/docs/en/tools-reference)).
 
+<a id="your-turn"></a>
 ## Your turn
 
 Finish a partial skill that builds features test-first, then use it both ways.
@@ -103,6 +108,7 @@ Finish a partial skill that builds features test-first, then use it both ways.
    Approve its edits and test runs, and let it commit. Then save that commit: `git rev-parse HEAD > .practice/i-1-commit.txt`.
 5. Run `/clear` and ask for another small feature test-first, without naming the skill, such as `Add a countHeadings(markdown) function, test-first.` Watch for Claude to run `tdd` through the `Skill` tool on its own. Once you've seen it, you can press `Esc` to stop Claude ([Interactive mode](https://code.claude.com/docs/en/interactive-mode)) and `/rewind` to undo its edits ([Checkpointing](https://code.claude.com/docs/en/checkpointing)), as in [Beginner lesson 4](../beginner/04-keep-a-session-on-track.md).
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -116,12 +122,14 @@ Run `npm run check -- i-1 --dir <your repo>` from your practice copy, or `npm ru
 
 If the skill isn't committed, run `git check-ignore -v .claude/skills/tdd/SKILL.md`: an ignore rule that matches `.claude`, in a `.gitignore`, `.git/info/exclude` or your global excludes file, hides the folder from `git add`, so add the file with `git add -f`. If the second item fails, rewrite the description as what the skill does followed by "Use when" and the requests it fits, because Claude reads only the description when it decides whether to load a skill. If the commit item fails, run `/tdd` again on a new small feature and let it commit the test with the code.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - A skill can pre-approve tools with `allowed-tools`, and Claude Code applies a project skill's grant even in a `claude -p` run in a folder you've never trusted ([Pre-approve tools for a skill](https://code.claude.com/docs/en/skills#pre-approve-tools-for-a-skill)). Read the skills in a repository before you run Claude Code there.
 - If `.claude/skills/` didn't exist when the session started, run `/reload-skills` before the new skill shows up ([Edit a skill during a session](https://code.claude.com/docs/en/skills#live-change-detection)).
 - Once a skill runs, its text stays in the conversation and Claude Code doesn't re-read the file. After you edit a skill, run it again so Claude gets the new version ([Skill content lifecycle](https://code.claude.com/docs/en/skills#skill-content-lifecycle)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Introduction to agent skills](https://academy.claude.com/courses/introduction-to-agent-skills): Claude Academy's course on writing and sharing skills.

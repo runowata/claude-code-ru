@@ -1,5 +1,5 @@
 <a id="faq--claude-code--claude-plans"></a>
-# FAQ
+# FAQ <a id="faq"></a>
 
 This page moved. Below, each group of its questions links to the page that now answers it. Anthropic's own Claude Code user FAQ is listed in [Further learning](further-reading.md#start-anywhere).
 

@@ -1,11 +1,13 @@
-# Share your setup with a team
+# Share your setup with a team <a id="share-your-setup-with-a-team"></a>
 
 <sub>**Advanced** · Lesson 6 of 7 · about 20 minutes · Needs: [GitHub Actions](05-github-actions.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can share your Claude Code setup with a team: commit the settings everyone should get, keep your personal files out of git, and give the team a plugin that loads from a marketplace inside the repository.
 
+<a id="you-need"></a>
 ## You need
 
 - Your own repository with your Intermediate setup: the committed `.claude/settings.json` from [Intermediate lesson 4](../intermediate/04-permissions-and-sandbox.md), and the skills, hooks and subagents from lessons 1, 5 and 6. Set up its `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
@@ -13,12 +15,14 @@ By the end of this lesson you can share your Claude Code setup with a team: comm
 - bash, `curl` and git, on macOS, Linux or WSL 2.
 - Usage: light.
 
+<a id="the-idea"></a>
 ## The idea
 
 What everyone should get is committed: `.claude/settings.json`, `CLAUDE.md`, `.claude/rules/`, skills, agents and `.mcp.json` ([Explore the .claude directory](https://code.claude.com/docs/en/claude-directory#file-reference)). What is yours stays out of git: `.claude/settings.local.json`, which that table doesn't mark for commit, and `CLAUDE.local.md` ([What's not shown](https://code.claude.com/docs/en/claude-directory#what%E2%80%99s-not-shown)). Your local file outranks the shared one, so a teammate can override a team setting for themselves without a commit, though lists such as permission rules merge instead ([Settings files and precedence](https://code.claude.com/docs/en/settings#settings-precedence)).
 
 A plugin shares skills, agents and hooks with a team as one unit ([Create a Claude Code plugin](https://code.claude.com/docs/en/plugins/create#decide-when-to-use-a-plugin)), and a marketplace is a folder whose `.claude-plugin/marketplace.json` lists plugins ([Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace)). Commit a marketplace inside the repository, declare it in `extraKnownMarketplaces` by a relative `directory` path, and turn its plugin on in `enabledPlugins`. Each teammate gets the plugin once they accept the workspace trust dialog for the folder ([Manage Claude Code plugins for your organization](https://code.claude.com/docs/en/plugins/org#require-plugins-per-repository)), and installs nothing: a plugin listed by a relative path loads from the marketplace itself ([Plugin loading reference](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 Your teammates keep asking how the repository's Claude Code setup works. Share a skill that explains it with everyone who clones the repository.
@@ -75,6 +79,7 @@ Your teammates keep asking how the repository's Claude Code setup works. Share a
 
    Save the file, then run `/reload-plugins` ([Plugin commands reference](https://code.claude.com/docs/en/plugins/cli-reference#reload-plugins)). `/team-kit:onboard` is gone from your session, while the committed file still turns the plugin on for everyone else: your local file outranks the project's ([All settings](https://code.claude.com/docs/en/settings-reference#enabledplugins)). If it's still listed, run `/reload-plugins` again, or start a new session: a settings change reaches the loaded plugins only after a reload or at the next start ([Plugin loading reference](https://code.claude.com/docs/en/plugins/loading#check-which-stage-a-plugin-reached)). Then delete the entry, save the file and run `/reload-plugins` again. If `git status` lists `.claude/settings.local.json`, don't commit it: Your turn adds it to `.gitignore`.
 
+<a id="your-turn"></a>
 ## Your turn
 
 **Brief:** move one piece of your Intermediate setup into `team-kit`, so everyone who clones the repository gets it from the plugin. Take a skill, such as `tdd` from Intermediate lesson 1, or a subagent, such as `test-gaps` from lesson 6. For a harder move, take a hook from lesson 5: its entry goes in the plugin's `hooks/hooks.json`, in the same shape as in a settings file, with its script inside the plugin, called through `${CLAUDE_PLUGIN_ROOT}` ([Add components to a plugin](https://code.claude.com/docs/en/plugins/components#hooks)).
@@ -88,6 +93,7 @@ Your teammates keep asking how the repository's Claude Code setup works. Share a
 
 Because `team-kit` is listed by a relative path in a marketplace on your disk, Claude Code loads it in place: an edit under `team-marketplace/` takes effect at the next session start or after `/reload-plugins`, with no version change ([Plugin loading reference](https://code.claude.com/docs/en/plugins/loading#in-place-and-copied-plugins)). The Intermediate check for the component you move reads it from `.claude/`, so that check fails after the move; that's expected.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -103,12 +109,14 @@ Run `npm run check -- a-6 --dir <your repo>` from your practice copy.
 
 If the first item fails, run `claude plugin validate ./team-marketplace` and compare the entry's `name` with the plugin's `plugin.json`; a folder still named `dot-claude-plugin/` isn't a marketplace until you rename it to `.claude-plugin/`. If the second fails, check that the key under `extraKnownMarketplaces` is the marketplace's `name`, that the `path` is relative, such as `./team-marketplace`, and that the plugin's value is `true`, not `"true"`. If the third fails, run `git status`: the original may still be committed under `.claude/`, or the plugin's copy may not be committed yet. If the fourth fails, run `git rm --cached` on the tracked file, add both lines to `.gitignore` and commit. If the fifth fails, run the strict validation again from the repository's root and save its report after it passes.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - Everyone who trusts the repository runs what `team-kit` holds, with their own rights. A plugin's hooks and MCP server processes run outside the sandbox, and permission rules don't cover the code they run ([Plugin security and trust](https://code.claude.com/docs/en/plugins/security#understand-what-a-plugin-can-do)). Review a change under `team-marketplace/` as you review code.
 - The marketplace waits, without a message, until each teammate accepts the trust dialog for the folder, and a `claude -p` run adds it only in a folder whose trust they already accepted in an interactive session, or whose `hasTrustDialogAccepted` flag is set in `~/.claude.json` ([Manage Claude Code plugins for your organization](https://code.claude.com/docs/en/plugins/org#require-plugins-per-repository)); a cloud session never adds it, because it never shows the trust dialog ([Plugin loading reference](https://code.claude.com/docs/en/plugins/loading#plugins-shared-through-a-repository)). The committed allow rules wait for the same dialog, which lists them ([Configure permissions](https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust)).
 - A component left in both `.claude/` and the plugin loads twice: `/tdd` and `/team-kit:tdd` both work, and a hook runs twice each time its event fires ([Create a Claude Code plugin](https://code.claude.com/docs/en/plugins/create#convert-an-existing-claude-setup)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Host and maintain a marketplace](https://code.claude.com/docs/en/plugins/host-marketplace): move the marketplace to its own repository once several repositories need it, and release versions.

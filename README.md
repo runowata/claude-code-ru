@@ -1,153 +1,163 @@
-# Claude Code: Everything You Need to Know <img src="assets/brand/claude-jumping.svg" width="44" height="40" alt="Animated Claude" align="right" />
+# Claude Code: всё, что нужно знать <img src="assets/brand/claude-jumping.svg" width="44" height="40" alt="Анимированный Claude" align="right" /> <a id="claude-code-everything-you-need-to-know-"></a>
 
-**Learn Claude Code in three levels, from your first session to unattended multi-agent runs.**
+> [!NOTE]
+> Это русский перевод руководства [Claude Code: Everything You Need to Know](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know) (лицензия MIT). Интерфейс Claude Code и учебное приложение `npm run learn` — на английском, поэтому надписи на экране в уроках оставлены как есть. Перевод сделан по коммиту оригинала из [`.translation/UPSTREAM_SHA`](.translation/UPSTREAM_SHA).
 
-You learn by doing: every core lesson and capstone ends with a check you run in your own practice copy, and every Beginner lesson and the capstone run step by step in a terminal app beside Claude Code.\
-**[Try it now](#try-it-now)** · [Pick your level](#pick-your-level) · [Every page](#everything-in-the-guide)
+**Изучите Claude Code за три уровня — от первой сессии до многоагентных запусков без присмотра.**
+
+Учитесь на практике: каждый основной урок и итоговый проект заканчиваются проверкой, которую вы запускаете в своей учебной копии, а все уроки начального уровня и его итоговый проект проходятся по шагам в терминальном приложении рядом с Claude Code.\
+**[Попробовать сейчас](#try-it-now)** · [Выбрать уровень](#pick-your-level) · [Все страницы](#everything-in-the-guide)
 
 [![Verified against Claude Code v2.1.285 (stable)](https://img.shields.io/badge/verified-v2.1.285_stable-2e6e57)](CHANGELOG.md#v202610---2026-10-05) [![Edition release date](https://img.shields.io/github/release-date/wesammustafa/Claude-Code-Everything-You-Need-to-Know?label=edition&color=2e6e57)](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-5b6470)](LICENSE) [![Mentioned in Awesome Claude Code](https://awesome.re/mentioned-badge.svg)](https://github.com/hesreallyhim/awesome-claude-code)
 
 <p align="center">
   <!-- Captured with Claude Code v2.1.285 (stable) on 2026-10-11. -->
-  <img src="assets/readme/learn-welcome.png" width="640" alt="You keep two terminals open side by side: this one runs npm run learn, shows one step at a time and checks your work, and in the other you type commands and run Claude Code." />
+  <img src="assets/readme/learn-welcome.png" width="640" alt="Два терминала рядом: в одном запущен npm run learn, он показывает по одному шагу и проверяет вашу работу, в другом вы вводите команды и запускаете Claude Code." />
   <br />
-  <sub>The learning app, <code>npm run learn</code>, on its first run.</sub>
+  <sub>Учебное приложение <code>npm run learn</code> при первом запуске.</sub>
 </p>
 
-<a id="install"></a>
-## Try it now
+<a id="install"></a><a id="try-it-now"></a>
+## Попробовать сейчас
 
-You need a paid Claude plan (Pro, Max, Team or Enterprise), a Claude Console account, or a supported cloud provider ([Quickstart](https://code.claude.com/docs/en/quickstart)), plus Node.js LTS and git.
+Нужен платный тариф Claude (Pro, Max, Team или Enterprise), аккаунт Claude Console или поддерживаемый облачный провайдер ([Quickstart](https://code.claude.com/docs/en/quickstart)), а также Node.js LTS и git.
 
-1. Make your practice copy: open [claude-code-practice](https://github.com/wesammustafa/claude-code-practice), select **Use this template** > **Create a new repository**, and clone your copy. Or open your copy in a Codespace, where Node.js and Claude Code come preinstalled.
-2. In your copy, start the app:
+1. Сделайте учебную копию: откройте [claude-code-practice](https://github.com/wesammustafa/claude-code-practice), выберите **Use this template** > **Create a new repository** и склонируйте свою копию. Или откройте копию в Codespace — там Node.js и Claude Code уже установлены.
+2. В копии запустите приложение:
 
    ```bash
    npm run learn
    ```
 
-3. Open a second terminal in the same folder. The app tells you what to type there, starting with installing Claude Code, and checks your work as you go.
+3. Откройте второй терминал в той же папке. Приложение подскажет, что там вводить, начиная с установки Claude Code, и будет проверять вашу работу по ходу.
 
-The app teaches every Beginner lesson and the capstone. It has no AI in it and changes none of your work.
+Приложение ведёт по всем урокам начального уровня и его итоговому проекту. В нём нет ИИ, и вашу работу оно не меняет.
 
-For Intermediate and Advanced, or if you prefer to read, every lesson works from its page alone. Each core lesson ends with a check you run from your practice copy, for example `npm run check -- b-1`: each item prints `PASS` or `FAIL`, with a hint for what to fix.
+Средний и продвинутый уровни — а если вам удобнее читать, то и любой урок — проходятся по странице урока. Каждый основной урок заканчивается проверкой, которую вы запускаете из учебной копии, например `npm run check -- b-1`: по каждому пункту выводится `PASS` или `FAIL` с подсказкой, что исправить.
 
-## Help that fades as you learn
+<a id="help-that-fades-as-you-learn"></a>
+## Подсказок меньше по мере роста
 
-The help shrinks as you get better: GUIDED shows every command, HINTED gives the goal and a hint each time you press `h`, and CHALLENGE gives just the goal.
+Подсказки убывают, когда вы набираетесь опыта: GUIDED показывает каждую команду, HINTED даёт цель и подсказку по клавише `h`, CHALLENGE — только цель.
 
 <table>
   <tr>
-    <td width="50%" valign="top"><img src="assets/readme/learn-help-guided.png" width="380" alt="At step 1 the app names the window to type in and shows the exact install command." /></td>
-    <td width="50%" valign="top"><img src="assets/readme/learn-help-challenge.png" width="380" alt="By step 11 the app gives only the goal and the lesson's rule, and reports from git status that nothing in the copy has changed yet." /></td>
+    <td width="50%" valign="top"><img src="assets/readme/learn-help-guided.png" width="380" alt="На шаге 1 приложение называет окно, в котором нужно вводить, и показывает точную команду установки." /></td>
+    <td width="50%" valign="top"><img src="assets/readme/learn-help-challenge.png" width="380" alt="К шагу 11 приложение даёт только цель и правило урока и по git status сообщает, что в копии пока ничего не изменилось." /></td>
   </tr>
   <tr>
-    <td><b>Step 1 of 12, GUIDED:</b> the exact command, and the window to type it in.</td>
-    <td><b>Step 11 of 12, CHALLENGE:</b> the goal alone, while the app watches your copy.</td>
+    <td><b>Шаг 1 из 12, GUIDED:</b> точная команда и окно, где её вводить.</td>
+    <td><b>Шаг 11 из 12, CHALLENGE:</b> только цель, а приложение следит за копией.</td>
   </tr>
 </table>
 
 <!-- Both captured with Claude Code v2.1.285 (stable) on 2026-10-10. -->
-<sub>Beginner lesson 1, steps 1 and 11.</sub>
+<sub>Урок 1 начального уровня, шаги 1 и 11.</sub>
 
-<a id="-choose-your-path"></a>
-## Pick your level
+<a id="-choose-your-path"></a><a id="pick-your-level"></a>
+## Выберите уровень
 
-### Beginner
-**For you if** you're new to Claude Code and comfortable with a terminal and git.\
-You'll take one change from request to commit, safely, and give your project a memory. About 2½ hours: 5 lessons, a capstone and 3 Electives.\
-**[Start Beginner](docs/beginner/README.md)**
+<a id="beginner"></a>
+### Начальный
 
-### Intermediate
-**Ready if** you can plan a change in plan mode, review the diff and commit it, and keep a long session on track.\
-You'll shape Claude Code to your project with skills, hooks, subagents, MCP and plugins. About 3 hours: 8 lessons, a capstone and 4 Electives.\
-**[Start Intermediate](docs/intermediate/README.md)**
+**Для вас, если** вы впервые видите Claude Code и уверенно работаете с терминалом и git.\
+Вы безопасно доведёте одно изменение от запроса до коммита и дадите проекту память. Около 2½ часов: 5 уроков, итоговый проект и 3 дополнительных урока.\
+**[Начать](docs/beginner/README.md)**
 
-### Advanced
-**Ready if** you can write a project skill, enforce a rule with a hook, delegate to a subagent and connect an MCP server.\
-You'll run Claude Code in parallel, unattended in CI, and for a team, within limits you set. About 3 hours 20 minutes, plus run time: 7 lessons, a capstone and 5 Electives.\
-**[Start Advanced](docs/advanced/README.md)**
+<a id="intermediate"></a>
+### Средний
 
-<a id="-whats-inside"></a><a id="-reading-tips"></a>
-## Everything in the guide
+**Можно начинать, если** вы умеете спланировать изменение в plan mode, проверить дифф и закоммитить его, а также удерживать долгую сессию в нужном русле.\
+Вы настроите Claude Code под свой проект с помощью skills, hooks, субагентов, MCP и плагинов. Около 3 часов: 8 уроков, итоговый проект и 4 дополнительных урока.\
+**[Начать](docs/intermediate/README.md)**
+
+<a id="advanced"></a>
+### Продвинутый
+
+**Можно начинать, если** вы умеете написать skill для проекта, закрепить правило hook-ом, поручить работу субагенту и подключить MCP-сервер.\
+Вы будете запускать Claude Code параллельно, без присмотра в CI и для команды — в заданных вами рамках. Около 3 часов 20 минут плюс время запусков: 7 уроков, итоговый проект и 5 дополнительных уроков.\
+**[Начать](docs/advanced/README.md)**
+
+<a id="-whats-inside"></a><a id="-reading-tips"></a><a id="everything-in-the-guide"></a>
+## Всё руководство
 
 <details>
-<summary>Every page, by level</summary>
+<summary>Все страницы по уровням</summary>
 
-**Beginner:** [Level index](docs/beginner/README.md) · [Install, sign in and look around](docs/beginner/01-install-and-look-around.md) · [Permission modes and plan mode](docs/beginner/02-permission-modes-and-plan-mode.md) · [Your first change, from request to commit](docs/beginner/03-first-change.md) · [Keep a session on track](docs/beginner/04-keep-a-session-on-track.md) · [Project memory with CLAUDE.md](docs/beginner/05-project-memory.md) · [Capstone](docs/beginner/capstone.md)
+**Начальный:** [Оглавление уровня](docs/beginner/README.md) · [Установка, вход и первый осмотр](docs/beginner/01-install-and-look-around.md) · [Режимы разрешений и plan mode](docs/beginner/02-permission-modes-and-plan-mode.md) · [Первое изменение: от запроса до коммита](docs/beginner/03-first-change.md) · [Как удержать сессию в русле](docs/beginner/04-keep-a-session-on-track.md) · [Память проекта и CLAUDE.md](docs/beginner/05-project-memory.md) · [Итоговый проект](docs/beginner/capstone.md)
 
-**Beginner Electives:** [IDE extensions](docs/beginner/electives/ide-extensions.md) · [Screenshots and images](docs/beginner/electives/screenshots-and-images.md) · [The built-in teachers](docs/beginner/electives/built-in-teachers.md)
+**Начальный, дополнительно:** [Расширения для IDE](docs/beginner/electives/ide-extensions.md) · [Скриншоты и изображения](docs/beginner/electives/screenshots-and-images.md) · [Встроенные учителя](docs/beginner/electives/built-in-teachers.md)
 
-**Intermediate:** [Level index](docs/intermediate/README.md) · [Turn a repeated workflow into a skill](docs/intermediate/01-first-skill.md) · [Organize project memory and see what loaded](docs/intermediate/02-organize-memory.md) · [Pick the model and effort](docs/intermediate/03-model-and-effort.md) · [Permissions, settings scopes and the sandbox](docs/intermediate/04-permissions-and-sandbox.md) · [Enforce a rule with a hook](docs/intermediate/05-hooks.md) · [Delegate to a custom subagent](docs/intermediate/06-subagents.md) · [Connect a tool with MCP](docs/intermediate/07-mcp.md) · [Install and manage plugins](docs/intermediate/08-plugins.md) · [Capstone](docs/intermediate/capstone.md)
+**Средний:** [Оглавление уровня](docs/intermediate/README.md) · [Повторяющийся процесс — в skill](docs/intermediate/01-first-skill.md) · [Как устроить память проекта и увидеть, что загрузилось](docs/intermediate/02-organize-memory.md) · [Выбор модели и effort](docs/intermediate/03-model-and-effort.md) · [Разрешения, уровни настроек и песочница](docs/intermediate/04-permissions-and-sandbox.md) · [Правило через hook](docs/intermediate/05-hooks.md) · [Поручение своему субагенту](docs/intermediate/06-subagents.md) · [Подключение инструмента через MCP](docs/intermediate/07-mcp.md) · [Установка плагинов и управление ими](docs/intermediate/08-plugins.md) · [Итоговый проект](docs/intermediate/capstone.md)
 
-**Intermediate Electives:** [Skill patterns](docs/intermediate/electives/skill-patterns.md) · [Claude in Chrome](docs/intermediate/electives/claude-in-chrome.md) · [The status line](docs/intermediate/electives/status-line.md) · [Fast mode](docs/intermediate/electives/fast-mode.md)
+**Средний, дополнительно:** [Приёмы для skills](docs/intermediate/electives/skill-patterns.md) · [Claude in Chrome](docs/intermediate/electives/claude-in-chrome.md) · [Status line](docs/intermediate/electives/status-line.md) · [Fast mode](docs/intermediate/electives/fast-mode.md)
 
-**Advanced:** [Level index](docs/advanced/README.md) · [Parallel sessions with worktrees](docs/advanced/01-parallel-sessions.md) · [Choose an orchestration pattern](docs/advanced/02-orchestration-patterns.md) · [Run and save a dynamic workflow](docs/advanced/03-dynamic-workflows.md) · [Script Claude Code with `claude -p`](docs/advanced/04-headless.md) · [GitHub Actions](docs/advanced/05-github-actions.md) · [Share your setup with a team](docs/advanced/06-share-your-setup.md) · [Put bounds on autonomous runs](docs/advanced/07-bounded-runs.md) · [Capstone](docs/advanced/capstone.md) · [Beyond this guide](docs/advanced/beyond-this-guide.md)
+**Продвинутый:** [Оглавление уровня](docs/advanced/README.md) · [Параллельные сессии в worktree](docs/advanced/01-parallel-sessions.md) · [Выбор схемы оркестрации](docs/advanced/02-orchestration-patterns.md) · [Запуск и сохранение динамического workflow](docs/advanced/03-dynamic-workflows.md) · [Скрипты с `claude -p`](docs/advanced/04-headless.md) · [GitHub Actions](docs/advanced/05-github-actions.md) · [Как поделиться настройкой с командой](docs/advanced/06-share-your-setup.md) · [Рамки для автономных запусков](docs/advanced/07-bounded-runs.md) · [Итоговый проект](docs/advanced/capstone.md) · [За пределами руководства](docs/advanced/beyond-this-guide.md)
 
-**Advanced Electives:** [Agent teams](docs/advanced/electives/agent-teams.md) · [Agent view](docs/advanced/electives/agent-view.md) · [`/goal`, `/loop` and routines](docs/advanced/electives/goal-loop-routines.md) · [Testing and publishing a plugin](docs/advanced/electives/publish-a-plugin.md) · [Dev containers](docs/advanced/electives/dev-containers.md)
+**Продвинутый, дополнительно:** [Agent teams](docs/advanced/electives/agent-teams.md) · [Agent view](docs/advanced/electives/agent-view.md) · [`/goal`, `/loop` и routines](docs/advanced/electives/goal-loop-routines.md) · [Тестирование и публикация плагина](docs/advanced/electives/publish-a-plugin.md) · [Dev containers](docs/advanced/electives/dev-containers.md)
 
-**Topics:** [All topics](docs/topics/README.md) · [Permissions and safety](docs/topics/permissions-and-safety.md) · [Memory and context](docs/topics/memory-and-context.md) · [Models, effort and cost](docs/topics/models-effort-and-cost.md) · [Skills](docs/topics/skills.md) · [Hooks](docs/topics/hooks.md) · [Subagents and parallel work](docs/topics/subagents-and-parallel-work.md) · [MCP](docs/topics/mcp.md) · [Plugins](docs/topics/plugins.md) · [Automation](docs/topics/automation.md)
+**Темы:** [Все темы](docs/topics/README.md) · [Разрешения и безопасность](docs/topics/permissions-and-safety.md) · [Память и контекст](docs/topics/memory-and-context.md) · [Модели, effort и стоимость](docs/topics/models-effort-and-cost.md) · [Skills](docs/topics/skills.md) · [Hooks](docs/topics/hooks.md) · [Субагенты и параллельная работа](docs/topics/subagents-and-parallel-work.md) · [MCP](docs/topics/mcp.md) · [Плагины](docs/topics/plugins.md) · [Автоматизация](docs/topics/automation.md)
 
-**Reference:** [Reference index](docs/reference/README.md) · [Models and effort](docs/reference/models.md) · [Commands by level](docs/reference/commands.md) · [Feature map](docs/reference/feature-map.md) · [Further learning](docs/reference/further-reading.md) · [Glossary](docs/reference/glossary.md) · [Changelog](docs/reference/changelog.md)
+**Справочник:** [Оглавление справочника](docs/reference/README.md) · [Модели и effort](docs/reference/models.md) · [Команды по уровням](docs/reference/commands.md) · [Карта возможностей](docs/reference/feature-map.md) · [Что почитать дальше](docs/reference/further-reading.md) · [Глоссарий](docs/reference/glossary.md) · [Журнал изменений](docs/reference/changelog.md)
 
-**Examples:** [How to use the examples](examples/README.md)
+**Примеры:** [Как пользоваться примерами](examples/README.md)
 
 </details>
 
 <a id="how-the-guide-stays-current"></a>
 <details>
-<summary>How the guide stays current</summary>
+<summary>Как руководство остаётся актуальным</summary>
 
-- Every lesson page carries a Stamp: the Claude Code `stable` version its claims were checked against, and the date ([The stamp](CONTRIBUTING.md#the-stamp)).
-- The checks are tested too: in the practice template, CI shows every check failing on its `main` branch, where no exercise is done, and passing on its reference solutions ([Assert checks](https://github.com/wesammustafa/claude-code-practice/blob/main/.github/workflows/assert-checks.yml)).
-- Scheduled checks keep watch between editions: external links and new `stable` releases weekly, expiry markers daily, and the app's quotes of the lessons weekly. Each opens a tracking issue ([Maintainer routine](CONTRIBUTING.md#maintainer-routine)).
-- The examples are inert until you copy them into a project, and they follow a [safety contract](CONTRIBUTING.md#adding-a-skill): local only (apart from the MCP lesson's pinned server), least privilege, and a smoke test that runs without Claude.
+- На каждой странице урока есть штамп: версия Claude Code из канала `stable`, на которой проверены утверждения урока, и дата ([The stamp](CONTRIBUTING.md#the-stamp)).
+- Проверяются и сами проверки: в шаблоне для практики CI показывает, что на ветке `main`, где ни одно упражнение не сделано, все проверки падают, а на эталонных решениях проходят ([Assert checks](https://github.com/wesammustafa/claude-code-practice/blob/main/.github/workflows/assert-checks.yml)).
+- Между выпусками следят проверки по расписанию: внешние ссылки и новые релизы `stable` — раз в неделю, пометки об истечении срока — ежедневно, цитаты уроков в приложении — раз в неделю. Каждая открывает задачу для отслеживания ([Maintainer routine](CONTRIBUTING.md#maintainer-routine)).
+- Примеры ничего не делают, пока вы не скопируете их в проект, и соблюдают [договор безопасности](CONTRIBUTING.md#adding-a-skill): только локальная работа (кроме закреплённого сервера из урока про MCP), минимум прав и smoke-тест, который запускается без Claude.
 
 </details>
 
 ---
 
-Found something stale? [Report it with a source](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=stale-content.yml). Stuck on a lesson? Use the link at the bottom of that lesson. Claude Code is a product of Anthropic; this is an independent community guide, not affiliated with or endorsed by Anthropic.
+Нашли устаревшее в оригинале? [Сообщите автору руководства со ссылкой на источник](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=stale-content.yml) (на английском). Ошибку перевода — [в задачах этого репозитория](https://github.com/runowata/claude-code-ru/issues). Застряли на уроке? Ссылка внизу каждого урока. Claude Code — продукт Anthropic; это независимое руководство сообщества, не связанное с Anthropic и не одобренное ею.
 
-If the guide helped you, a star helps other learners find it.
+Если руководство помогло, поставьте звезду [оригиналу](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know) — так его найдут другие.
 
-[MIT License](LICENSE) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Security](SECURITY.md)
+[Лицензия MIT](LICENSE) · [Contributing](CONTRIBUTING.md) · [Журнал изменений](CHANGELOG.md) · [Безопасность](SECURITY.md)
 
-*Mascot: [`assets/brand/claude-jumping.svg`](assets/brand/claude-jumping.svg) comes from [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice), Copyright (c) 2025-2026 Shayan Rais, used under the [MIT License](https://github.com/shanraisshan/claude-code-best-practice/blob/main/LICENSE).*
+*Талисман: [`assets/brand/claude-jumping.svg`](assets/brand/claude-jumping.svg) взят из [shanraisshan/claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice), Copyright (c) 2025-2026 Shayan Rais, используется по [лицензии MIT](https://github.com/shanraisshan/claude-code-best-practice/blob/main/LICENSE).*
 
 <a id="links-from-the-previous-edition"></a><a id="sdlc"></a><a id="what-are-llms-and-how-do-they-differ-from-ai-tools-like-claude-code"></a><a id="what-is-claude-code"></a><a id="claude-code-setup"></a><a id="1-install"></a><a id="2-authenticate"></a><a id="3-run-your-first-prompt"></a><a id="prompt-engineering-deep-dive"></a><a id="1-explore--plan--code--commit"></a><a id="2-test-driven-workflow-write-tests--code--commit"></a><a id="4-optional-generate-a-claudemd"></a><a id="3-visual-iteration-code--screenshot--iterate--commit"></a><a id="claude-opus-46-the-latest-powerhouse"></a><a id="claude-opus-47-the-latest-flagship"></a><a id="the-claude-5-era-todays-model-lineup"></a><a id="effort-levels"></a><a id="4-effort-levels--how-hard-claude-thinks"></a><a id="claude-commands"></a><a id="built-in-slash-commands"></a><a id="day-1-essentials"></a><a id="custom-slash-commands"></a><a id="claude-skills"></a><a id="your-first-skill-in-3-minutes"></a><a id="want-more-depth"></a><a id="what-are-skills"></a><a id="built-in-vs-custom-skills"></a><a id="skills-faq"></a><a id="creating-custom-skills"></a><a id="available-skills-reference"></a><a id="using-skills-in-workflow"></a><a id="troubleshooting-skills"></a><a id="skills-best-practices"></a><a id="hooks"></a><a id="setting-up-claude-hooks"></a><a id="setting-up-hooks"></a><a id="hook-events"></a><a id="hook-input"></a><a id="hook-output"></a><a id="security-considerations"></a><a id="hook-execution-details-and-debugging"></a><a id="execution--debugging"></a><a id="2-general-purpose-subagents--when-one-claude-isnt-enough"></a><a id="3-specialized-subagents--drop-in-role-prompts"></a><a id="ai-agents"></a><a id="running-agents-in-parallel"></a><a id="subagents--running-agents-in-parallel"></a><a id="orchestrating-specialists-from-the-main-session"></a><a id="1-git-worktrees--parallel-branches-parallel-sessions"></a><a id="agent-teams-experimental---2026"></a><a id="agent-teams-experimental"></a><a id="enable-it"></a><a id="the-example-that-justifies-the-cost"></a><a id="staff-a-team-with-the-role-prompts-you-already-have"></a><a id="three-things-that-catch-people-out"></a><a id="monitoring-and-the-naming-trap"></a><a id="best-practices"></a><a id="dynamic-workflows"></a><a id="try-it-in-2-minutes--no-script-required"></a><a id="starting-your-own"></a><a id="beyond-one-terminal--the-2026-automation-surface"></a><a id="model-context-protocol-mcp"></a><a id="the-nm-problem-mcp-solves"></a><a id="three-pillars"></a><a id="the-mcp-registry--self-discovering-agents"></a><a id="the-mcp-ecosystem-today"></a><a id="fast-mode"></a><a id="fast-mode-"></a><a id="beyond-your-own-skills--the-ecosystem"></a><a id="featured-mcp-servers"></a><a id="more-mcp-servers-worth-knowing"></a><a id="super-claude-framework"></a><a id="the-bmad-method--ai-agent-framework"></a><a id="updates--deprecations-february-2026"></a><a id="updates--deprecations"></a><a id="updates--deprecations-as-of-july-2026"></a><a id="faq"></a><a id="references"></a><a id="steal-this-setup"></a><a id="5-bonus-steal-this-repos-setup"></a><a id="-when-to-use-what"></a>
 
 <details>
-<summary>Followed a link from an earlier edition?</summary>
+<summary>Пришли по ссылке из прошлого выпуска?</summary>
 
-The previous edition's README sections moved:
+Разделы README прошлого выпуска переехали:
 
-- **SDLC, what LLMs and Claude Code are, setup, install, sign-in and your first prompt:** moved to [Install, sign in and look around](docs/beginner/01-install-and-look-around.md).
-- **Prompt engineering, explore-plan-code-commit and test-driven work:** moved to [Your first change, from request to commit](docs/beginner/03-first-change.md).
-- **Generating a CLAUDE.md:** moved to [Project memory with CLAUDE.md](docs/beginner/05-project-memory.md).
-- **Visual iteration with screenshots:** moved to [Give Claude a screenshot](docs/beginner/electives/screenshots-and-images.md).
-- **The model lineup:** moved to [Models and effort](docs/reference/models.md).
-- **Effort levels:** moved to [Pick the model and effort](docs/intermediate/03-model-and-effort.md).
-- **Commands and day-one essentials:** moved to [Commands by level](docs/reference/commands.md).
-- **Custom slash commands and skills:** moved to [Turn a repeated workflow into a skill](docs/intermediate/01-first-skill.md).
-- **The skills reference and skills in a workflow:** moved to [Turn a repeated workflow into a skill](docs/intermediate/01-first-skill.md), which shows how to run a skill. The catalog of this repo's own skills and its workflow recipes were removed in edition v2026.10: see the [CHANGELOG](CHANGELOG.md#removed-live-config).
-- **Skills troubleshooting and best practices:** moved to [Skill patterns](docs/intermediate/electives/skill-patterns.md).
-- **Hooks:** moved to [Enforce a rule with a hook](docs/intermediate/05-hooks.md).
-- **General-purpose and specialized subagents:** moved to [Delegate to a custom subagent](docs/intermediate/06-subagents.md). The drop-in role prompts were removed in edition v2026.10: see the [CHANGELOG](CHANGELOG.md#removed-listings).
-- **AI agents and running agents in parallel:** moved to [Choose an orchestration pattern](docs/advanced/02-orchestration-patterns.md).
-- **Git worktrees:** moved to [Parallel sessions with worktrees](docs/advanced/01-parallel-sessions.md).
-- **Agent teams:** moved to [Agent teams](docs/advanced/electives/agent-teams.md).
-- **Dynamic workflows:** moved to [Run and save a dynamic workflow](docs/advanced/03-dynamic-workflows.md).
-- **The automation surface:** moved to [Feature map](docs/reference/feature-map.md).
-- **Model Context Protocol (MCP):** moved to [Connect a tool with MCP](docs/intermediate/07-mcp.md).
-- **Fast mode:** moved to [Fast mode](docs/intermediate/electives/fast-mode.md).
-- **The skills ecosystem:** moved to [Install and manage plugins](docs/intermediate/08-plugins.md). The skills ecosystem catalog was removed in edition v2026.10: see the [CHANGELOG](CHANGELOG.md#removed-listings).
-- **MCP server lists:** moved to [Connect a tool with MCP](docs/intermediate/07-mcp.md). The MCP server tables were removed in edition v2026.10: see the [CHANGELOG](CHANGELOG.md#removed-listings).
-- **Super Claude and the BMAD method:** removed in edition v2026.10: listings no lesson uses. See the [CHANGELOG](CHANGELOG.md#removed-listings).
-- **Updates and deprecations:** removed in edition v2026.10: the guide's summaries of Claude Code releases. See the [CHANGELOG](CHANGELOG.md#removed-changelog-mirror).
-- **FAQ:** moved to [FAQ](docs/reference/faq.md), which says where each answer went.
-- **References:** moved to [Further learning](docs/reference/further-reading.md).
-- **Steal this setup:** moved to [Share your setup with a team](docs/advanced/06-share-your-setup.md).
-- **When to use what:** moved to [When to use what](docs/intermediate/README.md#when-to-use-what).
+- **SDLC, что такое LLM и Claude Code, настройка, установка, вход и первый запрос:** в [Установка, вход и первый осмотр](docs/beginner/01-install-and-look-around.md).
+- **Промпт-инжиниринг, цикл «изучить — спланировать — написать — закоммитить» и работа через тесты:** в [Первое изменение: от запроса до коммита](docs/beginner/03-first-change.md).
+- **Создание CLAUDE.md:** в [Память проекта и CLAUDE.md](docs/beginner/05-project-memory.md).
+- **Визуальная доработка по скриншотам:** в [Скриншоты и изображения](docs/beginner/electives/screenshots-and-images.md).
+- **Линейка моделей:** в [Модели и effort](docs/reference/models.md).
+- **Уровни effort:** в [Выбор модели и effort](docs/intermediate/03-model-and-effort.md).
+- **Команды и самое нужное в первый день:** в [Команды по уровням](docs/reference/commands.md).
+- **Свои slash-команды и skills:** в [Повторяющийся процесс — в skill](docs/intermediate/01-first-skill.md).
+- **Справочник по skills и skills в рабочем процессе:** в [Повторяющийся процесс — в skill](docs/intermediate/01-first-skill.md), где показано, как запустить skill. Каталог skills этого репозитория и рецепты процессов удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-live-config).
+- **Решение проблем со skills и лучшие практики:** в [Приёмы для skills](docs/intermediate/electives/skill-patterns.md).
+- **Hooks:** в [Правило через hook](docs/intermediate/05-hooks.md).
+- **Субагенты общего назначения и специализированные:** в [Поручение своему субагенту](docs/intermediate/06-subagents.md). Готовые ролевые промпты удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
+- **ИИ-агенты и параллельный запуск агентов:** в [Выбор схемы оркестрации](docs/advanced/02-orchestration-patterns.md).
+- **Git worktrees:** в [Параллельные сессии в worktree](docs/advanced/01-parallel-sessions.md).
+- **Agent teams:** в [Agent teams](docs/advanced/electives/agent-teams.md).
+- **Динамические workflows:** в [Запуск и сохранение динамического workflow](docs/advanced/03-dynamic-workflows.md).
+- **Средства автоматизации:** в [Карта возможностей](docs/reference/feature-map.md).
+- **Model Context Protocol (MCP):** в [Подключение инструмента через MCP](docs/intermediate/07-mcp.md).
+- **Fast mode:** в [Fast mode](docs/intermediate/electives/fast-mode.md).
+- **Экосистема skills:** в [Установка плагинов и управление ими](docs/intermediate/08-plugins.md). Каталог экосистемы skills удалён в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
+- **Списки MCP-серверов:** в [Подключение инструмента через MCP](docs/intermediate/07-mcp.md). Таблицы MCP-серверов удалены в выпуске v2026.10: см. [CHANGELOG](CHANGELOG.md#removed-listings).
+- **Super Claude и метод BMAD:** удалены в выпуске v2026.10 — это подборки, которые не использует ни один урок. См. [CHANGELOG](CHANGELOG.md#removed-listings).
+- **Обновления и устаревшие функции:** удалены в выпуске v2026.10 — это были пересказы релизов Claude Code. См. [CHANGELOG](CHANGELOG.md#removed-changelog-mirror).
+- **FAQ:** в [FAQ](docs/reference/faq.md), где сказано, куда переехал каждый ответ.
+- **Ссылки:** в [Что почитать дальше](docs/reference/further-reading.md).
+- **«Возьмите эту настройку себе»:** в [Как поделиться настройкой с командой](docs/advanced/06-share-your-setup.md).
+- **Когда что использовать:** в [Когда что использовать](docs/intermediate/README.md#when-to-use-what).
 
 </details>

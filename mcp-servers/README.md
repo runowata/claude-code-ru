@@ -1,5 +1,5 @@
 <a id="mcp-servers-documentation"></a>
-# MCP servers
+# MCP servers <a id="mcp-servers"></a>
 
 Removed in edition v2026.10: this page and its four walkthroughs covered MCP servers that no lesson uses. To connect a server, see the Intermediate lesson [Connect a tool with MCP](../docs/intermediate/07-mcp.md). See the [CHANGELOG](../CHANGELOG.md#removed-listings).
 

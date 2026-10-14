@@ -1,4 +1,4 @@
-# Hooks for Intermediate lesson 5
+# Hooks for Intermediate lesson 5 <a id="hooks-for-intermediate-lesson-5"></a>
 
 Three teaching hooks for the Intermediate lesson "Enforce a rule with a hook", and the settings that register them. Each script's header says what it does, when it runs, its side effects, platforms, how to remove it and its test line.
 
@@ -8,6 +8,7 @@ Three teaching hooks for the Intermediate lesson "Enforce a rule with a hook", a
 | `dot-claude/hooks/format-after-edit.sh` | `PostToolUse`, `Edit\|Write` | Removes trailing spaces and tabs and leaves one final newline in the source file Claude just changed. Only common source-code extensions, such as `.js`, `.py` and `.sh`: Markdown, patches and data files stay as they are |
 | `dot-claude/hooks/desktop-notify.sh` | `Notification`, every type | Shows a desktop notification for every Claude Code notification, such as a permission prompt that has waited |
 
+<a id="use-them"></a>
 ## Use them
 
 From your project's root:

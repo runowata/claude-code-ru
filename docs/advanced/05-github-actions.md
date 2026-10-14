@@ -1,11 +1,13 @@
-# GitHub Actions
+# GitHub Actions <a id="github-actions"></a>
 
 <sub>**Advanced** · Lesson 5 of 7 · about 20 minutes, plus run time · Needs: [Script Claude Code with `claude -p`](04-headless.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can run Claude Code unattended in a GitHub Actions workflow that reads its credential from a repository secret and stops within limits written in the file.
 
+<a id="you-need"></a>
 ## You need
 
 - The `claude -p` flags from [lesson 4](04-headless.md), such as `--max-turns` and `--allowedTools`.
@@ -21,6 +23,7 @@ By the end of this lesson you can run Claude Code unattended in a GitHub Actions
 - A credential. A Claude Console API key made for this lesson is recommended, because the teardown deletes it. On a Pro, Max, Team or Enterprise plan ([Manual setup](https://code.claude.com/docs/en/github-actions#manual-setup)), you can instead let quick setup create a subscription token ([Quick setup](https://code.claude.com/docs/en/github-actions#quick-setup)). If Claude Code on your machine already uses an API key, quick setup reuses that key instead, so the teardown would delete the key your own Claude Code uses; step 3 of the Worked example shows how to swap in the lesson key.
 - Usage: light. Each run is short, and also uses GitHub Actions minutes (see Watch out).
 
+<a id="the-idea"></a>
 ## The idea
 
 The [Claude Code GitHub Action](https://code.claude.com/docs/en/github-actions), `anthropics/claude-code-action` (Anthropic), runs Claude Code as a step in a workflow. With no `prompt` input, it waits for `@claude` in an issue or pull request and answers in a comment; with a `prompt`, it runs without waiting for a mention ([Interactive and automation modes](https://code.claude.com/docs/en/github-actions#interactive-and-automation-modes)), and its `display_report` input puts Claude's report on the run's summary page ([action.yml at v1.0.237](https://github.com/anthropics/claude-code-action/blob/v1.0.237/action.yml)).
@@ -29,6 +32,7 @@ The workflow names a repository secret that holds the credential ([Manual setup]
 
 No one is at the keyboard, so the limits go in the file. `claude_args` passes Claude Code's CLI flags, such as `--max-turns` and `--allowedTools` ([Pass CLI arguments](https://code.claude.com/docs/en/github-actions#pass-cli-arguments)), and with a prompt written as text rather than a skill, Claude has no shell until you allow the commands it needs ([Run on a schedule](https://code.claude.com/docs/en/github-actions#run-on-a-schedule)). The job's `permissions` and `timeout-minutes` limit its GitHub token and its run time ([Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idpermissions)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 Connect the copy with quick setup, then ask Claude a question in an issue.
@@ -51,6 +55,7 @@ Connect the copy with quick setup, then ask Claude a question in an issue.
 
    `gh issue create` prints the new issue's URL ([gh issue create](https://cli.github.com/manual/gh_issue_create)). `gh run list --limit 3` lists the run it started ([gh run list](https://cli.github.com/manual/gh_run_list)). When it finishes, `gh issue view <issue-url> --comments` shows Claude's answer as a comment ([gh issue view](https://cli.github.com/manual/gh_issue_view)). Your wording will differ, but it should describe how `src/links.js` finds Markdown links.
 
+<a id="your-turn"></a>
 ## Your turn
 
 **Brief:** add `.github/workflows/linkcheck-report.yml`, a workflow you start by hand, in which Claude runs the template's link checker on `samples/` and explains each broken link on the run's summary page, without changing any files. The docs' [Run on a schedule](https://code.claude.com/docs/en/github-actions#run-on-a-schedule) example is a starting point. It sets a model with `--model`: pick one as in [Intermediate lesson 3](../intermediate/03-model-and-effort.md), or leave that line out to use Claude Code's default model ([Pass CLI arguments](https://code.claude.com/docs/en/github-actions#pass-cli-arguments)).
@@ -104,6 +109,7 @@ Then run it, save the record and tear down:
 7. With an API key, delete the key the secret held on the Claude Console's [API keys page](https://platform.claude.com/settings/keys). If that is the key your own Claude Code uses, Claude Code on your machine needs a new key afterwards.
 8. On GitHub, open **Settings** > **Applications** > **Installed GitHub Apps** and select **Configure** next to Claude. Then either remove this copy under **Repository access** and click **Save**, or, if this copy is the only repository the App can reach and nothing else of yours uses it, click **Uninstall** ([Modifying repository access](https://docs.github.com/en/apps/using-github-apps/reviewing-and-modifying-installed-github-apps#modifying-repository-access), [Blocking access](https://docs.github.com/en/apps/using-github-apps/reviewing-and-modifying-installed-github-apps#blocking-access)).
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -119,6 +125,7 @@ If the first item fails on the `uses:` line, pin a release tag such as `@v1.0.23
 
 The check reads the workflow from your history, so it still passes after the teardown. Once it passes, tear down as Your turn's steps 5 to 8 describe.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - Anyone with write access to the repository can start a run with `@claude`, and the issue or comment text is input to Claude, so it can carry hidden instructions ([Who can trigger runs](https://code.claude.com/docs/en/github-actions#who-can-trigger-runs), [the action's security notes](https://github.com/anthropics/claude-code-action/blob/v1.0.237/docs/security.md)). Keep this copy private and yours: only people with read access can see its run logs ([Using workflow run logs](https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs)).
@@ -127,6 +134,7 @@ The check reads the workflow from your history, so it still passes after the tea
 
 Listings checked against the listing bar on 2026-10-09.
 
+<a id="go-further"></a>
 ## Go further
 
 - [Run on a schedule](https://code.claude.com/docs/en/github-actions#run-on-a-schedule): the same automation mode on a cron trigger.

@@ -1,45 +1,49 @@
-# Install, sign in and look around
+# Установка, вход и первый осмотр <a id="install-sign-in-and-look-around"></a>
 
-<sub>**Beginner** · Lesson 1 of 5 · about 20 minutes · Needs: [Beginner index](README.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
+<sub>**Начальный уровень** · Урок 1 из 5 · около 20 минут · Нужно: [оглавление уровня](README.md) · Проверено на Claude Code v2.1.285 (stable) 2026-10-05</sub>
 
-## Goal
+<a id="goal"></a>
+## Цель
 
-By the end of this lesson you can install Claude Code, sign in, start it in a repository, and tell which version, model and account a session is using.
+После урока вы умеете установить Claude Code, войти в аккаунт, запустить его в репозитории и определить, какая версия, модель и аккаунт используются в сессии.
 
-## You need
+<a id="you-need"></a>
+## Что понадобится
 
-- A terminal and git, plus a Claude subscription (Pro, Max, Team or Enterprise; the free plan doesn't include Claude Code), a Claude Console account, or access through a supported cloud provider ([Quickstart](https://code.claude.com/docs/en/quickstart), [Advanced setup](https://code.claude.com/docs/en/setup)).
-- Your copy of the practice template, cloned, as the [Beginner index](README.md#practice) describes, and Node.js LTS for its checks. In a Codespace on your copy, Claude Code is already installed: start at step 3.
-- To practice in one of your own repositories instead, keep the template copy as well: the check runs from it. In your repository, set up the folder where lessons save snapshots, and tell git to ignore it without a commit ([gitignore](https://git-scm.com/docs/gitignore)):
+- Терминал и git, а также подписка Claude (Pro, Max, Team или Enterprise; в бесплатный тариф Claude Code не входит), аккаунт Claude Console или доступ через поддерживаемого облачного провайдера ([Quickstart](https://code.claude.com/docs/en/quickstart), [Advanced setup](https://code.claude.com/docs/en/setup)).
+- Склонированная учебная копия шаблона для практики — как описано в [оглавлении уровня](README.md#practice) — и Node.js LTS для её проверок. В Codespace на вашей копии Claude Code уже установлен: начните с шага 3.
+- Если хотите практиковаться в своём репозитории, учебную копию всё равно оставьте: проверка запускается из неё. В своём репозитории создайте папку, куда уроки сохраняют снимки, и скажите git игнорировать её без коммита ([gitignore](https://git-scm.com/docs/gitignore)):
 
   ```bash
   mkdir -p .practice
   echo '.practice/' >> "$(git rev-parse --git-path info/exclude)"
   ```
 
-  **Windows:** `New-Item -ItemType Directory -Force .practice` and `Add-Content (git rev-parse --git-path info/exclude) '.practice/'`.
-- Usage: light, meaning a few short prompts in one session. Inside Claude Code, `/usage` shows your session cost and plan usage limits ([Commands](https://code.claude.com/docs/en/commands)).
+  **Windows:** `New-Item -ItemType Directory -Force .practice` и `Add-Content (git rev-parse --git-path info/exclude) '.practice/'`.
+- Расход: небольшой — несколько коротких запросов в одной сессии. Внутри Claude Code команда `/usage` показывает стоимость сессии и лимиты тарифа ([Commands](https://code.claude.com/docs/en/commands)).
 
 > [!NOTE]
-> On native Windows, run every command in PowerShell. A command with no **Windows** line works there as written; where a **Windows** line follows a command, use it instead. Installing [Git for Windows](https://git-scm.com/downloads/win) lets Claude Code use Bash; without it, Claude Code uses PowerShell instead ([Quickstart](https://code.claude.com/docs/en/quickstart)).
+> В Windows (не в WSL) выполняйте все команды в PowerShell. Команда без строки **Windows** работает там как есть; если после команды идёт строка **Windows**, используйте её. Если установить [Git for Windows](https://git-scm.com/downloads/win), Claude Code сможет работать через Bash; без него он использует PowerShell ([Quickstart](https://code.claude.com/docs/en/quickstart)).
 >
-> If PowerShell refuses to run `npm` with `running scripts is disabled on this system`, type `npm.cmd` wherever a lesson says `npm` (for example `npm.cmd run check -- b-1`), or allow local scripts for your account as [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install#running-scripts-is-disabled-on-this-system) shows.
+> Если PowerShell отказывается запускать `npm` с ошибкой `running scripts is disabled on this system`, пишите `npm.cmd` везде, где в уроке стоит `npm` (например, `npm.cmd run check -- b-1`), или разрешите локальные скрипты для своей учётной записи, как показано в [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install#running-scripts-is-disabled-on-this-system).
 
-## The idea
+<a id="the-idea"></a>
+## Идея
 
-Claude Code is a program you run in a terminal, inside a project folder. It reads the files there and answers questions about them; in the next lessons it changes them too.
+Claude Code — программа, которую запускают в терминале внутри папки проекта. Она читает файлы этой папки и отвечает на вопросы о них; в следующих уроках она будет их и менять.
 
-Before you trust an answer, know three things about the session:
+Прежде чем доверять ответу, узнайте три вещи о сессии:
 
-- **the version**, because features and defaults change between releases;
-- **the model**, because models differ in what they can do;
-- **the account**, because it decides which features and models you can use.
+- **версию** — возможности и настройки по умолчанию меняются от релиза к релизу;
+- **модель** — модели умеют разное;
+- **аккаунт** — от него зависит, какие возможности и модели вам доступны.
 
-The header Claude Code shows when it starts gives the version and the model. The `/status` command shows the version, model and account together ([Commands](https://code.claude.com/docs/en/commands)).
+Заголовок, который Claude Code показывает при запуске, сообщает версию и модель. Команда `/status` показывает версию, модель и аккаунт вместе ([Commands](https://code.claude.com/docs/en/commands)).
 
-## Worked example
+<a id="worked-example"></a>
+## Разбор на примере
 
-1. Install Claude Code ([Quickstart](https://code.claude.com/docs/en/quickstart)):
+1. Установите Claude Code ([Quickstart](https://code.claude.com/docs/en/quickstart)):
 
    ```bash
    curl -fsSL https://claude.ai/install.sh | bash
@@ -47,15 +51,15 @@ The header Claude Code shows when it starts gives the version and the model. The
 
    **Windows:** `irm https://claude.ai/install.ps1 | iex`
 
-   When it finishes, open a new terminal window.
-2. Check the install. A working installation prints a version number followed by `(Claude Code)`:
+   Когда установка закончится, откройте новое окно терминала.
+2. Проверьте установку. Рабочая установка выводит номер версии и после него `(Claude Code)`:
 
    ```bash
    claude --version
    ```
 
-   If your shell says `claude` isn't found or isn't recognized, the install folder isn't on your `PATH` yet: fix it with [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install#command-not-found-claude-after-installation) before you go on.
-3. Go to your practice copy and save that output for the check: put the full path to your copy's folder in place of `<your practice copy>`, in quotes if the path has a space. In a Codespace, that is `/workspaces/` followed by your copy's name ([Codespaces deep dive](https://docs.github.com/en/codespaces/about-codespaces/deep-dive), [Codespaces with GitHub CLI](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-github-codespaces-with-github-cli)):
+   Если оболочка отвечает, что `claude` не найден или не распознан, папка установки ещё не добавлена в `PATH`: исправьте это по [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install#command-not-found-claude-after-installation) и только потом продолжайте.
+3. Перейдите в учебную копию и сохраните этот вывод для проверки: вместо `<your practice copy>` подставьте полный путь к папке копии, в кавычках, если в пути есть пробел. В Codespace это `/workspaces/` и имя вашей копии ([Codespaces deep dive](https://docs.github.com/en/codespaces/about-codespaces/deep-dive), [Codespaces with GitHub CLI](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-github-codespaces-with-github-cli)):
 
    ```bash
    cd <your practice copy>
@@ -63,64 +67,68 @@ The header Claude Code shows when it starts gives the version and the model. The
    claude --version > .practice/version.txt
    ```
 
-   **Windows:** `New-Item -ItemType Directory -Force .practice` replaces the `mkdir` line.
-4. Start a session in the same folder:
+   **Windows:** строку с `mkdir` замените на `New-Item -ItemType Directory -Force .practice`.
+4. Запустите сессию в той же папке:
 
    ```bash
    claude
    ```
 
-   The first time, Claude Code asks you to sign in. At the login prompt in the terminal, choose your account type; with a Claude subscription or Console account, you then finish in your browser. If the browser shows a code instead of sending you back, paste it into the terminal at the `Paste code here if prompted` prompt ([Authentication](https://code.claude.com/docs/en/authentication)). With an API key or a cloud provider, follow the [Quickstart](https://code.claude.com/docs/en/quickstart) instead.
+   При первом запуске Claude Code попросит войти. На экране входа в терминале выберите тип аккаунта; с подпиской Claude или аккаунтом Console вход завершается в браузере. Если браузер вместо возврата в терминал показывает код, вставьте его в терминал в поле `Paste code here if prompted` ([Authentication](https://code.claude.com/docs/en/authentication)). С API-ключом или облачным провайдером следуйте [Quickstart](https://code.claude.com/docs/en/quickstart).
 
-   In a repository you haven't trusted yet, Claude Code also shows the workspace trust dialog, which asks whether you trust the folder ([Security](https://code.claude.com/docs/en/security#additional-safeguards)). **No, exit** is highlighted at first, and pressing Enter on it quits Claude Code. You made this copy, so press the Down arrow to choose **Yes, I trust this folder**, then press Enter. Claude Code saves that trust for the whole repository, so it doesn't ask again here ([Configure permissions](https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust)).
+   В репозитории, которому вы ещё не доверяли, Claude Code также показывает окно доверия к папке — спрашивает, доверяете ли вы ей ([Security](https://code.claude.com/docs/en/security#additional-safeguards)). Сначала выделен пункт **No, exit** (нет, выйти), и Enter на нём закрывает Claude Code. Эту копию сделали вы, поэтому стрелкой вниз выберите **Yes, I trust this folder** (да, я доверяю этой папке) и нажмите Enter. Claude Code запоминает доверие для всего репозитория и здесь больше не спрашивает ([Configure permissions](https://code.claude.com/docs/en/permissions#project-allow-rules-and-workspace-trust)).
 
-   The header above the prompt then shows the version, the model and the folder.
-5. Type `/status`. The **Status** tab lists the version, the model and the account you signed in with (rows such as **Login method** and **Email**). Press `Esc` to close it ([Interactive mode](https://code.claude.com/docs/en/interactive-mode#general-controls)). Your version may be newer than the one at the top of this page: this guide is checked against the `stable` release channel, and Claude Code follows `latest` unless you choose otherwise ([Configure the release channel](https://code.claude.com/docs/en/setup#configure-release-channel)).
-6. Ask two questions about the code:
+   После этого заголовок над строкой ввода показывает версию, модель и папку.
+5. Введите `/status`. На вкладке **Status** видны версия, модель и аккаунт, с которым вы вошли (строки вроде **Login method** и **Email**). Закройте её клавишей `Esc` ([Interactive mode](https://code.claude.com/docs/en/interactive-mode#general-controls)). Ваша версия может быть новее указанной в начале страницы: руководство проверяется на канале релизов `stable`, а Claude Code по умолчанию следует за `latest` ([Configure the release channel](https://code.claude.com/docs/en/setup#configure-release-channel)).
+6. Задайте два вопроса о коде:
 
    ```text
-   what does this project do?
+   что делает этот проект?
    ```
 
    ```text
-   which file parses linkcheck.json, and how do I run the tests?
+   какой файл разбирает linkcheck.json и как запустить тесты?
    ```
 
-   Claude reads files to answer. Your wording will differ, but the answers should name `src/config.js` and `npm test`.
-7. End the session with `/exit`.
+   Чтобы ответить, Claude читает файлы. Формулировки будут другими, но в ответах должны прозвучать `src/config.js` и `npm test`.
+7. Завершите сессию командой `/exit`.
 
-## Your turn
+<a id="your-turn"></a>
+## Ваша очередь
 
-Repeat the example in your practice copy, or in your own repository, with questions of your own:
+Повторите пример в учебной копии или в своём репозитории, но со своими вопросами:
 
-1. In that folder, save `claude --version` to `.practice/version.txt`.
-2. Start `claude` there. Your own repository shows the trust dialog again, because trust is saved per repository: choose **Yes, I trust this folder** only for code you know.
-3. Open `/status` and note the model and the account.
-4. Ask two questions of your own about the code, then end the session with `/exit`.
+1. В этой папке сохраните вывод `claude --version` в `.practice/version.txt`.
+2. Запустите там `claude`. Свой репозиторий снова покажет окно доверия, потому что доверие запоминается для каждого репозитория отдельно: выбирайте **Yes, I trust this folder** только для кода, который вы знаете.
+3. Откройте `/status` и запомните модель и аккаунт.
+4. Задайте два своих вопроса о коде, затем завершите сессию командой `/exit`.
 
-## Check
+<a id="check"></a>
+## Проверка
 
-You are done when all of these are true:
+Урок пройден, когда выполнено всё:
 
-- [ ] `.practice/version.txt` holds a line such as `X.Y.Z (Claude Code)`. Check it with `cat .practice/version.txt`.
-- [ ] Self-check (not tested): you can say which model and which account `/status` showed.
+- [ ] В `.practice/version.txt` записана строка вида `X.Y.Z (Claude Code)`. Проверьте командой `cat .practice/version.txt`.
+- [ ] Самопроверка (не проверяется автоматически): вы можете назвать модель и аккаунт, которые показал `/status`.
 
-Run `npm run check -- b-1` in your practice copy. In your own repository, run `npm run check -- b-1 --dir <your repo>` from your practice copy instead. An npm error such as `Could not read package.json` or `Missing script: "check"` means you ran it outside your practice copy: `cd` into the copy and run it again.
+Запустите `npm run check -- b-1` в учебной копии. Если работали в своём репозитории, запустите из учебной копии `npm run check -- b-1 --dir <your repo>`. Ошибка npm вроде `Could not read package.json` или `Missing script: "check"` значит, что команда запущена не в учебной копии: перейдите в неё через `cd` и запустите снова.
 
-If the first item fails, run `claude --version` on its own: when it prints an error, fix it as Worked example step 2 describes; when it prints a version, save it again in the folder the check reads (your practice copy, or the repository you passed to `--dir`).
+Если первый пункт не прошёл, выполните `claude --version` отдельно: если выводится ошибка, исправьте её, как описано в шаге 2 разбора; если выводится версия, сохраните её ещё раз в папке, которую читает проверка (учебная копия или репозиторий, переданный в `--dir`).
 
-## Watch out
+<a id="watch-out"></a>
+## Осторожно
 
-- A new session can edit most files and run most commands without asking you first ([Quickstart](https://code.claude.com/docs/en/quickstart)). In this lesson, only ask questions; the next lesson shows how to choose what Claude may do on its own. Even a question can lead Claude to run a command that writes files, such as running the tests to answer you: run `git status` when the session ends, and before lesson 2, commit or remove anything it lists.
+- Новая сессия может менять большинство файлов и выполнять большинство команд, не спрашивая вас ([Quickstart](https://code.claude.com/docs/en/quickstart)). В этом уроке только задавайте вопросы; в следующем вы узнаете, как решать, что Claude может делать сам. Даже вопрос может привести к команде, которая пишет файлы, — например, Claude запустит тесты, чтобы ответить. Когда сессия закончится, выполните `git status` и до урока 2 закоммитьте или удалите всё, что он покажет.
 
-## Go further
+<a id="go-further"></a>
+## Дальше
 
-- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works): what happens between your question and its answer.
-- [Configure the release channel](https://code.claude.com/docs/en/setup#configure-release-channel): how to move to `stable`, which skips releases with major regressions.
-- [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install): fixes for install and sign-in errors.
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works): что происходит между вашим вопросом и ответом.
+- [Configure the release channel](https://code.claude.com/docs/en/setup#configure-release-channel): как перейти на `stable`, который пропускает релизы с серьёзными регрессиями.
+- [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install): решения ошибок установки и входа.
 
 ---
 
-<sub>Sources: [Quickstart](https://code.claude.com/docs/en/quickstart) · [Advanced setup](https://code.claude.com/docs/en/setup) · [Authentication](https://code.claude.com/docs/en/authentication) · [Security](https://code.claude.com/docs/en/security) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Commands](https://code.claude.com/docs/en/commands) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install) · [gitignore](https://git-scm.com/docs/gitignore) · [Codespaces deep dive](https://docs.github.com/en/codespaces/about-codespaces/deep-dive) · [Codespaces with GitHub CLI](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-github-codespaces-with-github-cli)</sub>
+<sub>Источники: [Quickstart](https://code.claude.com/docs/en/quickstart) · [Advanced setup](https://code.claude.com/docs/en/setup) · [Authentication](https://code.claude.com/docs/en/authentication) · [Security](https://code.claude.com/docs/en/security) · [Configure permissions](https://code.claude.com/docs/en/permissions) · [Commands](https://code.claude.com/docs/en/commands) · [Interactive mode](https://code.claude.com/docs/en/interactive-mode) · [Troubleshoot installation](https://code.claude.com/docs/en/troubleshoot-install) · [gitignore](https://git-scm.com/docs/gitignore) · [Codespaces deep dive](https://docs.github.com/en/codespaces/about-codespaces/deep-dive) · [Codespaces with GitHub CLI](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-github-codespaces-with-github-cli)</sub>
 
-<sub>← [Beginner index](README.md) · [Permission modes and plan mode](02-permission-modes-and-plan-mode.md) → · Topic: [Models, effort and cost](../topics/models-effort-and-cost.md) · [Stuck on this lesson?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=b-1)</sub>
+<sub>← [Оглавление уровня](README.md) · [Режимы разрешений и plan mode](02-permission-modes-and-plan-mode.md) → · Тема: [Модели, effort и стоимость](../topics/models-effort-and-cost.md) · [Застряли на уроке?](https://github.com/wesammustafa/Claude-Code-Everything-You-Need-to-Know/issues/new?template=lesson-feedback.yml&lesson=b-1)</sub>

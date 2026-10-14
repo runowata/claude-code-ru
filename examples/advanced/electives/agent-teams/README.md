@@ -1,4 +1,4 @@
-# Reviewer subagents for the agent teams Elective
+# Reviewer subagents for the agent teams Elective <a id="reviewer-subagents-for-the-agent-teams-elective"></a>
 
 > [!NOTE]
 > Agent teams are experimental and disabled by default.
@@ -21,6 +21,7 @@ Each file's header block, as comments at the top of its frontmatter, says what i
 - **Requires:** Claude Code; for teammates, agent teams turned on and an interactive session. Platforms: any; `test.sh` needs bash and awk.
 - **Remove:** delete `.claude/agents/security-reviewer.md` and `.claude/agents/test-reviewer.md`.
 
+<a id="as-teammates"></a>
 ## As teammates
 
 Agent teams need `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` set to `1`, in your shell or under `env` in settings, and an interactive session: with `-p`, Claude doesn't spawn teammates ([Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)). For one session:
@@ -40,6 +41,7 @@ Each teammate is limited to its definition's `tools` (an in-process teammate als
 > [!WARNING]
 > While agent teams are on, a subagent that Claude names launches as a teammate, so a team can form when you didn't ask for one ([Enable agent teams](https://code.claude.com/docs/en/agent-teams#enable-agent-teams)). Teammates start with your permission mode, except `dontAsk`, and their permission prompts appear in your session for you to answer. If you run with `--dangerously-skip-permissions`, every teammate does too ([Permissions](https://code.claude.com/docs/en/agent-teams#permissions)).
 
+<a id="as-subagents-the-cheap-variant"></a>
 ## As subagents, the cheap variant
 
 Agent teams use significantly more tokens than a single session ([Token usage](https://code.claude.com/docs/en/agent-teams#token-usage)). The same two files work as ordinary subagents in one session with agent teams off: ask `Use the security-reviewer agent to review <files>`, then the same for `test-reviewer`. Keep the variable unset for this, because with agent teams on, a subagent that Claude names launches as a teammate.

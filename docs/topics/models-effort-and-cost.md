@@ -1,19 +1,22 @@
-# Models, effort and cost
+# Models, effort and cost <a id="models-effort-and-cost"></a>
 
 <sub>Topic · Verified against Claude Code v2.1.285 (stable) on 2026-10-05</sub>
 
 Which model and effort level a task needs, and what a session costs.
 
+<a id="lessons"></a>
 ## Lessons
 
 - Beginner: [Install, sign in and look around](../beginner/01-install-and-look-around.md)
 - Intermediate: [Pick the model and effort](../intermediate/03-model-and-effort.md)
 - Intermediate Electives: [The status line](../intermediate/electives/status-line.md), [Fast mode](../intermediate/electives/fast-mode.md)
 
+<a id="reference"></a>
 ## Reference
 
 - [Models and effort](../reference/models.md)
 
+<a id="official-docs"></a>
 ## Official docs
 
 - [Model configuration](https://code.claude.com/docs/en/model-config)

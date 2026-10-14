@@ -1,11 +1,13 @@
-# Run and save a dynamic workflow
+# Run and save a dynamic workflow <a id="run-and-save-a-dynamic-workflow"></a>
 
 <sub>**Advanced** · Lesson 3 of 7 · about 20 minutes, plus run time · Needs: [Choose an orchestration pattern](02-orchestration-patterns.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can have Claude write a dynamic workflow for a job that fans out across many files, keep the run small, and save it as a command that takes its input from `args`.
 
+<a id="you-need"></a>
 ## You need
 
 - One of your own repositories with at least two folders that each hold a `TODO` or `FIXME` comment that still applies to the code: `git grep -n -E 'TODO|FIXME'` lists them. If yours has none, use a local clone of a project that has some; you won't push to it. Run the check from your copy of the practice template, with Node.js LTS. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
@@ -14,6 +16,7 @@ By the end of this lesson you can have Claude write a dynamic workflow for a job
 > [!NOTE]
 > On Pro, dynamic workflows are off until you turn them on from the **Dynamic workflows** row in `/config`, and the size guideline defaults to `small` ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows), [Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
 
+<a id="the-idea"></a>
 ## The idea
 
 A dynamic workflow is a JavaScript script that Claude writes for your task. A runtime runs it in the background while your session stays responsive ([Orchestrate subagents at scale with dynamic workflows](https://code.claude.com/docs/en/workflows)). The script starts the subagents and keeps their results in its own variables, so only the final answer reaches your conversation: the script, not Claude, [holds the plan](02-orchestration-patterns.md#the-idea) ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow)).
@@ -22,6 +25,7 @@ Because the plan is code, you can read it before it runs, independent agents can
 
 A size guideline tells Claude how many agents to aim for when it writes the script. It is advice, not a cap ([Set a size guideline](https://code.claude.com/docs/en/workflows#set-a-size-guideline)).
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. At the root of your repository, start Claude Code in Manual mode:
@@ -82,6 +86,7 @@ A size guideline tells Claude how many agents to aim for when it writes the scri
 5. While it works, run `/workflows` and select your audit run; when the session has only one run, it opens that run directly. The progress view shows each phase with its agent counts. `↑` and `↓` select, `Enter` opens a phase and then an agent (its prompt, its recent tool calls and its result), `Esc` backs out, and `p` pauses the run or resumes it ([Watch the run](https://code.claude.com/docs/en/workflows#watch-the-run)). A one-line progress summary also shows in the task panel below the input box ([Run a bundled workflow](https://code.claude.com/docs/en/workflows#run-a-bundled-workflow)).
 6. When the run finishes and its findings appear in your session, run `/workflows`, select your audit run, not the `/deep-research` one, and press `s`. In the save dialog, `Tab` switches between `.claude/workflows/` in your project, shared with everyone who clones the repository once you commit it, and `~/.claude/workflows/`, available in every project but only to you. Make sure `.claude/workflows/` in your project is selected, pressing `Tab` if it isn't, then press `Enter` ([Save the workflow for reuse](https://code.claude.com/docs/en/workflows#save-the-workflow-for-reuse)). Claude Code writes the script as a `.js` file to the closest `.claude/workflows/` folder that already exists between your working directory and the repository root, or to `.claude/workflows/` at the root if there's none yet. From your next session on, the workflow runs as a command, `/<name>`, listed in `/` autocomplete beside `/deep-research` ([Bundled workflows](https://code.claude.com/docs/en/workflows#bundled-workflows)).
 
+<a id="your-turn"></a>
 ## Your turn
 
 **Brief:** build a workflow that finds every `TODO` and `FIXME` comment in a folder you name, checks whether each one still applies to the current code, and reports only the ones that do. Keep it small: have its agents check the comments in a few batches, not one agent per comment. Pick two folders that each still hold at least one `TODO` or `FIXME` that applies: a report that finds none cites no `path:line` and fails the check.
@@ -103,6 +108,7 @@ Save that report to .practice/a-3-run1.md: the folder you ran it on as the first
 
 Use `.practice/a-3-run2.md` for the second folder.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -116,12 +122,14 @@ Run `npm run check -- a-3 --dir <your repo>` from your practice copy.
 
 If the first item fails, check that the script is committed (`git check-ignore -v .claude/workflows/<file>.js` names any ignore rule that hides it; add it with `git add -f` and commit it) and that it reads `args`. If a report cites a `path:line` outside its folder, or none inside it, make sure the script reads the folder from `args` and reports only files inside it, start `claude` at the repository root so paths start there, and run it again on a folder where a `TODO` or `FIXME` still applies. If a cited line holds no `TODO` or `FIXME`, either the report cites other lines in its reasons or the file changed after the run: ask Claude to cite only the `TODO` and `FIXME` lines, or run the workflow again and save the new report with the prompt above.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - In auto mode, Claude Code asks only before your first workflow launch: any **Yes** records consent in your user settings, and later launches start without asking. A workflow's agents use your permission rules, and when your session is in accept-edits, auto or bypass mode, they run in that same mode ([Approve the plan before it runs](https://code.claude.com/docs/en/workflows#approve-the-plan-before-it-runs), [Permission modes](https://code.claude.com/docs/en/sub-agents#permission-modes)). Read each script before you approve it, and stay in Manual mode for a workflow you haven't read.
 - A run can use meaningfully more tokens than the same task in conversation, and it counts toward your plan's usage and rate limits. Try a workflow on one small folder first, and ask Claude to use a smaller model for stages that don't need the strongest one. `/workflows` shows each agent's token usage as the run goes, and `x` on a selected run stops it. When a run grows unusually large, its progress line shows a `Large workflow` warning. Once you choose a size guideline, its agent count replaces the warning's built-in agent threshold, and a large projected token total can still trigger it. The warning doesn't pause or limit the run ([Cost](https://code.claude.com/docs/en/workflows#cost)).
 - `p` pauses and resumes a run, but a run you stopped doesn't resume with `p`: ask Claude to relaunch it with the same script, in the same session or one you reopen with `claude --resume`. Agents that were still running when you stopped start over ([Resume after a pause](https://code.claude.com/docs/en/workflows#resume-after-a-pause)). An agent whose output stops for too long also starts over on its own, and `/workflows` adds `(retry 1)` to its name ([When an agent stalls and restarts](https://code.claude.com/docs/en/workflows#when-an-agent-stalls-and-restarts)). At v2.1.285, an agent also starts over from its prompt when its connection stalls for a few minutes mid-response (fixed in v2.1.286) or your Mac wakes from sleep (fixed in v2.1.290) ([CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)), so keep the machine awake while a run works.
 
+<a id="go-further"></a>
 ## Go further
 
 - [This guide's own saved workflow](../../.claude/workflows/stale-docs-audit.js): a real script that reads `args`, groups its agents into phases, and has separate agents verify each claim before it's reported.

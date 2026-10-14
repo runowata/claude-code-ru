@@ -1,20 +1,23 @@
-# Agent view
+# Agent view <a id="agent-view"></a>
 
 <sub>**Advanced** · Elective · about 20 minutes, plus run time · Needs: [Parallel sessions with worktrees](../01-parallel-sessions.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
 > [!NOTE]
 > "Agent view is in research preview. The interface and keyboard shortcuts may change as the feature evolves." ([Manage multiple agents with agent view](https://code.claude.com/docs/en/agent-view))
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this Elective you can hand several independent tasks to background sessions from one screen, step in only when one needs you, and merge or discard what each one did.
 
+<a id="you-need"></a>
 ## You need
 
 - Your copy of the practice template, and Node.js LTS, for the Worked example; one of your own repositories for Your turn. You practice in throwaway clones of them whose remote is a folder on your machine, so nothing a session pushes leaves your machine. Step 1 makes the clone for the Worked example.
 - macOS, Linux or WSL 2, and two terminals: one for agent view, one for git. On macOS, keep the clones outside Desktop, Documents and Downloads, where a background session can report `Operation not permitted` until you grant it access ([Background sessions can't read Desktop, Documents, or Downloads on macOS](https://code.claude.com/docs/en/agent-view#background-sessions-can%E2%80%99t-read-desktop-documents-or-downloads-on-macos)).
 - Usage: moderate. Each session draws on your usage independently ([Quick start](https://code.claude.com/docs/en/agent-view#quick-start)), and each row's one-line summary is a short Haiku-class request when a turn ends, and every few minutes during a long turn ([Row summaries](https://code.claude.com/docs/en/agent-view#row-summaries)). Cheap variant: in step 3, dispatch only the first task, then type `! npm test` as the second. A shell job runs the command in place of Claude, so no model is invoked, and its row clears itself a few minutes after the command ends ([Run a shell command](https://code.claude.com/docs/en/agent-view#run-a-shell-command)). Steps 4 to 8 then apply to the one Claude session: expect one worktree, one branch and one session to remove.
 
+<a id="the-idea"></a>
 ## The idea
 
 [Agent view](https://code.claude.com/docs/en/agent-view), opened with `claude agents`, is one screen for your background sessions: full Claude Code conversations that run with no terminal attached. Every prompt you type there starts its own session, which a background service keeps running after you close the screen. Each row shows whether its session is working, needs your input, or is done ([Read session state](https://code.claude.com/docs/en/agent-view#read-session-state)).
@@ -24,6 +27,7 @@ In [lesson 1](../01-parallel-sessions.md) you made the worktrees yourself. Here 
 > [!WARNING]
 > A background session acts while you aren't watching. Opened from your shell without `--permission-mode`, agent view starts each session the way a new `claude` session in that folder would, usually in auto mode ([Permission mode](https://code.claude.com/docs/en/agent-view#permission-mode), [Which mode a session starts in](https://code.claude.com/docs/en/permission-modes#which-mode-a-session-starts-in)), where Claude commits without asking and pushes its branch when the repository has a remote. Open agent view with a permission mode you chose, never with `--dangerously-skip-permissions`, and practice in a clone whose remote is a folder on your machine.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. From the folder that holds your practice template copy, make a throwaway clone with a local remote, and check that its tests pass. Replace `<template copy>` with your copy's folder name:
@@ -83,6 +87,7 @@ In [lesson 1](../01-parallel-sessions.md) you made the worktrees yourself. Here 
 
    `claude rm` also removes the worktree Claude created for the session when that's safe. It keeps a worktree that holds uncommitted changes, or commits it can't confirm are saved elsewhere, and says why. Commits on the remote, or merged into the default branch you have checked out, count as saved ([What deleting a session removes](https://code.claude.com/docs/en/agent-view#what-deleting-a-session-removes)). Afterwards `git worktree list` shows only your checkout. Press `Esc` in agent view to return to your shell.
 
+<a id="your-turn"></a>
 ## Your turn
 
 **Brief:** in a throwaway clone of your own repository, made as in step 1 with new folder names and your own test command, hand off two tasks you've been putting off that touch different files. Each worktree is a fresh checkout ([Set up the worktree environment](https://code.claude.com/docs/en/worktrees#set-up-the-worktree-environment)), so a task that runs your tests should say to install the dependencies in its worktree first, as lesson 1's test task did. While both sessions work, save the two `.practice/` files the criteria below name.
@@ -104,6 +109,7 @@ Then, in your second terminal, start a session in the clone yourself with `claud
 - Every `Needs input` row is answered: a question from the peek panel, a permission prompt by attaching.
 - What you keep is merged into your branch, your tests pass, and every session you started is removed with `claude rm <id>`.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -115,12 +121,14 @@ You are done when all of these are true:
 
 If the first item fails, save the files again on your next run, while both dispatched sessions work: a session that hasn't asked to edit has no worktree yet, a session you moved in edits your checkout in place, and a settings file that sets [`worktree.bgIsolation`](https://code.claude.com/docs/en/settings-reference#worktree-bgisolation) to `"none"` turns the worktrees off. If your branch lacks work you kept, or your tests fail after a merge, find the session behind it. A session leaves git to you when the task, your `CLAUDE.md` or memory says you handle it, and work left uncommitted in its worktree must be committed there before you can merge it: attach to that session and ask it to commit. For a branch that broke your tests, fix it yourself, or attach to that session before you remove it and tell it what failed; then merge the fix. If `claude rm` kept a session, read the reason it printed, such as uncommitted changes or unpushed commits, and follow [What deleting a session removes](https://code.claude.com/docs/en/agent-view#what-deleting-a-session-removes). Remove a worktree left without a session with `git worktree remove <path>` ([`.claude/worktrees/` is filling up](https://code.claude.com/docs/en/agent-view#claude%2Fworktrees%2F-is-filling-up)), running `git worktree unlock <path>` first if git says it's locked ([Clean up subagent and background-session worktrees](https://code.claude.com/docs/en/worktrees#clean-up-subagent-and-background-session-worktrees)).
 
+<a id="watch-out"></a>
 ## Watch out
 
 - Deleting a session in agent view, with `Ctrl+X` twice, removes the worktree Claude created for it, uncommitted changes included; `claude rm` keeps a worktree that has them ([What deleting a session removes](https://code.claude.com/docs/en/agent-view#what-deleting-a-session-removes)). Commit or merge what you want to keep first.
 - Background sessions use your usage the same as interactive ones, so several at once use it several times as fast ([Limitations](https://code.claude.com/docs/en/agent-view#limitations)).
 - `/agents` inside a session is a different command from `claude agents`, despite the similar name ([Check on running work](https://code.claude.com/docs/en/agents#check-on-running-work)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Read session state from a script](https://code.claude.com/docs/en/agent-view#read-session-state-from-a-script): poll `claude agents --json --all` from a status bar or another program.

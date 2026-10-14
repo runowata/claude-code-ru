@@ -1,4 +1,4 @@
-# Beyond this guide
+# Beyond this guide <a id="beyond-this-guide"></a>
 
 <sub>**Advanced** · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
@@ -8,6 +8,7 @@ Every item is published by Anthropic, except the MCP project's pages on modelcon
 
 Listings checked against the listing bar on 2026-10-09.
 
+<a id="build-your-own-agents"></a>
 ## Build your own agents
 
 To build Claude Code's agent loop into your own application:
@@ -22,6 +23,7 @@ A product or service you build on the Agent SDK should use API key authenticatio
 
 While you write code that calls the Claude API, the bundled `/claude-api` skill loads Claude API reference material for your project's language, and Claude also loads it on its own when your code imports `anthropic` or `@anthropic-ai/sdk` ([Skills](https://code.claude.com/docs/en/skills#work-on-claude-api-projects)).
 
+<a id="build-mcp-servers"></a>
 ## Build MCP servers
 
 [Connect a tool with MCP](../intermediate/07-mcp.md) used a server someone else wrote. To write your own:
@@ -31,6 +33,7 @@ While you write code that calls the Claude API, the bundled `/claude-api` skill 
 - [Introduction to Model Context Protocol](https://academy.claude.com/courses/introduction-to-model-context-protocol): Claude Academy's course on building servers and clients from scratch with the Python SDK.
 - [Model Context Protocol: Advanced topics](https://academy.claude.com/courses/model-context-protocol-advanced-topics): Claude Academy's course on sampling, notifications and roots.
 
+<a id="run-claude-code-for-an-organization"></a>
 ## Run Claude Code for an organization
 
 [Share your setup with a team](06-share-your-setup.md) commits a setup to the repository your team works in. An organization also sets policy, sign-in, network access and reporting for every machine:
@@ -44,6 +47,7 @@ While you write code that calls the Claude API, the bundled `/claude-api` skill 
 
 If your organization deploys managed settings, a setting from a lesson may not apply on a work machine, or on any machine where you sign in with a work account: no user, project, local or `--settings` value overrides them, apart from a few security-sensitive exceptions where a stricter value from a lower level still counts ([Deploy managed settings](https://code.claude.com/docs/en/managed-settings), [Configure server-managed settings](https://code.claude.com/docs/en/server-managed-settings#platform-availability)). When developers connect through a gateway with a gateway credential, usage is billed to the organization's provider account at API rates, and their claude.ai subscriptions aren't used or charged ([Subscriptions and gateways](https://code.claude.com/docs/en/gateways#subscriptions-and-gateways)).
 
+<a id="roll-it-out-to-a-team"></a>
 ## Roll it out to a team
 
 Once the setup is in place, these help people adopt it:

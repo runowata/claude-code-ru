@@ -1,5 +1,5 @@
 <a id="changelog--claude-code--ecosystem-updates"></a>
-# Changelog
+# Changelog <a id="changelog"></a>
 
 This page moved. The guide's own changes are in its [CHANGELOG](../../CHANGELOG.md). For Claude Code's releases, see the official [CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) and the weekly [What's new](https://code.claude.com/docs/en/whats-new).
 

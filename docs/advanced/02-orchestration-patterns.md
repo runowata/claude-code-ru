@@ -1,17 +1,20 @@
-# Choose an orchestration pattern
+# Choose an orchestration pattern <a id="choose-an-orchestration-pattern"></a>
 
 <sub>**Advanced** · Lesson 2 of 7 · about 20 minutes · Needs: [Parallel sessions with worktrees](01-parallel-sessions.md) · Verified against Claude Code v2.1.285 (stable) on 2026-10-09</sub>
 
+<a id="goal"></a>
 ## Goal
 
 By the end of this lesson you can choose between the main conversation, subagents, a dynamic workflow and an agent team by what a job needs and what it costs, and run a job as parallel subagents.
 
+<a id="you-need"></a>
 ## You need
 
 - Your repository from [lesson 1](01-parallel-sessions.md), with at least three top-level folders that hold files, and your copy of the practice template with Node.js LTS: the check runs from the copy. Set up the repository's `.practice/` folder as [Beginner lesson 1](../beginner/01-install-and-look-around.md#you-need) describes, if you haven't yet.
 - macOS, Linux or WSL 2, and `jq`: the delegation log in Your turn is a shell command that uses it.
 - Usage: moderate. Each subagent works in its own context window and sends its own requests, which count toward the same usage limits as your main conversation ([Create custom subagents](https://code.claude.com/docs/en/sub-agents)). For a lighter run, use two folders in the Worked example and two files in job 1.
 
+<a id="the-idea"></a>
 ## The idea
 
 Subagents, a dynamic workflow and an agent team all split a job across workers; what differs is who holds the plan ([When to use a workflow](https://code.claude.com/docs/en/workflows#when-to-use-a-workflow)). With subagents, Claude decides turn by turn, and each result comes back into your conversation. A dynamic workflow is a script Claude writes: it holds the loop and the intermediate results, so it can run many agents, cross-check their findings and rerun the same way. In an agent team, a lead supervises teammates who message each other directly ([Choose an approach](https://code.claude.com/docs/en/agents#choose-an-approach)).
@@ -34,6 +37,7 @@ flowchart TD
 > [!NOTE]
 > "Agent teams are experimental and disabled by default." ([Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams)) This lesson names them as one option and doesn't run one; the [Agent teams](electives/agent-teams.md) Elective does.
 
+<a id="worked-example"></a>
 ## Worked example
 
 1. Pick three top-level folders in your repository, such as `src`, `test` and `docs`, and start `claude`.
@@ -49,6 +53,7 @@ flowchart TD
 5. When the summaries arrive, run `/usage`. On a Pro, Max, Team or Enterprise plan, its usage breakdown attributes your recent usage to skills, subagents, plugins and MCP servers, and flags behaviors, such as long context, that account for a notable share of it ([Plan usage breakdown](https://code.claude.com/docs/en/costs#plan-usage-breakdown)). Its Session block, intended for API users such as those signed in with a Console account, shows this session's estimated cost ([Using the `/usage` command](https://code.claude.com/docs/en/costs#using-the-%2Fusage-command)). Both are estimates.
 6. Name what would change the answer. The same summary for every folder, cross-checked and rerun before each release, would be a workflow, the next lesson's pattern. Reviewers who must argue a root cause out between themselves would be an agent team.
 
+<a id="your-turn"></a>
 ## Your turn
 
 **Brief:** here are four jobs for your repository. Choose a pattern for each by what it needs and what it costs, write your choices down, then run the one that calls for subagents.
@@ -77,6 +82,7 @@ flowchart TD
 - Job 1 changed no file: the reviewers only report, and `git status` shows no change from them.
 - Only job 1 ran. The other three are choices.
 
+<a id="check"></a>
 ## Check
 
 You are done when all of these are true:
@@ -89,12 +95,14 @@ Run `npm run check -- a-2 --dir <your repo>` from your practice copy.
 
 If a job's pattern is wrong, ask the chart's questions in order: the check's hint names the question that settles that job. If the log has fewer than two ids, start the session with the hook file and ask for one subagent per file, in parallel. A subagent that Claude resumes logs its id again, so it counts once.
 
+<a id="watch-out"></a>
 ## Watch out
 
 - A background subagent's permission prompts appear in your main session, and an answer that lasts beyond that one tool call, such as a grant for the rest of the session, applies to the whole session, your main conversation included ([Run subagents in foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background)). Approve each of those prompts for that one call only, never for the rest of the session, and ask reviewers only to read.
 - Each subagent's result returns to your conversation, and each subagent spends tokens of its own while it runs, so many detailed results crowd your context and add to your usage. Ask for short results ([Run parallel research](https://code.claude.com/docs/en/sub-agents#run-parallel-research)).
 - With agent teams turned on, a subagent that Claude names launches as a teammate, so a team can form when you asked for subagents. The hook also logs a line each time a teammate that runs inside your main terminal handles a new message ([Claude spawns teammates instead of subagents](https://code.claude.com/docs/en/agent-teams#claude-spawns-teammates-instead-of-subagents), [SubagentStart](https://code.claude.com/docs/en/hooks#subagentstart)). If you turned teams on, add `"env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "0" }` to `.practice/a-2-hook.json`, as a top-level key beside `"hooks"`. A `--settings` file overrides your user, project and local settings and a shell export, and only managed settings override it ([Settings precedence](https://code.claude.com/docs/en/settings#settings-precedence)).
 
+<a id="go-further"></a>
 ## Go further
 
 - [Run agents in parallel](https://code.claude.com/docs/en/agents): the official comparison of the ways Claude Code works on several tasks at once, and how to check on each.
